@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Nerolac Previews </title>
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/datatables")
+    @Scripts.Render("~/bundles/modernizr")
+    @*@Scripts.Render("~/bundles/datatables")*@
+    <style>
+        #content {
+            position: relative;
+        }
+
+            #content img {
+                position: absolute;
+                top: 0px;
+                left: -45px;
+                right: -104px;
+                width: 105px;
+                height: 50px;
+            }
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.22857143;
+        }
+    </style>
+</head>
+<body>
+  
+   
+        <div class="navbar navbar-inverse navbar-fixed-top" style="color:wheat;">
+            <div class="container">
+                <div id="content">
+                        <img src="~/Images/colour-my-space-logo.jpg" />
+                    </div>
+                <div class="row" style="margin-top: 15px;">
+
+                    <div class="col-md-3">
+                        <b> @(Session["UserName"]?.ToString() ?? "") @(Session["Password"]?.ToString() ?? "") </b>
+                    </div>
+
+                    @*<div class="col-md-4"><b>Last Login  :  @Session["LastLogin"].ToString()</b></div>*@
+                <div class="col-md-1">
+                    <b style="margin-left:-170px;">MyVizCollections</b>
+                </div>
+                    <div class="col-md-3">
+                        <b> @DateTime.Now.ToString("ddd, dd MMM yyy hh:mm:ss tt") </b>
+                    </div>
+                    <div class="col-md-1">
+                    </div>
+                    <div class="col-md-1">
+                    </div>
+                    <div class="col-md-3">
+                        <a href='@Url.Action("Index","Login")' style="color:white">
+                            Logout
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        </br>
+        <div class="container body-content">
+            @RenderBody()
+            <hr />
+            <footer>
+                <!--<p style="font-size:11px;">-->
+                @*&copy; @DateTime.Now.Year -*@
+                @*Disclaimer - MyViz does its best to provide a best match of colours with the Shade Cards.
+                    However, factors such as viewing medium, screen size & resolution, source quality, lighting, shades selected etc. can also impact. <br/>*@
+                <!--Colourmyspace.co.in
+                </p>-->
+            </footer>
+        </div>
+
+        @Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/bootstrap")
+        @RenderSection("scripts", required: false)
+    </body>
+</html>

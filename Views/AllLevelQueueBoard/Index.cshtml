@@ -1,0 +1,266 @@
+﻿@model PagedList.IPagedList<MyVizCollections.Models.AllLevelQueueBoard>
+@using PagedList.Mvc
+
+@{
+    ViewBag.Title = "QueueBoard - Projects in progress";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string currentFilter = ViewBag.CurrentFilter;
+    string currentSort = ViewBag.CurrentSort;
+    string Cdate = ViewBag.Fdate;
+    string PId = ViewBag.ProjectId;
+
+}
+
+<style>
+    .container {
+        padding-right: 5px;
+        /* padding-left: 15px; */
+        margin-right: auto;
+        margin-left: 25px;
+    }
+
+   
+
+
+</style>
+<div class="form-group" style="display: flex; justify-content: flex-start; margin-bottom: 5px;margin-top:10px; margin-left: 350px; max-width: 330px; height: 1px;">
+
+
+        <input type="text" name="q" value="@ViewBag.searchQuery" class="search-text form-control" placeholder="Search on ProjectID" title="Enter ProjectID to Search" data-toggle="tooltip" id="searchtxt" />
+
+               <button type="submit" class="btn btn-primary" id="btnSubmit" style="height: 32px; margin: 2px;">Search</button>
+        <button type="submit" class="btn btn-primary" id="btnClear" style="height: 32px; margin: 2px;">Clear</button>
+    </div>
+
+    <div>
+        <label for="example-datepicker">FinalStatusDt</label>
+        <input type="date" id="datepicker" value="" />
+        <button type="submit" class="btn btn-primary" id="btnSubmit1" style="height: 30px; margin-bottom: 5px;">Submit</button>
+
+    </div>
+
+
+
+
+<div class="panel panel-primary list-panel" id="list-panel" style="width:136%;">
+    <div class="panel-heading list-panel-heading">
+        <h1 class="panel-title list-panel-title">Queue Board (60)</h1>
+    </div>
+
+    <div class="container body-content" style="width: 1600px;"></div>
+
+    <div class="panel-body" style="width: 100%; overflow: auto;">
+        <table id="assets-data-table" class="table table-striped table-bordered" style="width: 100%; position: relative;">
+            <thead>
+                <tr>
+                    <th>ProjectID</th>
+                    <th>ProjectName</th>
+                    <th>RegdOn</th>
+                    <th>RegdBy</th>
+                    <th>FinalStatus</th>
+                    <th>FinalStatusDt</th>
+                    <th>Type</th>
+                    <th>Category</th>
+                    <th>Selected Image Link</th>
+                    <th>PRILink</th>
+                    <th>SCA1 Link</th>
+                    <th>SCA2 Link</th>
+                    <th>SCA3 Link</th>
+                    <th>Source1</th>
+                    <th>Source2</th>
+                    <th>Source3</th>
+                    <th data-toggle="tooltip" title="SelectedImageOption">SIOption</th>
+                    <th>Preview</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var asset in Model)
+                {
+                    <tr>
+                        <td style="text-align-last:right">
+                            <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/myModal?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Project details, to update status" data-toggle="tooltip">@asset.ProjectID</a>
+                        </td>
+
+
+                        <!-- Other table cells -->
+                        <td>@asset.ProjectName</td>
+
+                        <td>@String.Format("{0:ddd, dd MMM hh:mm tt}", asset.RegdOn)</td>
+                        <td>@asset.RegdBy</td>
+                        <td>
+                            @asset.FinalStatus
+                        </td>
+
+                        <td>@string.Format("{0:ddd, dd MMM hh:mm tt}", asset.FinalStatusDt)</td>
+
+
+                        <td>@asset.Type</td>
+                        <td>@asset.Category</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(asset.SelectedImageLink))
+                            {
+                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID,linkType = "Source",sourcefile = asset.SelectedImageLink })" target="_blank" title="Click to open SelectedImageLink" data-toggle="tooltip">@asset.SelectedImageLink</a>
+                            }
+                            else
+                            {
+                        <span>No SelectedImageLink available</span>
+                            }
+                        </td>
+
+                        <td>
+                            @if (!string.IsNullOrEmpty(asset.PRILink))
+                            {
+                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID,linkType = "PRI" })" target="_blank" title="Click to open PRILink" data-toggle="tooltip">@asset.PRILink</a>
+                            }
+                            else
+                            {
+                                <span>No PRILink available</span>
+                            }
+                        </td>
+
+                        <td>
+                            @if (!string.IsNullOrEmpty(asset.SCA1))
+                            {
+                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID,linkType = "PDF1" })" target="_blank" title="Click to open SCA1Link" data-toggle="tooltip">@asset.SCA1</a>
+                            }
+                            else
+                            {
+                                <span>No SCA1Link available</span>
+                            }
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(asset.SCA2))
+                            {
+                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID,linkType = "PDF2" })" target="_blank" title="Click to open SCA2Link" data-toggle="tooltip">@asset.SCA2</a>
+                            }
+                            else
+                            {
+                                <span>No SCA2Link available</span>
+                            }
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(asset.SCA3))
+                            {
+                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID,linkType = "PDF3" })" target="_blank" title="Click to open SCA3Link" data-toggle="tooltip">@asset.SCA3</a>
+                            }
+                            else
+                            {
+                                <span>No SCA3Link available</span>
+                            }
+                        </td>
+
+                        <td>
+                            @if (!string.IsNullOrEmpty(asset.ImageFileName1))
+                            {
+                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID,linkType = "img1",sourcefile = asset.ImageFileName1 })" target="_blank" title="Click to open Imagefile1" data-toggle="tooltip">@asset.ImageFileName1</a>
+                            }
+                            else
+                            {
+                                <span>No ImageFile available</span>
+                            }
+                        </td>
+
+                        <td>
+                            @if (!string.IsNullOrEmpty(asset.ImageFileName2))
+                            {
+                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID,linkType = "img2",sourcefile = asset.ImageFileName2 })" target="_blank" title="Click to open Imagefile2" data-toggle="tooltip">@asset.ImageFileName2</a>
+                            }
+                            else
+                            {
+                                <span>No ImageFile available</span>
+                            }
+                        </td>
+
+                        <td>
+                            @if (!string.IsNullOrEmpty(asset.ImageFileName3))
+                            {
+                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID,linkType = "img3",sourcefile = asset.ImageFileName3 })" target="_blank" title="Click to open Imagefile3" data-toggle="tooltip">@asset.ImageFileName3</a>
+                            }
+                            else
+                            {
+                                <span>No ImageFile available</span>
+                            }
+                        </td>
+
+
+
+                        <td>
+                            @asset.SIOption
+                        </td>
+                        <td>
+                            <button id="previewButton" class="btn btn-primary btn-sm" onclick="launchPreview(@asset.ProjectID)">Preview &gt;&gt;</button>
+                        </td>
+                    </tr>
+
+
+                   
+                }
+            </tbody>
+        </table>
+        <div class="text-center">
+            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+            @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+
+
+
+        <script>
+
+            $(document).ready(function () {
+                // Assuming you have a date in ViewBag named Fdate
+                debugger;
+                var fDateFromViewBag = '@ViewBag.Fdate';
+                var date = @Cdate;
+                var parsedDate = new Date(fDateFromViewBag);
+                @*document.getElementById("datepicker").value = @Cdate;*@
+               /*var selectedDate = "((DateTime)ViewBag.Fdate).ToString("yyyy-MM-dd")";*/
+                document.getElementById("datepicker").valueAsDate = parsedDate;
+            });
+
+            $(document).ready(function () {
+
+    var projectIdFromViewBag = '@ViewBag.ProjectId';
+
+    document.getElementById("searchtxt").value = projectIdFromViewBag;
+});
+
+            $("#btnSubmit").click(function () {
+                var pid = $("#searchtxt").val();
+                var url = "@Url.Action("Index", "AllLevelQueueBoard")" + "?ProjectId=" + pid;
+             /*   window.location.href = '/AllLevelQueueBoard/Index/?page=null&ProjectId=' + pid;*/
+                window.location.href = url;
+            });
+
+            /*Click event for the Clear button*/
+            $("#btnClear").click(function () {
+                /* Clear the search input*/
+                    $("#searchtxt").val("");
+               var url = "@Url.Action("Index", "AllLevelQueueBoard")";
+             window.location.href = url;
+               });
+
+            $("#btnSubmit1").click(function () {
+                var curdate1 = $("#datepicker").val();
+                /*window.location.href = '/AllLevelQueueBoard/Index/?page=null&Fdate=' + curdate1;*/
+                var url = "@Url.Action("Index", "AllLevelQueueBoard")" + "?Fdate=" + curdate1;
+                window.location.href = url;
+
+            });
+
+
+                function launchPreview(projectId) {
+             // Construct the URL for the LaunchPreview action
+             var url = "@Url.Action("LaunchPreview", "AllLevelQueueBoard")" + "?Id=" + projectId;
+
+             // Open the URL in a new tab
+             window.open(url, '_blank');
+    }
+
+        </script>
+
+    </div>
+</div>

@@ -1,0 +1,134 @@
+﻿@model MyVizCollections.Models.ProjectDetails
+@{
+
+
+    ViewBag.Title = "Project Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using PagedList.Mvc
+
+
+<!-- Modal -->
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel" style="height: 0px;font-size:18px;color:darkblue"><b>Project Details</b></h5>
+                <button type="button" class="close closeredirect" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+
+
+            <table style="font-family: Arial; font-size: 12px; font-weight: 300; border-collapse: separate; border-spacing: 10px 2px;">
+                <tr style="height:30px;">
+                    <td>
+                        <div> <b>ProjectID</b> : @ViewBag.ProjectID </div>
+                    </td>
+                    <td><b>:</b></td>
+
+
+                    <td> @Html.DisplayFor(Model => Model.ProjectID)</td>
+                </tr>
+                <tr style="height:30px;">
+                    <td> <b>Project Name</b></td>
+                    <td><b>:</b></td>
+                    <td> @Html.DisplayFor(Model => Model.ProjectName)</td>
+                </tr>
+                <tr style="height:30px;">
+                    <td><b> Case ID</b></td>
+                    <td><b>:</b></td>
+                    <td> @Html.DisplayFor(Model => Model.caseID)</td>
+                </tr>
+                <tr style="height:30px;">
+                    <td><b>Status</b></td>
+                    <td><b>:</b></td>
+                    <td>  @Html.DisplayFor(Model => Model.statuscode)</td>
+                </tr>
+                <tr style="height:30px;">
+                    <td> <b>Nerolite ID</b></td>
+                    <td><b>:</b></td>
+                    <td>  @Html.DisplayFor(Model => Model.NeroliteID)</td>
+                    @*<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>*@
+                </tr>
+              
+                <tr style="height:30px;">
+                    <td><b>Feedback</b></td>
+                    <td><b>:</b></td>
+                    <td> @Html.DisplayFor(Model => Model.Feedback)</td>
+                
+                <tr style="height:30px;">
+                    <td><b>High Priority</b></td>
+                    <td><b>:</b></td>
+                    <td> @Html.DisplayFor(Model => Model.Priority)</td>
+                </tr>
+                <tr style="height:30px;">
+                    <td><b>Resolution(Pixels)</b></td>
+                    <td><b>:</b></td>
+                    <td> @Html.DisplayFor(Model => Model.Resolution)</td>
+                </tr>
+                <tr style="height:30px;">
+                    <td><b>Size(KB)</b></td>
+                    <td><b>:</b></td>
+                    <td> @Html.DisplayFor(Model => Model.Size)</td>
+                </tr>
+
+                <tr style="height:30px;">
+                    <td><b>PSE</b></td>
+                    <td><b>:</b></td>
+                    <td> @Html.DisplayFor(Model => Model.PSE)</td>
+                </tr>
+
+                <tr style="height:30px;">
+                    <td><b>QA / CPI</b></td>
+                    <td><b>:</b></td>
+                    <td> @Html.DisplayFor(Model => Model.QACPI)</td>
+                </tr>
+
+                <tr style="height:30px;">
+                    <td><b>Insy Comments</b></td>
+                    <td><b>:</b></td>
+                    <td> @Html.DisplayFor(Model => Model.InsyComments)</td>
+                </tr>
+                <tr style="height:30px;">
+                    <td><b>Remarks</b></td>
+                    <td><b>:</b></td>
+                    <td> @Html.DisplayFor(Model => Model.remarks)</td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+<script>
+    // Keep the existing script that opens the modal, remove the closeredirect click event, it's not needed
+    $(function () {
+        $("#exampleModal").modal("show");
+    });
+</script>
+
+
+<script>
+    $(function () {
+        $("#exampleModal").modal("show");
+        $(".closeredirect").click(function () {
+
+        window.location.href = '@Url.Action("Index", "AllLevelQueueBoard")';
+
+        });
+    });
+
+
+
+  
+
+
+
+</script>

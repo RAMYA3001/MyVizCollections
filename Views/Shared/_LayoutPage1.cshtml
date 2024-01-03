@@ -1,0 +1,50 @@
+﻿ 
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title - Nerolac Previews </title>
+    @*<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>*@
+    @*<script src="~/Scripts/Login/jquery.ui.touch-punch.min.js"></script>*@
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link href="~/Content/Site.css" rel="stylesheet" />
+</head>
+<body style="padding: 0px; height: 100%; max-height: unset; overflow: hidden;">
+    <form>
+            <script src="~/Scripts/Login/fontawesome/fontawesome.js"></script>
+            <link href="~/Content/fontawesome.css" rel="stylesheet" />
+            <link href="~/Content/font-awesome.css" rel="stylesheet" />
+            <link href="~/Content/fontawesome-all.css" rel="stylesheet" />
+            <script src="~/Scripts/Login/WebForms/WebForms.js"></script>
+            <script src="~/Scripts/Login/WebForms/WebUIValidation.js"></script>
+            <script src="~/Scripts/Login/WebForms/MenuStandards.js"></script>
+            <script src="~/Scripts/Login/WebForms/GridView.js"></script>
+            <script src="~/Scripts/Login/WebForms/DetailsView.js"></script>
+            <script src="~/Scripts/Login/WebForms/TreeView.js"></script>
+            <script src="~/Scripts/Login/WebForms/WebParts.js"></script>
+            <script src="~/Scripts/Login/WebForms/Focus.js"></script>
+            <script src="~/Scripts/Login/WebForms/WebForms.js"></script>
+        <script src="~/Scripts/Login/Site.js"></script>
+        <div class="container body-content p-0 m-0" style="max-width: unset;">   
+        </div>
+    </form>
+
+
+  <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p><a href="https://www.nerolac.com/" target="_blank">@*&copy; @DateTime.Now.Year -*@ @*ColourmySpace.co.in*@ Nerolac.com</a></p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
