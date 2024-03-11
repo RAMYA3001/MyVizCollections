@@ -1,4 +1,4 @@
-﻿@model MyVizCollections.Models.ProjectDetails
+﻿@model MyVizCollections.Models.ColourAI
 @{
 
 
@@ -12,7 +12,7 @@
 
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
+        <div class="modal-content"style="width:500px">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel" style="height: 0px;font-size:18px;color:darkblue"><b>Project Details</b></h5>
                 <button type="button" class="close closeredirect" data-dismiss="modal" aria-label="Close">
@@ -38,65 +38,23 @@
                     <td> @Html.DisplayFor(Model => Model.ProjectName)</td>
                 </tr>
                 <tr style="height:30px;">
-                    <td><b> Case ID</b></td>
+                    <td><b> TSO ID</b></td>
                     <td><b>:</b></td>
-                    <td> @Html.DisplayFor(Model => Model.caseID)</td>
+                    <td> @Html.DisplayFor(Model => Model.TSOID)</td>
                 </tr>
                 <tr style="height:30px;">
-                    <td><b>Status</b></td>
+                    <td><b> TSO Name</b></td>
                     <td><b>:</b></td>
-                    <td>  @Html.DisplayFor(Model => Model.statuscode)</td>
+                    <td> @Html.DisplayFor(Model => Model.TSOName)</td>
                 </tr>
-                <tr style="height:30px;">
-                    <td> <b>User ID</b></td>
-                    <td><b>:</b></td>
-                    <td>  @Html.DisplayFor(Model => Model.UserID)</td>
-                    @*<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>*@
-                </tr>
-              
                 <tr style="height:30px;">
                     <td><b>Feedback</b></td>
                     <td><b>:</b></td>
                     <td> @Html.DisplayFor(Model => Model.Feedback)</td>
+
+
+               
                 
-                <tr style="height:30px;">
-                    <td><b>High Priority</b></td>
-                    <td><b>:</b></td>
-                    <td> @Html.DisplayFor(Model => Model.Priority)</td>
-                </tr>
-                <tr style="height:30px;">
-                    <td><b>Resolution(Pixels)</b></td>
-                    <td><b>:</b></td>
-                    <td> @Html.DisplayFor(Model => Model.Resolution)</td>
-                </tr>
-                <tr style="height:30px;">
-                    <td><b>Size(KB)</b></td>
-                    <td><b>:</b></td>
-                    <td> @Html.DisplayFor(Model => Model.Size)</td>
-                </tr>
-
-                <tr style="height:30px;">
-                    <td><b>PSE</b></td>
-                    <td><b>:</b></td>
-                    <td> @Html.DisplayFor(Model => Model.PSE)</td>
-                </tr>
-
-                <tr style="height:30px;">
-                    <td><b>QA / CPI</b></td>
-                    <td><b>:</b></td>
-                    <td> @Html.DisplayFor(Model => Model.QACPI)</td>
-                </tr>
-
-                <tr style="height:30px;">
-                    <td><b>Insy Comments</b></td>
-                    <td><b>:</b></td>
-                    <td> @Html.DisplayFor(Model => Model.InsyComments)</td>
-                </tr>
-                <tr style="height:30px;">
-                    <td><b>Remarks</b></td>
-                    <td><b>:</b></td>
-                    <td> @Html.DisplayFor(Model => Model.remarks)</td>
-                </tr>
             </table>
 
         </div>
@@ -120,8 +78,8 @@
         $("#exampleModal").modal("show");
         $(".closeredirect").click(function () {
 
-            window.location.href = '@Url.Action("Index", "AllLevelQueueBoard")';
-      
+            window.location.href = '@Url.Action("Index", "ColourAI")';
+
 
         });
     });

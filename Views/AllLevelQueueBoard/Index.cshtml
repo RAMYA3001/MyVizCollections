@@ -1,6 +1,9 @@
 ﻿@model PagedList.IPagedList<MyVizCollections.Models.AllLevelQueueBoard>
 @using PagedList.Mvc
 
+
+
+
 @{
     ViewBag.Title = "QueueBoard - Projects in progress";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -19,196 +22,235 @@
         margin-left: 25px;
     }
 
+    img {
+        border-radius: 8px;
+    }
+
+    #datepicker {
+        font-size: 14px; /* Adjust as needed */
+        line-height: 1.8; /* Adjust as needed */
+    }
+</style>
+<label for="pid1" style=" margin-left: 780px;  color: red;margin-bottom: 12px;">  
+    Compare
+</label>
+
+<div style="border: 2px solid #337ab7; padding: 10px 10px; width: 487px; margin-bottom: 4px;">
+    <label for="example-datepicker">StDate</label>
+    <input type="date" id="datepicker" value="">
+
+    <button type="submit" class="btn btn-primary" id="btnSubmit1" style="height: 30px; margin-bottom: 5px;">Submit</button>
+    <input type="text" name="q" class="search-text form-control" placeholder="SearchProjectID..." title="Enter ProjectID to Search" data-toggle="tooltip" id="searchtxt" style="margin-left: 263px; margin-top: -38px; width: 121px; " />
+    <button type="submit" class="btn btn-primary" id="btnSubmit" style="height: 30px;margin: 2px;margin-top: -51px;margin-left: 389px;margin-right: -23px;">Search</button>
+</div>
+
+    <div class="form-group" style="border: 2px solid #337ab7; padding: 54px 14px; display: flex; justify-content: flex-start; margin-bottom: 3px; margin-top: -119px; margin-left: 498px; width: 708px; height: 1px;">
+        <label for="pid1" style=" margin-top: 11px;">
+            Project1:
+        </label>
+        <input type="text" name="q" class="search-text form-control" placeholder="ProjectID1" title="Enter ProjectID to Search" data-toggle="tooltip" id="searchtxt1">
+        <select class="form-control" id="dropdownSelect1">
+            <option value="SI">Selected</option>
+            <option value="Image1">Source1</option>
+            <option value="Image2">Source2</option>
+            <option value="Image3">Source3</option>
+            <option value="PRI">PRI</option>
+        </select>
+        <label for="pid2" style="margin-left: 9px; margin-top: 11px;">
+            Project2:
+        </label>
+        <input type="text" name="q" class="search-text form-control" placeholder="ProjectID2" title="Enter ProjectID to Search" data-toggle="tooltip" id="searchtxt2">
+        <select class="form-control" id="dropdownSelect2">
+            <option value="SI">Selected</option>
+            <option value="Image1">Source1</option>
+            <option value="Image2">Source2</option>
+            <option value="Image3">Source3</option>
+            <option value="PRI">PRI</option>
+        </select>
+        <button type="submit" class="btn btn-primary" title="Compare two different image in one single screen" id="btnCompare" style="height: 30px; margin: 2px;">Match</button>
+        <button type="submit" class="btn btn-primary" id="btnClear" style="height: 30px; margin: 2px;">Clear</button>
+    </div>
    
 
-
-</style>
-<div class="form-group" style="display: flex; justify-content: flex-start; margin-bottom: 5px;margin-top:10px; margin-left: 350px; max-width: 330px; height: 1px;">
-
-
-        <input type="text" name="q" value="@ViewBag.searchQuery" class="search-text form-control" placeholder="Search on ProjectID" title="Enter ProjectID to Search" data-toggle="tooltip" id="searchtxt" />
-
-               <button type="submit" class="btn btn-primary" id="btnSubmit" style="height: 32px; margin: 2px;">Search</button>
-        <button type="submit" class="btn btn-primary" id="btnClear" style="height: 32px; margin: 2px;">Clear</button>
-    </div>
-
-    <div>
-        <label for="example-datepicker">FinalStatusDt</label>
-        <input type="date" id="datepicker" value="" />
-        <button type="submit" class="btn btn-primary" id="btnSubmit1" style="height: 30px; margin-bottom: 5px;">Submit</button>
-
-    </div>
-
-
-
-
-<div class="panel panel-primary list-panel" id="list-panel" style="width:136%;">
-    <div class="panel-heading list-panel-heading">
-        <h1 class="panel-title list-panel-title">Queue Board (60)</h1>
-    </div>
-
-    <div class="container body-content" style="width: 1600px;"></div>
-
-    <div class="panel-body" style="width: 100%; overflow: auto;">
-        <table id="assets-data-table" class="table table-striped table-bordered" style="width: 100%; position: relative;">
-            <thead>
-                <tr>
-                    <th>ProjectID</th>
-                    <th>ProjectName</th>
-                    <th>RegdOn</th>
-                    <th>RegdBy</th>
-                    <th>FinalStatus</th>
-                    <th>FinalStatusDt</th>
-                    <th>Type</th>
-                    <th>Category</th>
-                    <th>Selected Image Link</th>
-                    <th>PRILink</th>
-                    <th>SCA1 Link</th>
-                    <th>SCA2 Link</th>
-                    <th>SCA3 Link</th>
-                    <th>Source1</th>
-                    <th>Source2</th>
-                    <th>Source3</th>
-                    <th data-toggle="tooltip" title="SelectedImageOption">SIOption</th>
-                    <th>Preview</th>
-
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var asset in Model)
-                {
-                    <tr>
-                        <td style="text-align-last:right">
-                            <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/myModal?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Project details, to update status" data-toggle="tooltip">@asset.ProjectID</a>
-                        </td>
-
-
-                        <!-- Other table cells -->
-                        <td>@asset.ProjectName</td>
-
-                        <td>@String.Format("{0:ddd, dd MMM hh:mm tt}", asset.RegdOn)</td>
-                        <td>@asset.RegdBy</td>
-                        <td>
-                            @asset.FinalStatus
-                        </td>
-
-                        <td>@string.Format("{0:ddd, dd MMM hh:mm tt}", asset.FinalStatusDt)</td>
-
-
-                        <td>@asset.Type</td>
-                        <td>@asset.Category</td>
-                        <td>
-                            @if (!string.IsNullOrEmpty(asset.SelectedImageLink))
-                            {
-                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID,linkType = "Source",sourcefile = asset.SelectedImageLink })" target="_blank" title="Click to open SelectedImageLink" data-toggle="tooltip">@asset.SelectedImageLink</a>
-                            }
-                            else
-                            {
-                        <span>No SelectedImageLink available</span>
-                            }
-                        </td>
-
-                        <td>
-                            @if (!string.IsNullOrEmpty(asset.PRILink))
-                            {
-                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID,linkType = "PRI" })" target="_blank" title="Click to open PRILink" data-toggle="tooltip">@asset.PRILink</a>
-                            }
-                            else
-                            {
-                                <span>No PRILink available</span>
-                            }
-                        </td>
-
-                        <td>
-                            @if (!string.IsNullOrEmpty(asset.SCA1))
-                            {
-                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID,linkType = "PDF1" })" target="_blank" title="Click to open SCA1Link" data-toggle="tooltip">@asset.SCA1</a>
-                            }
-                            else
-                            {
-                                <span>No SCA1Link available</span>
-                            }
-                        </td>
-                        <td>
-                            @if (!string.IsNullOrEmpty(asset.SCA2))
-                            {
-                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID,linkType = "PDF2" })" target="_blank" title="Click to open SCA2Link" data-toggle="tooltip">@asset.SCA2</a>
-                            }
-                            else
-                            {
-                                <span>No SCA2Link available</span>
-                            }
-                        </td>
-                        <td>
-                            @if (!string.IsNullOrEmpty(asset.SCA3))
-                            {
-                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID,linkType = "PDF3" })" target="_blank" title="Click to open SCA3Link" data-toggle="tooltip">@asset.SCA3</a>
-                            }
-                            else
-                            {
-                                <span>No SCA3Link available</span>
-                            }
-                        </td>
-
-                        <td>
-                            @if (!string.IsNullOrEmpty(asset.ImageFileName1))
-                            {
-                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID,linkType = "img1",sourcefile = asset.ImageFileName1 })" target="_blank" title="Click to open Imagefile1" data-toggle="tooltip">@asset.ImageFileName1</a>
-                            }
-                            else
-                            {
-                                <span>No ImageFile available</span>
-                            }
-                        </td>
-
-                        <td>
-                            @if (!string.IsNullOrEmpty(asset.ImageFileName2))
-                            {
-                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID,linkType = "img2",sourcefile = asset.ImageFileName2 })" target="_blank" title="Click to open Imagefile2" data-toggle="tooltip">@asset.ImageFileName2</a>
-                            }
-                            else
-                            {
-                                <span>No ImageFile available</span>
-                            }
-                        </td>
-
-                        <td>
-                            @if (!string.IsNullOrEmpty(asset.ImageFileName3))
-                            {
-                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID,linkType = "img3",sourcefile = asset.ImageFileName3 })" target="_blank" title="Click to open Imagefile3" data-toggle="tooltip">@asset.ImageFileName3</a>
-                            }
-                            else
-                            {
-                                <span>No ImageFile available</span>
-                            }
-                        </td>
-
-
-
-                        <td>
-                            @asset.SIOption
-                        </td>
-                        <td>
-                            <button id="previewButton" class="btn btn-primary btn-sm" onclick="launchPreview(@asset.ProjectID)">Preview &gt;&gt;</button>
-                        </td>
-                    </tr>
-
-
-                   
-                }
-            </tbody>
-        </table>
-        <div class="text-center">
-            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
-            @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+    <div class="panel panel-primary list-panel" id="list-panel" style="width:136%;margin-top:12px">
+        <div class="panel-heading list-panel-heading">
+            <h1 class="panel-title list-panel-title">DashBoard</h1>
         </div>
 
-        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <div class="container body-content" style="width: 1600px;"></div>
+
+        <div class="panel-body" style="width: 100%; overflow: auto;">
+            <table id="assets-data-table" class="table table-striped table-bordered" style="width: 100%; position: relative;">
+                <thead>
+                    <tr>
+                        <th>ProjectID</th>
+                        <th>ProjectName</th>
+                        <th style="padding: 9px 25px;">RegdOn</th>
+                        <th>RegdBy</th>
+                        <th>St</th>
+                        <th style="padding: 9px 25px;">StDate</th>
+                        <th>Type</th>
+                        <th>Category</th>
+                        <th data-toggle="tooltip" title="SelectedImageLink">SILink</th>
+                        <th>PRILink</th>
+                        <th>SCA1</th>
+                        <th>SCA2 </th>
+                        <th>SCA3</th>
+                        <th>Source1</th>
+                        <th>Source2</th>
+                        <th>Source3</th>
+                        <th data-toggle="tooltip" title="SelectedImageOption">SIOpt</th>
+                        <th>Preview</th>
+                        <th>Site</th>
+                        <th>Customer</th>
+                        <th>FeedBack</th>
+                        <th data-toggle="tooltip" title="ColourChoicebyTSO">CC</th>
+                        <th>DuplicateOf</th>
+                        <th data-toggle="tooltip" title="Priority">PRI</th>
+                        <th data-toggle="tooltip" title="NxtGen">NG</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var asset in Model)
+                    {
+                        <tr>
+                            <td style="text-align-last:right">
+                                <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/myModal?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Project details, to update status" data-toggle="tooltip">@asset.ProjectID</a>
+                            </td>
+
+
+                            <!-- Other table cells -->
+                            <td>@asset.ProjectName</td>
+
+                            <td>@String.Format("{0:ddd, dd MMM hh:mm tt}", asset.RegdOn)</td>
+                            <td>@asset.RegdBy</td>
+                            <td>
+                                @asset.FinalStatus
+                            </td>
+
+                            <td>@string.Format("{0:ddd, dd MMM hh:mm tt}", asset.FinalStatusDt)</td>
+
+
+                            <td>@asset.Type</td>
+                            <td>@asset.Category</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(asset.SelectedImageLink))
+                                {
+                                    <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID,linkType = "Source",sourcefile = asset.SelectedImageLink })" target="_blank" title="Click to open SelectedImageLink" data-toggle="tooltip">@asset.ProjectID</a>
+                                }
+                                else
+                                {
+
+                                }
+                            </td>
+
+                            <td>
+                                @if (!string.IsNullOrEmpty(asset.PRILink))
+                                {
+                                    <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID,linkType = "PRI" })" target="_blank" title="Click to open PRILink" data-toggle="tooltip">@asset.ProjectID</a>
+                                }
+                                else
+                                {
+
+                                }
+                            </td>
+
+                            <td>
+                                @if (!string.IsNullOrEmpty(asset.SCA1))
+                                {
+                                    <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID,linkType = "PDF1" })" target="_blank" title="Click to open SCA1Link" data-toggle="tooltip">@asset.ProjectID</a>
+                                }
+                                else
+                                {
+
+                                }
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(asset.SCA2))
+                                {
+                                    <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID,linkType = "PDF2" })" target="_blank" title="Click to open SCA2Link" data-toggle="tooltip">@asset.ProjectID</a>
+                                }
+                                else
+                                {
+
+                                }
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(asset.SCA3))
+                                {
+                                    <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID,linkType = "PDF3" })" target="_blank" title="Click to open SCA3Link" data-toggle="tooltip">@asset.ProjectID</a>
+                                }
+                                else
+                                {
+
+                                }
+                            </td>
+
+                            <td>
+                                @if (!string.IsNullOrEmpty(asset.ImageFileName1))
+                                {
+                                    <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID,linkType = "img1",sourcefile = asset.ImageFileName1 })" target="_blank" title="Click to open Imagefile1" data-toggle="tooltip">@asset.ProjectID</a>
+                                }
+                                else
+                                {
+
+                                }
+                            </td>
+
+                            <td>
+                                @if (!string.IsNullOrEmpty(asset.ImageFileName2))
+                                {
+                                    <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID,linkType = "img2",sourcefile = asset.ImageFileName2 })" target="_blank" title="Click to open Imagefile2" data-toggle="tooltip">@asset.ProjectID</a>
+                                }
+                                else
+                                {
+
+                                }
+                            </td>
+
+                            <td>
+                                @if (!string.IsNullOrEmpty(asset.ImageFileName3))
+                                {
+                                    <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID,linkType = "img3",sourcefile = asset.ImageFileName3 })" target="_blank" title="Click to open Imagefile3" data-toggle="tooltip">@asset.ProjectID</a>
+                                }
+                                else
+                                {
+
+                                }
+                            </td>
 
 
 
+                            <td>
+                                @asset.SIOption
+                            </td>
+                            <td>
+                                <button id="previewButton" class="btn btn-primary btn-sm" onclick="launchPreview(@asset.ProjectID)">Preview &gt;&gt;</button>
+                            </td>
+                            <td>@asset.Site</td>
+                            <td>@asset.Customer</td>
+                            <td>@asset.FeedBack</td>
+                            <td>@asset.CC</td>
+                            <td>@asset.DuplicateOf</td>
+                            <td>@asset.Priority</td>
+                            <td>@asset.NexGenDealer</td>
+                        </tr>
 
-        <script>
+
+
+                    }
+                </tbody>
+            </table>
+
+            <div class="text-center">
+                Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+                @Html.PagedListPager(Model, page => Url.Action("Index", new { page, Fdate = ViewBag.Fdate, ProjectId = ViewBag.ProjectId }))
+            </div>
+
+            <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+            <script>
 
             $(document).ready(function () {
                 // Assuming you have a date in ViewBag named Fdate
@@ -226,7 +268,8 @@
     var projectIdFromViewBag = '@ViewBag.ProjectId';
 
     document.getElementById("searchtxt").value = projectIdFromViewBag;
-});
+            });
+
 
             $("#btnSubmit").click(function () {
                 var pid = $("#searchtxt").val();
@@ -238,7 +281,9 @@
             /*Click event for the Clear button*/
             $("#btnClear").click(function () {
                 /* Clear the search input*/
-                    $("#searchtxt").val("");
+                $("#searchtxt").val("");
+                $("#searchtxt1").val("");
+                $("#searchtxt2").val("");
                var url = "@Url.Action("Index", "AllLevelQueueBoard")";
              window.location.href = url;
                });
@@ -258,9 +303,88 @@
 
              // Open the URL in a new tab
              window.open(url, '_blank');
-    }
+            }
 
-        </script>
+            $(document).ready(function () {
+                $("#btnCompare").click(function () {
+                    var ProjectID1 = $("#searchtxt1").val();
+                    var ProjectID2 = $("#searchtxt2").val();
+                    var sourceType1 = $("#dropdownSelect1").val();
+                    var sourceType2 = $("#dropdownSelect2").val();
 
+                    // Check if both project IDs are entered
+                    if (ProjectID1 && ProjectID2) {
+                        $.ajax({
+                            type: "GET",
+                            @*url: "@Url.Action("AllLevelQueueBoard", "Getsourceid")",*@
+                            url: "@Url.Action("Getsourceid","AllLevelQueueBoard")",
+                           
+                            data: { ProjectID1: ProjectID1, ProjectID2: ProjectID2, Type1: sourceType1, Type2: sourceType2 },
+                            success: function (data) {
+                                /*  alert('test1');*/
+                                if (data.length < 1) {
+                                    alert("Kindly Check the ProjectID...");
+                                } else {
+           /* alert('test2');*/
+                                    var p1 = data[0].ProjectID1;
+                                    var p2 = data[0].ProjectID2;
+                                /*    alert(p1);*/
+                                    var imageUrl1, imageUrl2;
+
+                                    //alert('test4');
+                                    //alert(sourceType1);
+                                       @*<div>Project ID: @ViewBag.pid</div>*@
+                                if (sourceType1 == "SI") {
+                                    imageUrl1 = "https://colourmyspace.co.in/MyVizCollections/AllLevelQueueBoard/DisplayImage?ProjectID=" + ProjectID1 + "&linkType=Source&sourcefile=" + p1;
+                                } else if (sourceType1 === "Image1") {
+                                    imageUrl1 = "https://colourmyspace.co.in/MyVizCollections/AllLevelQueueBoard/DisplayImage?ProjectID=" + ProjectID1 + "&linkType=img1&sourcefile=" + p1;
+                                } else if (sourceType1 === "Image2") {
+                                    imageUrl1 = "https://colourmyspace.co.in/MyVizCollections/AllLevelQueueBoard/DisplayImage?ProjectID=" + ProjectID1 + "&linkType=img2&sourcefile=" + p1;
+                                } else if (sourceType1 === "Image3") {
+                                    imageUrl1 = "https://colourmyspace.co.in/MyVizCollections/AllLevelQueueBoard/DisplayImage?ProjectID=" + ProjectID1 + "&linkType=img3&sourcefile=" + p1;
+
+                                } else if (sourceType1 === "PRI") {
+                                    imageUrl1 = "https://colourmyspace.co.in/MyVizCollections/AllLevelQueueBoard/DisplayImage?ProjectID=" + ProjectID1 + "&linkType=PRI";
+                                }
+
+
+                                    if (sourceType2 === "SI") {
+                                        imageUrl2 = "https://colourmyspace.co.in/MyVizCollections/AllLevelQueueBoard/DisplayImage?ProjectID=" + ProjectID2 + "&linkType=Source&sourcefile=" + p2;
+                                    } else if (sourceType2 === "Image1") {
+                                        imageUrl2 = "https://colourmyspace.co.in/MyVizCollections/AllLevelQueueBoard/DisplayImage?ProjectID=" + ProjectID2 + "&linkType=img1&sourcefile=" + p2;
+                                    } else if (sourceType2 === "Image2") {
+                                        imageUrl2 = "https://colourmyspace.co.in/MyVizCollections/AllLevelQueueBoard/DisplayImage?ProjectID=" + ProjectID2 + "&linkType=img2&sourcefile=" + p2;
+                                    } else if (sourceType2 === "Image3") {
+                                        imageUrl2 = "https://colourmyspace.co.in/MyVizCollections/AllLevelQueueBoard/DisplayImage?ProjectID=" + ProjectID2 + "&linkType=img3&sourcefile=" + p2;
+
+                                    }
+                                    else if (sourceType2 === "PRI") {
+                                        imageUrl2 = "https://colourmyspace.co.in/MyVizCollections/AllLevelQueueBoard/DisplayImage?ProjectID=" + ProjectID2 + "&linkType=PRI";
+                                    }
+                                    // Open a new window to display the images
+                                    var newWindow = window.open();
+
+                                    newWindow.document.write("<html><head><style>html, body { margin: 0; height: 100%; overflow: hidden; } body { display: flex; justify-content: center; align-items: center; } .image-container { display: flex; flex-direction: column; justify-content: center; align-items: center; width: 50%; height: 100%; box-sizing: border-box; text-align: center; padding: 0 5px; } .project-id { display: block; margin-bottom: 5px; font-weight: bold;font-family:arial; }.source-type{font-weight: bold;font-family:arial;} img { max-width: 100%; max-height: 100%; }</style></head><body><div class='image-container'><span class='project-id'>Project ID: " + ProjectID1 + "</span><span class='source-type'> " + sourceType1 + "</span><img src='" + imageUrl1 + "' alt='Image 1' style='height: 90%;'></div><div class='image-container'><span class='project-id'>Project ID: " + ProjectID2 + "</span><span class='source-type'> " + sourceType2 + "</span><img src='" + imageUrl2 + "' alt='Image 2' style='height: 90%;'></div></body></html>");
+
+
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                alert("An error occurred while fetching project data. Kindly Check the Project IDs.");
+                            }
+                        });
+                    } else {
+                        alert("Please enter both Project IDs.");
+                    }
+                });
+            });
+
+
+
+
+
+            </script>
+
+        </div>
     </div>
-</div>
+

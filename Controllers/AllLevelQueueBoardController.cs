@@ -19,14 +19,14 @@ namespace MyVizCollections.Controllers
 {
     public class AllLevelQueueBoardController : Controller
     {
-        public ActionResult Index(int? page ,string Fdate,string ProjectId)
+        public ActionResult Index(int? page, string Fdate, string ProjectId)
         {
             string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
 
             try
             {
 
-                if(Fdate == null)
+                if (Fdate == null)
                 {
                     Fdate = DateTime.Now.ToString("yyyy-MM-dd");
                 }
@@ -62,10 +62,17 @@ namespace MyVizCollections.Controllers
                                     SCA1 = rdr["SCA1 Link"].ToString(),
                                     SCA2 = rdr["SCA2 Link"].ToString(),
                                     SCA3 = rdr["SCA3 Link"].ToString(),
-                                    SIOption=rdr["SIOption"].ToString(),
+                                    SIOption = rdr["SIOption"].ToString(),
                                     ImageFileName1 = rdr["ImageFileName1"].ToString(),
                                     ImageFileName2 = rdr["ImageFileName2"].ToString(),
                                     ImageFileName3 = rdr["ImageFileName3"].ToString(),
+                                    Site = rdr["Site"].ToString(),
+                                    Customer = rdr["Customer"].ToString(),
+                                    FeedBack= rdr["FeedBack"].ToString(),
+                                    CC= rdr["CC"].ToString(),
+                                    DuplicateOf=rdr["DuplicateOf"].ToString(),
+                                    Priority = rdr["Priority"].ToString(),
+                                    NexGenDealer = rdr["NexGenDealer"].ToString(),
 
                                 };
 
@@ -78,7 +85,7 @@ namespace MyVizCollections.Controllers
                         int pageSize = 10; // Adjust the page size as needed
                         int pageNumber = (page ?? 1);
                         //ViewBag.Fdate = DateTime.Now.ToString("yyyy-MM-dd");
-                        ViewBag.Fdate =Fdate;
+                        ViewBag.Fdate = Fdate;
                         ViewBag.ProjectId = ProjectId;
                         return View(projects.ToPagedList(pageNumber, pageSize));
                     }
@@ -117,22 +124,22 @@ namespace MyVizCollections.Controllers
                 {
                     ProjectID = Convert.ToInt32(ds.Tables[0].Rows[0]["ProjectID"]),
                     ProjectName = Convert.ToString(ds.Tables[0].Rows[0]["ProjectName"]),
-                    NeroliteID = Convert.ToString(ds.Tables[0].Rows[0]["UserID"]),
-                    Feedback = Convert.ToString(ds.Tables[0].Rows[0]["Feedback"]),
+                    UserID = Convert.ToString(ds.Tables[0].Rows[0]["UserID"]),
+
                     InsyComments = Convert.ToString(ds.Tables[0].Rows[0]["InSyComments"]),
                     Resolution = Convert.ToString(ds.Tables[0].Rows[0]["Resolution"]),
                     Size = Convert.ToString(ds.Tables[0].Rows[0]["FileSize"]),
                     caseID = Convert.ToString(ds.Tables[0].Rows[0]["CaseID"]),
-                   
+                    Options = Convert.ToString(ds.Tables[0].Rows[0]["IorEorMS"]),
                     remarks = Convert.ToString(ds.Tables[0].Rows[0]["Remarks"]),
 
                     statuscode = Convert.ToString(ds.Tables[0].Rows[0]["wstatus"]),
-                    
+
                     Priority = Convert.ToString(ds.Tables[0].Rows[0]["Priority"]) == "Y" ? "Yes" : "No",
-                    
+
                     PSE = Convert.ToString(ds.Tables[0].Rows[0]["whoistheL6PSE"]),
                     QACPI = Convert.ToString(ds.Tables[0].Rows[0]["WhoistheL7QACPI"]),
-                   
+
 
 
                 };
@@ -160,6 +167,60 @@ namespace MyVizCollections.Controllers
                 //ProjectDetails.ExceptionLogging.SendErrorToText(ex);
                 return null;
             }
+        }
+        public ActionResult Getsourceid(string ProjectID1, string ProjectID2, string Type1, string Type2)
+        {
+            try
+            {
+
+                string constr = "";
+                constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
+                MySqlConnection cn = new MySqlConnection(constr);
+
+                cn.Open();
+                DataSet ds = new DataSet();
+                MySqlCommand cmd = new MySqlCommand("SP_GetSourceimage", cn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@P_ID1", ProjectID1);
+                cmd.Parameters.AddWithValue("@P_ID2", ProjectID2);
+                cmd.Parameters.AddWithValue("@Stype1", Type1);
+                cmd.Parameters.AddWithValue("@Stype2", Type2);
+
+                MySqlDataAdapter ad = new MySqlDataAdapter(cmd);
+                ad.Fill(ds);
+                string source1 = null;
+                string source2 = null;
+
+
+
+
+                string pid1 = ds.Tables[0].Rows[0][0].ToString();
+                string pid2 = ds.Tables[1].Rows[0][0].ToString();
+                List<Getsourceimage> projects = new List<Getsourceimage>();
+                List<string> sources = new List<string>();
+                sources.Add(source1);
+                sources.Add(source2);
+                Getsourceimage project = new Getsourceimage
+                {
+
+                    ProjectID1 = pid1,
+                    ProjectID2 = pid2,
+
+
+                };
+
+                projects.Add(project);
+
+
+
+                return Json(projects, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+
         }
         public ActionResult DisplayImage(int ProjectID, string linkType, string sourcefile)
         {

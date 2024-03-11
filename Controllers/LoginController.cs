@@ -22,8 +22,13 @@ namespace MyVizCollections.Controllers
             // Hardcoded user for demonstration purposes
             if (user.Username == "Insyadmin" && user.Password == "admin@2#4")
             {
-                // Authentication successful
+                // Authentication successful for Insyadmin
                 return RedirectToAction("Index", "AllLevelQueueBoard");
+            }
+            else if (user.Username == "CAIadmin" && user.Password == "admin@2#4")
+            {
+                // Authentication successful for CAIadmin
+                return RedirectToAction("Index", "ColourAI");
             }
             else
             {
@@ -32,7 +37,6 @@ namespace MyVizCollections.Controllers
                 return View();
             }
         }
-
         public ActionResult Logout()
         {
             try

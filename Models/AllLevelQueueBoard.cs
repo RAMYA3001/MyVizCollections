@@ -24,9 +24,18 @@ namespace MyVizCollections.Models
         public string Preview { get; set; }
 
         public string SIOption { get; set; }
-        
+
         public string ImageFileName1 { get; set; }
         public string ImageFileName2 { get; set; }
         public string ImageFileName3 { get; set; }
+        public string Site { get; set; }
+        public string Customer { get; set; }
+        public string FeedBack { get; set; }
+        public string CC { get; set; }
+        public string DuplicateOf { get; set; }
+        public string NexGenDealer { get; set; }
+
+        public string Priority { get; set; }
+
     }
 }

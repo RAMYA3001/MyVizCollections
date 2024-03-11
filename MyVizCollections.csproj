@@ -193,6 +193,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\ColourAIController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AllLevelQueueBoardController.cs" />
@@ -201,6 +202,8 @@
     </Compile>
     <Compile Include="GridPaging.cs" />
     <Compile Include="Models\AllLevelQueueBoard.cs" />
+    <Compile Include="Models\ColourAI.cs" />
+    <Compile Include="Models\Getsourceimage.cs" />
     <Compile Include="Models\ProjectDetails.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -290,6 +293,9 @@
     <Content Include="Views\Shared\_LayoutPage1.cshtml" />
     <Content Include="Views\Shared\_LayoutPage3.cshtml" />
     <Content Include="Views\Login\Index.cshtml" />
+    <Content Include="Views\ColourAI\Index.cshtml" />
+    <Content Include="Views\ColourAI\myModal.cshtml" />
+    <Content Include="Views\ColourAI\PopularShades.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

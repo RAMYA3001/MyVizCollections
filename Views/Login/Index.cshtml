@@ -13,18 +13,28 @@
     <title>MyVizCollections</title>
   
     <style>
+       
         body {
-            background-color: #f4f4f4;
+         /*   background-image: url(../Images/colors_image.jpg);*/
+            background-repeat: no-repeat;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            height: 100%; /* Add this line to set the height of body to 100% */
         }
 
+        html {
+            height: 100%; /* Add this line to set the height of html to 100% */
+        }
         .login-container {
             width: 300px;
             margin: auto;
             margin-top: 100px;
-            background-color: #fff;
+            background-color: #375b91;
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            font-family: inherit;
         }
 
         .form-group {
@@ -34,6 +44,7 @@
         .control-label {
             display: block;
             margin-bottom: 5px;
+            font-weight: bold;
         }
 
         .form-control {
@@ -44,10 +55,9 @@
             border-radius: 3px;
         }
 
-
         .btn-primary {
-            background-color: #337ab7;
-            color: #fff;
+            background-color: #FFC312;
+            color: black;
             border: none;
             font-size: 15px; /* Adjust the font-size as needed */
             padding: 7px 7px; /* Adjust the padding as needed */
@@ -56,7 +66,7 @@
 
 
             .btn-primary:hover {
-                background-color: #0056b3;
+                background-color: white;
             }
 
         .text-danger {
@@ -69,8 +79,8 @@
 <body>
     
     <div class="login-container">
-        <h2 style="text-align: center;">MyVizCollections</h2>
-        <h3 style="text-align:center;">Login</h3>
+        <h2 style="text-align: center;color:white;font-family:inherit;">MyVizCollections</h2>
+        <h3 style="text-align: center; color: white; font-family: inherit; ">Login</h3>
 
         @using (Html.BeginForm("Index", "Login", FormMethod.Post))
         {
@@ -79,13 +89,13 @@
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
             <div class="form-group">
-                @Html.LabelFor(model => model.Username, htmlAttributes: new { @class = "control-label" })
+                @Html.LabelFor(model => model.Username, htmlAttributes: new { @class = "control-label",style = "color: white;" })
                 @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label" })
+                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label", style = "color: white;" })
                 @Html.PasswordFor(model => model.Password, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
             </div>
