@@ -18,7 +18,7 @@ namespace MyVizCollections.Models
         public string Feedback { get; set; }
         public string NeroliteName { get; set; }
         public string Depot { get; set; }
-        public string Depotname { get; set; }
+        public string DepotName { get; set; }
         public string ProjectCategory { get; set; }
 
         public string NeroliteNo { get; set; }
@@ -34,9 +34,10 @@ namespace MyVizCollections.Models
 
         public string SpecialRequest { get; set; }
         public string InsyComments { get; set; }
-
-
-
+        public string SiteAddress { get; set; }
+        public string UserName { get; set; }
+        public string Location { get; set; }
+        public string CustomerName { get; set; }
         public string remarks { get; set; }
         public string statuscode { get; set; }
 

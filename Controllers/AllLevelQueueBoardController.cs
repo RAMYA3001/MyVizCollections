@@ -14,12 +14,13 @@ using System.IO;
 using System.Web.UI.WebControls;
 using System.Web;
 using PagedList;
+using System.Globalization;
 
 namespace MyVizCollections.Controllers
 {
     public class AllLevelQueueBoardController : Controller
     {
-        public ActionResult Index(int? page, string Fdate, string ProjectId)
+        public ActionResult Index(int? page, string Fdate, string s1,string s2)
         {
             string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
 
@@ -32,12 +33,14 @@ namespace MyVizCollections.Controllers
                 }
                 using (MySqlConnection con = new MySqlConnection(constr))
                 {
-                    using (MySqlCommand cmd = new MySqlCommand("SP_ProjectQueueBoard", con))
+                    using (MySqlCommand cmd = new MySqlCommand("SP_searchkeydropdown", con))
                     {
+                        cmd.CommandTimeout = 1600;
+                       
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@From_date", Fdate);
-                        cmd.Parameters.AddWithValue("@P_ID", ProjectId);
-
+                        cmd.Parameters.AddWithValue("@S_ID", s1);
+                        cmd.Parameters.AddWithValue("@type1", s2);
                         con.Open();
 
                         List<AllLevelQueueBoard> projects = new List<AllLevelQueueBoard>();
@@ -86,7 +89,9 @@ namespace MyVizCollections.Controllers
                         int pageNumber = (page ?? 1);
                         //ViewBag.Fdate = DateTime.Now.ToString("yyyy-MM-dd");
                         ViewBag.Fdate = Fdate;
-                        ViewBag.ProjectId = ProjectId;
+                        ViewBag.s1 = s1;
+                        ViewBag.s2 = s2;
+
                         return View(projects.ToPagedList(pageNumber, pageSize));
                     }
                 }
@@ -178,8 +183,9 @@ namespace MyVizCollections.Controllers
                 MySqlConnection cn = new MySqlConnection(constr);
 
                 cn.Open();
-                DataSet ds = new DataSet();
+                DataSet ds = new DataSet(); 
                 MySqlCommand cmd = new MySqlCommand("SP_GetSourceimage", cn);
+                cmd.CommandTimeout = 1600;
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@P_ID1", ProjectID1);
                 cmd.Parameters.AddWithValue("@P_ID2", ProjectID2);
@@ -221,6 +227,154 @@ namespace MyVizCollections.Controllers
             }
 
 
+        }
+
+        public ActionResult ResolutionCheck(int? page, string Sdate, string Edate, string t1)
+        {
+            string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
+
+            try
+            {
+                if (Sdate == null || Edate == null)
+                {
+                    // Set default values to current date
+                    DateTime currentDate = DateTime.Now;
+                    Sdate = currentDate.ToString("yyyy-MM-dd");
+                    Edate = currentDate.ToString("yyyy-MM-dd");
+                }
+                string formattedStartDate = Convert.ToDateTime(Sdate).ToString("dd-MM-yyyy");
+                string formattedEndDate = Convert.ToDateTime(Edate).ToString("dd-MM-yyyy");
+
+                using (MySqlConnection con = new MySqlConnection(constr))
+                {
+                    using (MySqlCommand cmd = new MySqlCommand("SP_ResolutionCheckData", con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.CommandTimeout = 1600;
+                        cmd.Parameters.AddWithValue("@From_Date", Convert.ToDateTime(Sdate));
+                        cmd.Parameters.AddWithValue("@To_Date", Convert.ToDateTime(Edate));
+                        //cmd.Parameters.AddWithValue("@Res", t1);
+                        cmd.Parameters.AddWithValue("@type1", t1);
+
+                        con.Open();
+
+                        List<ResolutionCheck> projects = new List<ResolutionCheck>();
+
+                        using (MySqlDataReader rdr = cmd.ExecuteReader())
+                        {
+                            while (rdr.Read())
+                            {
+                                ResolutionCheck project = new ResolutionCheck
+                                {
+                                    ProjectID = rdr["ProjectID"] != DBNull.Value ? Convert.ToInt32(rdr["ProjectID"]) : 0,
+                                    TSO = rdr["TSO"].ToString(),
+                                    C_Date = Convert.ToDateTime(rdr["C_Date"]),
+                                    FileSize1 = rdr["FileSize1"].ToString(),
+                                    FileSize2 = rdr["FileSize2"].ToString(),
+                                    FileSize3 = rdr["FileSize3"].ToString(),
+                                    Res11 = rdr["Res11"].ToString(),
+                                    Res12 = rdr["Res12"].ToString(),
+                                    Res11_12 = rdr["Res11_12"].ToString(),
+                                    Res21 = rdr["Res21"].ToString(),
+                                    Res22 = rdr["Res22"].ToString(),
+                                    Res21_22 = rdr["Res21_22"].ToString(),
+                                    Res31 = rdr["Res31"].ToString(),
+                                    Res32 = rdr["Res32"].ToString(),
+                                    Res31_32 = rdr["Res31_32"].ToString(),
+                                    SIOption = rdr["SIOption"].ToString(),
+                                    Status = rdr["Status"].ToString(),
+                                    Remarksforrejections = rdr["Remarksforrejections"].ToString()
+                                };
+
+                                projects.Add(project);
+                            }
+                        }
+
+                        con.Close();
+
+                        int pageSize = 10; // Adjust the page size as needed
+                        int pageNumber = (page ?? 1);
+                        ViewBag.Sdate = formattedStartDate;
+                        ViewBag.Edate = formattedEndDate;
+                        ViewBag.t1 = t1; // Ensure t1 is properly passed to ViewBag
+                        /*    ViewBag.t2 = t2; */// Ensure t2 is properly passed to ViewBag
+
+                        return View(projects.ToPagedList(pageNumber, pageSize));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception
+                throw;
+            }
+        }
+
+
+
+
+        public ActionResult ResolutionModal(int projectid)
+
+        {
+            string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
+            MySqlConnection con = new MySqlConnection(constr);
+            try
+            {
+                DataSet ds = new DataSet();
+
+                MySqlCommand com = new MySqlCommand("SP_Resolution_ProjDetails", con);
+                com.CommandTimeout = 1600;
+                com.CommandType = CommandType.StoredProcedure;
+                com.Parameters.AddWithValue("@Mode", 1);
+                com.Parameters.AddWithValue("@ProjectID", projectid);
+                con.Close();
+
+                con.Open();
+                com.ExecuteNonQuery();
+                MySqlDataAdapter ad = new MySqlDataAdapter(com);
+                ad.Fill(ds);
+                var colorchoices = ds.Tables[0].AsEnumerable();
+
+                ProjectDetails model = new ProjectDetails()
+                {
+                    ProjectID = Convert.ToInt32(ds.Tables[0].Rows[0]["ProjectID"]),
+                    ProjectName = Convert.ToString(ds.Tables[0].Rows[0]["ProjectName"]),
+                    UserID = Convert.ToString(ds.Tables[0].Rows[0]["UserID"]),
+                    UserName = Convert.ToString(ds.Tables[0].Rows[0]["UserName"]),
+                 DepotName = Convert.ToString(ds.Tables[0].Rows[0]["DepotName"]),
+                    SiteAddress = Convert.ToString(ds.Tables[0].Rows[0]["SiteAddress"]),
+                    Location = Convert.ToString(ds.Tables[0].Rows[0]["Location"]),
+                    CustomerName = Convert.ToString(ds.Tables[0].Rows[0]["CustomerName"]),
+                    remarks = Convert.ToString(ds.Tables[0].Rows[0]["Remarks"]),
+                    statuscode = Convert.ToString(ds.Tables[0].Rows[0]["wstatus"]),
+                    InsyComments = Convert.ToString(ds.Tables[0].Rows[0]["InSyComments"]),
+                    Resolution = Convert.ToString(ds.Tables[0].Rows[0]["Resolution"]),
+
+
+                    PSE = Convert.ToString(ds.Tables[0].Rows[0]["whoistheL6PSE"]),
+                    QACPI = Convert.ToString(ds.Tables[0].Rows[0]["WhoistheL7QACPI"]),
+
+
+
+
+
+
+               
+            };
+
+                con.Close();
+                return View(model);
+
+            }
+            catch (Exception ex)
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                //ProjectDetails.ExceptionLogging.SendErrorToText(ex);
+                return null;
+            }
         }
         public ActionResult DisplayImage(int ProjectID, string linkType, string sourcefile)
         {
@@ -329,6 +483,7 @@ namespace MyVizCollections.Controllers
             {
                 DataSet ds = new DataSet();
                 MySqlCommand com = new MySqlCommand("Sp_InsertWstatusLog", con);
+                com.CommandTimeout = 1600;
                 com.CommandType = CommandType.StoredProcedure;
                 com.Parameters.AddWithValue("@ProjectID", Id);
                 com.Parameters.AddWithValue("@TSOID", userid);

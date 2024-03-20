@@ -1,0 +1,223 @@
+﻿@model PagedList.IPagedList<MyVizCollections.Models.ResolutionCheck>
+@using PagedList.Mvc
+
+@{
+    ViewBag.Title = "ResolutionCheck - Projects in progress";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string currentFilter = ViewBag.CurrentFilter;
+    string currentSort = ViewBag.CurrentSort;
+    string Cdate = ViewBag.Sdate;
+    string Ddate = ViewBag.Edate;
+    string val1 = ViewBag.t1;
+    //string val2 = ViewBag.t2;
+}
+<style>
+    #myprogressBar {
+        width: 1%;
+        height: 35px;
+        background-color: #4CAF50;
+        text-align: center;
+        line-height: 32px;
+        color: black;
+    }
+</style>
+<link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+
+<div class="row" style="margin-top: 20px; margin-bottom:10px;margin-left:-191px">
+    <div class="col-md-6" style="width:100%;">
+        <form class="form-inline" autocomplete="off">
+            <div class="form-group">
+                <label for="example-datepicker" style="margin-left:220px;">From:</label>
+                <input type="text" id="txtStartDate" value="@ViewBag.searchQuery5" name="Fdate" class="datepicker form-control" style="color:black;width:110px" />
+
+                <label for="example-datepicker" style="margin-left:15px;">To:</label>
+                <input type="text" id="txtEndDate" value="@ViewBag.searchQuery6" name="Ldate" title="You can search for seven days at a time from the given 'From Date'" class="datepicker form-control" style="color:black;width:110px" />
+
+                @*<button type="button" class="btn btn-primary" id="btnFilterDateRange" style="height: 32px; margin: 2px;margin-right:10px">Get</button>
+            </div>*@
+
+            <label for="pid2" style="margin-left: 9px; margin-top: 11px;">
+                Resolution:
+            </label>
+            @*<input type="text" id="searchtxt1" class="search-text form-control" placeholder="Resolution" title="Enter Resolution to check" data-toggle="tooltip" style="width:110px;">*@
+
+            <select class="form-control" id="dropdownSelect" style="width:110px;">
+                <option value="equal">Equal</option>
+                <option value="above">above limit</option>
+                <option value="below">below limit</option>
+            </select>
+
+
+            <button type="button" class="btn btn-primary" id="btnsearch" onclick="getdata();" style="height: 30px; margin: 2px;">Search</button>
+
+            <button type="button" class="btn btn-primary" id="btnClear" >Clear</button>
+        </form>
+
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12" style="margin-left: 231px;color:red;">
+        @{
+            // Retrieve the maximum C_Date from the Model
+            var maxCDate = Model?.Max(item => item.C_Date);
+        }
+
+        @*@if (!string.IsNullOrEmpty(fromDate) && !string.IsNullOrEmpty(toDate))
+        {
+            <label>Date range up to: @fromDate - @toDate</label>
+        }*@
+
+        @if (maxCDate != null)
+        {
+            <label>(Maximum Date range upto: @maxCDate)</label>
+        }
+    </div>
+</div>
+
+
+<div id="progress" class="modal">
+    <div class="center" style="margin-left: 535px; margin-top: 300px;">
+    
+   
+        <img src="~/images/loader4.gif" />
+    </div>
+</div>
+<div class="panel panel-primary list-panel" id="list-panel" style="width:114%;margin-left:149px;">
+    <div class="panel-heading list-panel-heading">
+        <h1 class="panel-title list-panel-title">
+            ResolutionCheck
+        </h1>
+    </div>
+
+    <div class="container body-content" style="width: 1800px;"></div>
+    <div class="panel-body" style="width: 100%; overflow: auto;">
+        <table id="assets-data-table" class="table table-striped table-bordered" style="width: 100%; position: relative;">
+            <thead>
+                <tr>
+                    <th>ProjectID</th>
+                    <th>TSO</th>
+                    <th>C_Date</th>
+                    <th>FileSize1</th>
+                    <th>FileSize2</th>
+                    <th>FileSize3</th>
+                    <th>Res11</th>
+                    <th>Res12</th>
+                    <th>Res11_12</th>
+                    <th>Res21</th>
+                    <th>Res22</th>
+                    <th>Res21_22</th>
+                    <th>Res31</th>
+                    <th>Res32</th>
+                    <th>Res31_32</th>
+                    <th>SIOpt</th>
+                    <th>St</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var asset in Model)
+                {
+                    <tr>
+                        <td style="text-align-last:right">
+                            <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/ResolutionModal?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Project details, to update status" data-toggle="tooltip">@asset.ProjectID</a>
+                        </td>
+
+                        <td>@asset.TSO</td>
+                        <td>@asset.C_Date</td>
+                        <td>@asset.FileSize1</td>
+                        <td>@asset.FileSize2</td>
+                        <td>@asset.FileSize3</td>
+                        <td>@asset.Res11</td>
+                        <td>@asset.Res12</td>
+                        <td>@asset.Res11_12</td>
+                        <td>@asset.Res21</td>
+                        <td>@asset.Res22</td>
+                        <td>@asset.Res21_22</td>
+                        <td>@asset.Res31</td>
+                        <td>@asset.Res32</td>
+                        <td>@asset.Res31_32</td>
+                        <td>@asset.SIOption</td>
+                        <td>@asset.Status</td>
+                        <td>@asset.Remarksforrejections</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="text-center">
+            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+            @Html.PagedListPager(Model, page => Url.Action("ResolutionCheck", new { page, Sdate = ViewBag.Sdate, Edate = ViewBag.Edate,t1=ViewBag.t1 }))
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    <script type="text/javascript">
+
+        $(function () {
+            // Initialize datepickers
+            $("#txtStartDate").datepicker({
+                dateFormat: "dd-mm-yy"
+            });
+            $("#txtEndDate").datepicker({
+                dateFormat: "dd-mm-yy"
+            });
+
+            // Set default dates if they are available
+            var startDate = '@(ViewBag.Sdate)';
+            var endDate = '@(ViewBag.Edate)';
+            if (startDate !== '' && endDate !== '') {
+                $("#txtStartDate").datepicker("setDate", startDate);
+                $("#txtEndDate").datepicker("setDate", endDate);
+            }
+        });
+       
+        function getdata() {
+            $("#progress").show();
+            // Retrieve values from input fields
+            var pid1 = $("#dropdownSelect").val();
+            
+            var startDate = $("#txtStartDate").val();
+            var endDate = $("#txtEndDate").val();
+            alert('txtEndDate');
+            alert(dropdownSelect);
+            // Construct the URL using the values
+            var url = "@Url.Action("ResolutionCheck", "AllLevelQueueBoard")" + "?Sdate=" + startDate + "&Edate=" + endDate + "&t1=" + pid1;
+
+            // Redirect the user to the constructed URL
+            window.location.href = url;
+        }
+
+        $("#btnClear").click(function () {
+            $("#txtStartDate").val('');
+            $("#txtEndDate").val('');
+            $("#dropdownSelect").val('');
+            $("#searchtxt1").val('');
+            window.location.href = '@Url.Action("ResolutionCheck", "AllLevelQueueBoard")';
+        });
+
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
