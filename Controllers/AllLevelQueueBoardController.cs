@@ -228,7 +228,6 @@ namespace MyVizCollections.Controllers
 
 
         }
-
         public ActionResult ResolutionCheck(int? page, string Sdate, string Edate, string t1)
         {
             string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
@@ -253,13 +252,12 @@ namespace MyVizCollections.Controllers
                         cmd.CommandTimeout = 1600;
                         cmd.Parameters.AddWithValue("@From_Date", Convert.ToDateTime(Sdate));
                         cmd.Parameters.AddWithValue("@To_Date", Convert.ToDateTime(Edate));
-                        //cmd.Parameters.AddWithValue("@Res", t1);
                         cmd.Parameters.AddWithValue("@type1", t1);
 
                         con.Open();
 
+                        // Fetching data for the main query
                         List<ResolutionCheck> projects = new List<ResolutionCheck>();
-
                         using (MySqlDataReader rdr = cmd.ExecuteReader())
                         {
                             while (rdr.Read())
@@ -283,10 +281,29 @@ namespace MyVizCollections.Controllers
                                     Res31_32 = rdr["Res31_32"].ToString(),
                                     SIOption = rdr["SIOption"].ToString(),
                                     Status = rdr["Status"].ToString(),
-                                    Remarksforrejections = rdr["Remarksforrejections"].ToString()
+                                    Remarksforrejections = rdr["Remarksforrejections"].ToString(),
                                 };
 
                                 projects.Add(project);
+                            }
+                        }
+
+                        // Adding data from the additional query
+                        string additionalQuery = "select DATE_FORMAT(Date(C_Date),'%d-%m-%Y')As CDate FROM resolutioncheck ORDER BY C_Date DESC LIMIT 0,1";
+                        
+                        using (MySqlCommand additionalCmd = new MySqlCommand(additionalQuery, con))
+                        {
+                            using (MySqlDataReader additionalReader = additionalCmd.ExecuteReader())
+                            {
+                                while (additionalReader.Read())
+                                {
+
+                                    ViewBag.Lpcom = Convert.ToString(additionalReader["CDate"]);
+
+                                }
+
+
+
                             }
                         }
 
@@ -297,7 +314,6 @@ namespace MyVizCollections.Controllers
                         ViewBag.Sdate = formattedStartDate;
                         ViewBag.Edate = formattedEndDate;
                         ViewBag.t1 = t1; // Ensure t1 is properly passed to ViewBag
-                        /*    ViewBag.t2 = t2; */// Ensure t2 is properly passed to ViewBag
 
                         return View(projects.ToPagedList(pageNumber, pageSize));
                     }
@@ -309,7 +325,6 @@ namespace MyVizCollections.Controllers
                 throw;
             }
         }
-
 
 
 

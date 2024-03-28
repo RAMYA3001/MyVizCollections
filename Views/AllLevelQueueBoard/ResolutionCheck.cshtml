@@ -14,7 +14,7 @@
 <style>
     #myprogressBar {
         width: 1%;
-        height: 35px;
+        height: 20px;
         background-color: #4CAF50;
         text-align: center;
         line-height: 32px;
@@ -24,67 +24,75 @@
 <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
 
 <div class="row" style="margin-top: 20px; margin-bottom:10px;margin-left:-191px">
-    <div class="col-md-6" style="width:100%;">
+    <div class="col-md-3" style="width:100%;">
         <form class="form-inline" autocomplete="off">
             <div class="form-group">
-                <label for="example-datepicker" style="margin-left:220px;">From:</label>
+                <label for="example-datepicker" style="margin-left:113px;">From:</label>
                 <input type="text" id="txtStartDate" value="@ViewBag.searchQuery5" name="Fdate" class="datepicker form-control" style="color:black;width:110px" />
 
                 <label for="example-datepicker" style="margin-left:15px;">To:</label>
                 <input type="text" id="txtEndDate" value="@ViewBag.searchQuery6" name="Ldate" title="You can search for seven days at a time from the given 'From Date'" class="datepicker form-control" style="color:black;width:110px" />
 
                 @*<button type="button" class="btn btn-primary" id="btnFilterDateRange" style="height: 32px; margin: 2px;margin-right:10px">Get</button>
-            </div>*@
+                    </div>*@
 
-            <label for="pid2" style="margin-left: 9px; margin-top: 11px;">
-                Resolution:
-            </label>
-            @*<input type="text" id="searchtxt1" class="search-text form-control" placeholder="Resolution" title="Enter Resolution to check" data-toggle="tooltip" style="width:110px;">*@
+                <label for="pid2" style="margin-left: 9px; margin-top: 11px;">
+                    Resolution:
+                </label>
+                @*<input type="text" id="searchtxt1" class="search-text form-control" placeholder="Resolution" title="Enter Resolution to check" data-toggle="tooltip" style="width:110px;">*@
 
-            <select class="form-control" id="dropdownSelect" style="width:110px;">
-                <option value="equal">Equal</option>
-                <option value="above">above limit</option>
-                <option value="below">below limit</option>
-            </select>
+                <select class="form-control" id="dropdownSelect" style="width:127px;" title="RLimit is 7,00,000 Pixels">
+
+                    <option value="above">Above limit</option>
+                    <option value="below">Below limit</option>
+                </select>
 
 
-            <button type="button" class="btn btn-primary" id="btnsearch" onclick="getdata();" style="height: 30px; margin: 2px;">Search</button>
+                <button type="button" class="btn btn-primary" id="btnsearch" onclick="getdata();" style="height: 30px; margin: 2px;">Search</button>
 
-            <button type="button" class="btn btn-primary" id="btnClear" >Clear</button>
+                <button type="button" class="btn btn-primary" id="btnClear">Clear</button>
         </form>
 
     </div>
 </div>
 
-
 <div class="row">
-    <div class="col-md-12" style="margin-left: 231px;color:red;">
+    <div class="col-md-6" style="margin-left: 210px; margin-top: 11px; color: black;">
         @{
             // Retrieve the maximum C_Date from the Model
-            var maxCDate = Model?.Max(item => item.C_Date);
+
+            var formattedMaxCDate = ViewBag.Lpcom;
         }
 
-        @*@if (!string.IsNullOrEmpty(fromDate) && !string.IsNullOrEmpty(toDate))
+        @if (formattedMaxCDate != null)
         {
-            <label>Date range up to: @fromDate - @toDate</label>
-        }*@
-
-        @if (maxCDate != null)
-        {
-            <label>(Maximum Date range upto: @maxCDate)</label>
+            <label>Resolution values calculated upto  last preview completed on: @formattedMaxCDate</label>
         }
+        <br />
+
+        <div class="col-md-9" style="margin-left: 597px; color: black; margin-top: -69px;">
+            <b>
+                <span style="color: blue;">Recommended values for source images:</span>
+                <br />
+                Resolution less than 768 x 1024 do not get auto qualified.<br />
+
+                Any image with lower than 700,000 pixels is likely to be below the lower limit of 768 x 1024 Pixels.
+            </b>
+
+        </div>
     </div>
 </div>
+
 
 
 <div id="progress" class="modal">
     <div class="center" style="margin-left: 535px; margin-top: 300px;">
-    
-   
-        <img src="~/images/loader4.gif" />
+
+        <img src="/images/loader4.gif" style="width:80px !important">
     </div>
 </div>
-<div class="panel panel-primary list-panel" id="list-panel" style="width:114%;margin-left:149px;">
+<div class="panel panel-primary list-panel" id="list-panel" style="width: 114%; margin-left: 123px; margin-top: 8px; ">
+
     <div class="panel-heading list-panel-heading">
         <h1 class="panel-title list-panel-title">
             ResolutionCheck
@@ -148,7 +156,7 @@
 
         <div class="text-center">
             Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
-            @Html.PagedListPager(Model, page => Url.Action("ResolutionCheck", new { page, Sdate = ViewBag.Sdate, Edate = ViewBag.Edate,t1=ViewBag.t1 }))
+            @Html.PagedListPager(Model, page => Url.Action("ResolutionCheck", new { page, Sdate = ViewBag.Sdate, Edate = ViewBag.Edate, t1 = ViewBag.t1 }))
         </div>
 
     </div>
@@ -158,51 +166,67 @@
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
     <script type="text/javascript">
+$(function () {
+    // Initialize datepickers
+    $("#txtStartDate").datepicker({
+        dateFormat: "dd-mm-yy"
+    });
+    $("#txtEndDate").datepicker({
+        dateFormat: "dd-mm-yy"
+    });
 
-        $(function () {
-            // Initialize datepickers
-            $("#txtStartDate").datepicker({
-                dateFormat: "dd-mm-yy"
-            });
-            $("#txtEndDate").datepicker({
-                dateFormat: "dd-mm-yy"
-            });
+    // Set default dates if they are available
+    var startDate = '@(ViewBag.Sdate)';
+    var endDate = '@(ViewBag.Edate)';
 
-            // Set default dates if they are available
-            var startDate = '@(ViewBag.Sdate)';
-            var endDate = '@(ViewBag.Edate)';
-            if (startDate !== '' && endDate !== '') {
-                $("#txtStartDate").datepicker("setDate", startDate);
-                $("#txtEndDate").datepicker("setDate", endDate);
-            }
-        });
-       
-        function getdata() {
-            $("#progress").show();
-            // Retrieve values from input fields
-            var pid1 = $("#dropdownSelect").val();
-            
-            var startDate = $("#txtStartDate").val();
-            var endDate = $("#txtEndDate").val();
-            alert('txtEndDate');
-            alert(dropdownSelect);
-            // Construct the URL using the values
-            var url = "@Url.Action("ResolutionCheck", "AllLevelQueueBoard")" + "?Sdate=" + startDate + "&Edate=" + endDate + "&t1=" + pid1;
+    if (startDate !== '' && endDate !== '') {
+        $("#txtStartDate").datepicker("setDate", startDate);
+        $("#txtEndDate").datepicker("setDate", endDate);
+    }
 
-            // Redirect the user to the constructed URL
-            window.location.href = url;
-        }
+    // Set the dropdown value
+    var dropdownValue = '@(ViewBag.t1)';
+    if (dropdownValue !== '') {
+        $("#dropdownSelect").val(dropdownValue);
+    }
+});
 
-        $("#btnClear").click(function () {
-            $("#txtStartDate").val('');
-            $("#txtEndDate").val('');
-            $("#dropdownSelect").val('');
-            $("#searchtxt1").val('');
-            window.location.href = '@Url.Action("ResolutionCheck", "AllLevelQueueBoard")';
-        });
+function getdata() {
+    $("#progress").show();
+    // Retrieve values from input fields
+
+    var pid1 = $("#dropdownSelect").val();
+
+    var startDate = $("#txtStartDate").val();
+    var endDate = $("#txtEndDate").val();
+
+    // Construct the URL using the values
+    var url = "@Url.Action("ResolutionCheck", "AllLevelQueueBoard")" + "?Sdate=" + startDate + "&Edate=" + endDate + "&t1=" + pid1;
+
+    // Redirect the user to the constructed URL
+    window.location.href = url;
+}
+
+$("#btnClear").click(function () {
+    $("#txtStartDate").val('');
+    $("#txtEndDate").val('');
+    $("#dropdownSelect").val('');
+    /* $("#searchtxt1").val('');*/
+    window.location.href = '@Url.Action("ResolutionCheck", "AllLevelQueueBoard")';
+});
 
     </script>
 }
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -261,6 +261,8 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="images\colour-my-space-logo.jpg" />
+    <Content Include="images\CWLogo1.jpg" />
+    <Content Include="images\Innovatus Logo.png" />
     <Content Include="images\loader4.gif" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

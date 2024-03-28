@@ -10,9 +10,7 @@ namespace MyVizCollections.Models
     public class ProjectDetails
     {
         public int ProjectID { get; set; }
-
         public string ProjectName { get; set; }
-
         public string UserID { get; set; }
         public string IorEorMS { get; set; }
         public string Feedback { get; set; }
@@ -23,7 +21,6 @@ namespace MyVizCollections.Models
 
         public string NeroliteNo { get; set; }
         public string NeroliteEmail { get; set; }
-
         public string Options { get; set; }
 
         public string Resolution { get; set; }
@@ -48,7 +45,7 @@ namespace MyVizCollections.Models
 
         public string SIFilename { get; set; }
         public string Priority { get; set; }
-
+        //public string Max { get; set; }
         public string PSE { get; set; }
         public string QACPI { get; set; }
 

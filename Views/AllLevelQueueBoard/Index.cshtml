@@ -28,14 +28,12 @@
     }
     #myprogressBar {
         width: 1%;
-        height: 35px;
+        height: 20px;
         background-color: #4CAF50;
         text-align: center;
         line-height: 32px;
         color: black;
     }
-
-
     #datepicker {
         font-size: 14px; /* Adjust as needed */
         line-height: 1.8; /* Adjust as needed */
@@ -45,18 +43,19 @@
     Compare
 </label>
 
-<div style="border: 2px solid #337ab7; padding: 10px 10px; display: flex; align-items: center; width: 49%; margin-bottom: 24px;margin-left:-40px;">
+<div style=" padding: 10px 10px; display: flex; align-items: center; width: 49%; margin-bottom: 24px;margin-left:-40px;">
     <label for="example-datepicker" style="margin-right: 3px;">StDate:</label>
-    <input type="date" id="datepicker" value="" style="margin-right: 10px;">
+    <input type="date" id="datepicker" value="" style="margin-right: 3px;">
 
     <button type="submit" class="btn btn-primary" id="btnSubmit1" style="height: 30px; margin-right: 15px;">Submit</button>
 
     @*<span style="margin-right: 10px;">OR</span>*@
-<label for="search" style=" margin-top: 11px;">
+<label for="search" style=" margin-top: 11px;margin-left:-7px;margin-right:6px;">
     OR
 </label>
-<select class="form-control" id="dropdownSelect3" style="width: 104px; margin-right: 10px "title=" Search Key">
-    <option value="tso.ProjectID">ProjectID</option>
+<select class="form-control" id="dropdownSelect3" style="width: 104px; margin-right: 10px " title=" Search Key">
+    <option value="" selected disabled>Selected</option>
+    <option value="tso.ProjectID" selected>ProjectID</option>
     <option value="tso.UserID">TSO</option>
     <option value="tso.Wstatus">Status</option>
     <option value="pt.IorEorMS">Type</option>
@@ -73,13 +72,13 @@
 </div>
 
 
-<div class="form-group" style="border: 2px solid #337ab7; padding: 46px 14px; display: flex; justify-content: flex-start; margin-bottom: 3px; margin-top: -119px; margin-left:580px; width: 708px; height: 1px;">
+<div class="form-group" style="border: 2px solid #337ab7; padding: 41px 14px; display: flex; justify-content: flex-start; margin-bottom: 3px; margin-top: -119px; margin-left:580px; width: 708px; height: 1px;">
     <label for="pid1" style=" margin-top: 11px;">
         Project1:
     </label>
     <input type="text" name="q" class="search-text form-control" placeholder="ProjectID1" title="Enter ProjectID to Search" data-toggle="tooltip" id="searchtxt1">
     <select class="form-control" id="dropdownSelect1">
-        <option value="SI">Selected</option>
+        <option value="SI">SI</option>
         <option value="Image1">Source1</option>
         <option value="Image2">Source2</option>
         <option value="Image3">Source3</option>
@@ -90,31 +89,30 @@
     </label>
     <input type="text" name="q" class="search-text form-control" placeholder="ProjectID2" title="Enter ProjectID to Search" data-toggle="tooltip" id="searchtxt2">
     <select class="form-control" id="dropdownSelect2">
-        <option value="SI">Selected</option>
+        <option value="PRI">PRI</option>
+        <option value="SI">SI</option>
         <option value="Image1">Source1</option>
         <option value="Image2">Source2</option>
         <option value="Image3">Source3</option>
-        <option value="PRI">PRI</option>
+
     </select>
     <button type="submit" class="btn btn-primary" title="Compare two different image in one single screen" id="btnCompare" style="height: 30px; margin: 2px;">Match</button>
     <button type="submit" class="btn btn-primary" id="btnClear" style="height: 30px; margin: 2px;">Clear</button>
 
     <a href="@Url.Action("ResolutionCheck", "AllLevelQueueBoard")" target="_blank">
-        <input type="button" class="btn btn-primary" title=" Resolution Check in from date to date" value="Resolution" style="margin-left:6px" />
+        <input type="button" class="btn btn-primary"  value="Resolution" style="margin-left:6px" />
     </a>
 </div>
 <div class="panel panel-primary list-panel" id="list-panel" style="width:98%;margin-top:12px">
     <div class="panel-heading list-panel-heading">
         <h1 class="panel-title list-panel-title">DashBoard</h1>
     </div>
-
     <div id="progress" class="modal">
-        <div class="center">
-            <img src="~/images/loader4.gif" />
+        <div class="center" style="margin-left: 535px; margin-top: 300px;">
+
+            <img src="/images/loader4.gif" style="width:80px !important">
         </div>
     </div>
-
-
 
 
     <div class="container body-content" style="width: 1600px;"></div>
@@ -290,7 +288,8 @@
 
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-        <script>  
+        <script>
+
 
             $(document).ready(function () {
                 // Assuming you have a date in ViewBag named Fdate
@@ -303,12 +302,28 @@
                 document.getElementById("datepicker").valueAsDate = parsedDate;
             });
 
-             $(function () {
+            $(function () {
+               
     $("#dropdownSelect3").val('@ViewBag.s1');
-    $("#searchtxt").val('@ViewBag.s2');
-});
+                 $("#searchtxt").val('@ViewBag.s2');
+                 $("#searchtxt1").val('@ViewBag.s2');
+                 $("#searchtxt2").val('@ViewBag.s2');
+
+             });
+
+            // Replicate the value of #searchtxt to #searchtxt1 and #searchtxt2
+            $("#searchtxt").keyup(function () {
+                // Check if the dropdown value is "ProjectID"
+                if ($("#dropdownSelect3").val() === "tso.ProjectID") {
+                    var searchTextValue = $(this).val();
+                    $("#searchtxt1").val(searchTextValue);
+                    $("#searchtxt2").val(searchTextValue);
+                }
+            });
+
 
             $("#btnSubmit").click(function () {
+                $("#progress").show();
                 var pid = $("#dropdownSelect3").val();
                 var pid1 = $("#searchtxt").val();
                var url = "@Url.Action("Index", "AllLevelQueueBoard")" + "?s1=" + pid + "&s2=" + pid1;
@@ -359,20 +374,20 @@
 
                             data: { ProjectID1: ProjectID1, ProjectID2: ProjectID2, Type1: sourceType1, Type2: sourceType2 },
                             success: function (data) {
-                                /*  alert('test1');*/
+                               /*   alert('test1');*/
                                 if (data.length < 1) {
                                     alert("Kindly Check the ProjectID...");
                                 } else {
            /* alert('test2');*/
                                     var p1 = data[0].ProjectID1;
                                     var p2 = data[0].ProjectID2;
-                                /*    alert(p1);*/
+                                   /* alert(p1);*/
                                     var imageUrl1, imageUrl2;
 
-                                    //alert('test4');
+                                   /* alert('test4');*/
                                     //alert(sourceType1);
                                        @*<div>Project ID: @ViewBag.pid</div>*@
-                                if (sourceType1 == "SI") {
+                                    if (sourceType1 == "SI") {
                                     imageUrl1 = "https://colourmyspace.co.in/MyVizCollections/AllLevelQueueBoard/DisplayImage?ProjectID=" + ProjectID1 + "&linkType=Source&sourcefile=" + p1;
                                 } else if (sourceType1 === "Image1") {
                                     imageUrl1 = "https://colourmyspace.co.in/MyVizCollections/AllLevelQueueBoard/DisplayImage?ProjectID=" + ProjectID1 + "&linkType=img1&sourcefile=" + p1;
