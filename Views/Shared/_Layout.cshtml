@@ -43,18 +43,29 @@
                     </div>
 
                     @*<div class="col-md-4"><b>Last Login  :  @Session["LastLogin"].ToString()</b></div>*@
-                <div class="col-md-1">
-                    <b style="margin-left:-170px;">MyVizCollections</b>
-                </div>
-                    <div class="col-md-3">
-                        <b> @DateTime.Now.ToString("ddd, dd MMM yyy hh:mm:ss tt") </b>
+                    <div class="col-md-2">
+                        <b style="margin-left:-240px;">MyVizCollections</b>
                     </div>
                     <div class="col-md-1">
+                        <b style="margin-left:-270px;"> @DateTime.Now.ToString("ddd, dd MMM yyy hh:mm:ss tt") </b>
                     </div>
                     <div class="col-md-1">
+                        <a href="https://coloursgalore.com/ShadeCardViewNew" style="color:white" target="_blank">
+                            MyShades
+                        </a>
+                    </div>
+                    <div class="col-md-1">
+                        <a href="https://coloursgalore.com/ColourMatch/Login" style="color:white" target="_blank">
+                            ColourMatch
+                        </a>
+                    </div>
+                    <div class="col-md-1">
+                        <a href='@Url.Action("ResolutionCheck","AllLevelQueueBoard")' style="color:white" target="_blank">
+                            Resolution
+                        </a>
                     </div>
                     <div class="col-md-3">
-                        <a href='@Url.Action("Index","Login")' style="color:white">
+                        <a href='@Url.Action("Index","Login")' style="color:white;  margin-left: 200px;">
                             Logout
                         </a>
                     </div>

@@ -24,13 +24,13 @@
 <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
 
 <div class="row" style="margin-top: 20px; margin-bottom:10px;margin-left:-191px">
-    <div class="col-md-3" style="width:100%;">
+    <div class="col-md-3" style="width:100%;margin-top:-13px;">
         <form class="form-inline" autocomplete="off">
             <div class="form-group">
                 <label for="example-datepicker" style="margin-left:113px;">From:</label>
                 <input type="text" id="txtStartDate" value="@ViewBag.searchQuery5" name="Fdate" class="datepicker form-control" style="color:black;width:110px" />
 
-                <label for="example-datepicker" style="margin-left:15px;">To:</label>
+                <label for="example-datepicker" style="margin-left:3px;">To:</label>
                 <input type="text" id="txtEndDate" value="@ViewBag.searchQuery6" name="Ldate" title="You can search for seven days at a time from the given 'From Date'" class="datepicker form-control" style="color:black;width:110px" />
 
                 @*<button type="button" class="btn btn-primary" id="btnFilterDateRange" style="height: 32px; margin: 2px;margin-right:10px">Get</button>
@@ -71,14 +71,12 @@
         <br />
 
         <div class="col-md-9" style="margin-left: 597px; color: black; margin-top: -69px;">
-            <b>
+           
                 <span style="color: blue;">Recommended values for source images:</span>
                 <br />
                 Resolution less than 768 x 1024 do not get auto qualified.<br />
 
-                Any image with lower than 700,000 pixels is likely to be below the lower limit of 768 x 1024 Pixels.
-            </b>
-
+                Any image with lower than 700,000 pixels is likely to be below the lower limit of 768 x 1024 Pixels.          
         </div>
     </div>
 </div>
@@ -88,7 +86,7 @@
 <div id="progress" class="modal">
     <div class="center" style="margin-left: 535px; margin-top: 300px;">
 
-        <img src="/images/loader4.gif" style="width:80px !important">
+        <img src="~/images/loader4.gif" style="width:80px !important" />
     </div>
 </div>
 <div class="panel panel-primary list-panel" id="list-panel" style="width: 114%; margin-left: 123px; margin-top: 8px; ">

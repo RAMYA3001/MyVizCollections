@@ -2,8 +2,6 @@
 @using PagedList.Mvc
 
 
-
-
 @{
     ViewBag.Title = "QueueBoard - Projects in progress";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -54,8 +52,8 @@
     OR
 </label>
 <select class="form-control" id="dropdownSelect3" style="width: 104px; margin-right: 10px " title=" Search Key">
-    <option value="" selected disabled>Selected</option>
-    <option value="tso.ProjectID" selected>ProjectID</option>
+    @*<option value="" selected disabled>Selected</option>*@
+    <option value="tso.ProjectID">ProjectID</option>
     <option value="tso.UserID">TSO</option>
     <option value="tso.Wstatus">Status</option>
     <option value="pt.IorEorMS">Type</option>
@@ -99,9 +97,9 @@
     <button type="submit" class="btn btn-primary" title="Compare two different image in one single screen" id="btnCompare" style="height: 30px; margin: 2px;">Match</button>
     <button type="submit" class="btn btn-primary" id="btnClear" style="height: 30px; margin: 2px;">Clear</button>
 
-    <a href="@Url.Action("ResolutionCheck", "AllLevelQueueBoard")" target="_blank">
+    @*<a href="@Url.Action("ResolutionCheck", "AllLevelQueueBoard")" target="_blank">
         <input type="button" class="btn btn-primary"  value="Resolution" style="margin-left:6px" />
-    </a>
+    </a>*@
 </div>
 <div class="panel panel-primary list-panel" id="list-panel" style="width:98%;margin-top:12px">
     <div class="panel-heading list-panel-heading">
@@ -110,7 +108,7 @@
     <div id="progress" class="modal">
         <div class="center" style="margin-left: 535px; margin-top: 300px;">
 
-            <img src="/images/loader4.gif" style="width:80px !important">
+            <img src="~/images/loader4.gif" style="width:80px !important" />
         </div>
     </div>
 
@@ -162,13 +160,14 @@
                         <td>@asset.ProjectName</td>
 
                         <td>@String.Format("{0:ddd, dd MMM hh:mm tt}", asset.RegdOn)</td>
+                        @*<td>@(Convert.ToDateTime(asset.RegdOn).ToString("dd/MM/yy"))</td>*@
                         <td>@asset.RegdBy</td>
                         <td>
                             @asset.FinalStatus
                         </td>
 
                         <td>@string.Format("{0:ddd, dd MMM hh:mm tt}", asset.FinalStatusDt)</td>
-
+                        @*<td>@(Convert.ToDateTime(asset.FinalStatusDt).ToString("dd/MM/yy"))</td>*@
 
                         <td>@asset.Type</td>
                         <td>@asset.Category</td>
