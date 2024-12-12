@@ -15,32 +15,45 @@ using System.Web.UI.WebControls;
 using System.Web;
 using PagedList;
 using System.Globalization;
+using System.Diagnostics;
 
 namespace MyVizCollections.Controllers
 {
     public class AllLevelQueueBoardController : Controller
     {
-        public ActionResult Index(int? page, string Fdate, string s1,string s2)
+        public ActionResult Index(int? page, string Fdate, string s1, string s2)
         {
             string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
 
             try
             {
-
                 if (Fdate == null)
                 {
                     Fdate = DateTime.Now.ToString("yyyy-MM-dd");
                 }
+
+                // Retrieve category from session
+                string userCategory = Session["Category"]?.ToString();
+
+                // Determine imode based on user category
+                int imode = 1; // Default to 1
+                if (userCategory == "Staff")
+                {
+                    imode = 2; // Use imode 2 for staff
+                }
+
                 using (MySqlConnection con = new MySqlConnection(constr))
                 {
-                    using (MySqlCommand cmd = new MySqlCommand("SP_searchkeydropdown", con))
+                    using (MySqlCommand cmd = new MySqlCommand("SP_Myvizcollectionssearchkey", con))
                     {
                         cmd.CommandTimeout = 1600;
-                       
                         cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.AddWithValue("@From_date", Fdate);
+
+                        cmd.Parameters.AddWithValue("@From_Date", Fdate);
                         cmd.Parameters.AddWithValue("@S_ID", s1);
                         cmd.Parameters.AddWithValue("@type1", s2);
+                        cmd.Parameters.AddWithValue("@imode", imode); // Pass imode value
+
                         con.Open();
 
                         List<AllLevelQueueBoard> projects = new List<AllLevelQueueBoard>();
@@ -51,7 +64,6 @@ namespace MyVizCollections.Controllers
                             {
                                 AllLevelQueueBoard project = new AllLevelQueueBoard
                                 {
-
                                     ProjectID = rdr["ProjectID"] != DBNull.Value ? Convert.ToInt32(rdr["ProjectID"]) : 0,
                                     ProjectName = rdr["ProjectName"].ToString(),
                                     RegdOn = Convert.ToDateTime(rdr["RegdOn"]),
@@ -71,27 +83,25 @@ namespace MyVizCollections.Controllers
                                     ImageFileName3 = rdr["ImageFileName3"].ToString(),
                                     Site = rdr["Site"].ToString(),
                                     Customer = rdr["Customer"].ToString(),
-                                    FeedBack= rdr["FeedBack"].ToString(),
-                                    CC= rdr["CC"].ToString(),
-                                    DuplicateOf=rdr["DuplicateOf"].ToString(),
+                                    FeedBack = rdr["FeedBack"].ToString(),
+                                    CC = rdr["CC"].ToString(),
+                                    DuplicateOf = rdr["DuplicateOf"].ToString(),
                                     Priority = rdr["Priority"].ToString(),
                                     NexGenDealer = rdr["NexGenDealer"].ToString(),
-
                                 };
 
                                 projects.Add(project);
-
                             }
                         }
+
                         con.Close();
 
                         int pageSize = 10; // Adjust the page size as needed
                         int pageNumber = (page ?? 1);
-                        //ViewBag.Fdate = DateTime.Now.ToString("yyyy-MM-dd");
                         ViewBag.Fdate = Fdate;
                         ViewBag.s1 = s1;
                         ViewBag.s2 = s2;
-
+                        
                         return View(projects.ToPagedList(pageNumber, pageSize));
                     }
                 }
@@ -102,6 +112,93 @@ namespace MyVizCollections.Controllers
                 throw;
             }
         }
+
+
+
+        //public ActionResult Index(int? page, string Fdate, string s1, string s2)
+        //{
+        //    string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
+
+        //    try
+        //    {
+
+        //        if (Fdate == null)
+        //        {
+        //            Fdate = DateTime.Now.ToString("yyyy-MM-dd");
+        //        }
+        //        using (MySqlConnection con = new MySqlConnection(constr))
+        //        {
+        //            using (MySqlCommand cmd = new MySqlCommand("SP_searchkeydropdown", con))
+        //            {
+        //                cmd.CommandTimeout = 1600;
+
+        //                cmd.CommandType = CommandType.StoredProcedure;
+        //                cmd.Parameters.AddWithValue("@From_date", Fdate);
+        //                cmd.Parameters.AddWithValue("@S_ID", s1);
+        //                cmd.Parameters.AddWithValue("@type1", s2);
+        //                con.Open();
+
+        //                List<AllLevelQueueBoard> projects = new List<AllLevelQueueBoard>();
+
+        //                using (MySqlDataReader rdr = cmd.ExecuteReader())
+        //                {
+        //                    while (rdr.Read())
+        //                    {
+        //                        AllLevelQueueBoard project = new AllLevelQueueBoard
+        //                        {
+
+        //                            ProjectID = rdr["ProjectID"] != DBNull.Value ? Convert.ToInt32(rdr["ProjectID"]) : 0,
+        //                            ProjectName = rdr["ProjectName"].ToString(),
+        //                            RegdOn = Convert.ToDateTime(rdr["RegdOn"]),
+        //                            RegdBy = rdr["RegdBy"].ToString(),
+        //                            FinalStatus = rdr["FinalStatus"].ToString(),
+        //                            FinalStatusDt = Convert.ToDateTime(rdr["FinalStatusDt"]),
+        //                            Type = rdr["Type"].ToString(),
+        //                            Category = rdr["Category"].ToString(),
+        //                            SelectedImageLink = rdr["SelectedImageLink"].ToString(),
+        //                            PRILink = rdr["PRILink"].ToString(),
+        //                            SCA1 = rdr["SCA1 Link"].ToString(),
+        //                            SCA2 = rdr["SCA2 Link"].ToString(),
+        //                            SCA3 = rdr["SCA3 Link"].ToString(),
+        //                            SIOption = rdr["SIOption"].ToString(),
+        //                            ImageFileName1 = rdr["ImageFileName1"].ToString(),
+        //                            ImageFileName2 = rdr["ImageFileName2"].ToString(),
+        //                            ImageFileName3 = rdr["ImageFileName3"].ToString(),
+        //                            Site = rdr["Site"].ToString(),
+        //                            Customer = rdr["Customer"].ToString(),
+        //                            FeedBack = rdr["FeedBack"].ToString(),
+        //                            CC = rdr["CC"].ToString(),
+        //                            DuplicateOf = rdr["DuplicateOf"].ToString(),
+        //                            Priority = rdr["Priority"].ToString(),
+        //                            NexGenDealer = rdr["NexGenDealer"].ToString(),
+
+        //                        };
+
+        //                        projects.Add(project);
+
+        //                    }
+        //                }
+        //                con.Close();
+
+        //                int pageSize = 10; // Adjust the page size as needed
+        //                int pageNumber = (page ?? 1);
+        //                //ViewBag.Fdate = DateTime.Now.ToString("yyyy-MM-dd");
+        //                ViewBag.Fdate = Fdate;
+        //                ViewBag.s1 = s1;
+        //                ViewBag.s2 = s2;
+
+        //                return View(projects.ToPagedList(pageNumber, pageSize));
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Handle the exception
+        //        throw;
+        //    }
+        //}
+       
+
 
         public ActionResult myModal(int projectid)
 
@@ -183,7 +280,7 @@ namespace MyVizCollections.Controllers
                 MySqlConnection cn = new MySqlConnection(constr);
 
                 cn.Open();
-                DataSet ds = new DataSet(); 
+                DataSet ds = new DataSet();
                 MySqlCommand cmd = new MySqlCommand("SP_GetSourceimage", cn);
                 cmd.CommandTimeout = 1600;
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -290,7 +387,7 @@ namespace MyVizCollections.Controllers
 
                         // Adding data from the additional query
                         string additionalQuery = "select DATE_FORMAT(Date(C_Date),'%d-%m-%Y')As CDate FROM resolutioncheck ORDER BY C_Date DESC LIMIT 0,1";
-                        
+
                         using (MySqlCommand additionalCmd = new MySqlCommand(additionalQuery, con))
                         {
                             using (MySqlDataReader additionalReader = additionalCmd.ExecuteReader())
@@ -356,7 +453,7 @@ namespace MyVizCollections.Controllers
                     ProjectName = Convert.ToString(ds.Tables[0].Rows[0]["ProjectName"]),
                     UserID = Convert.ToString(ds.Tables[0].Rows[0]["UserID"]),
                     UserName = Convert.ToString(ds.Tables[0].Rows[0]["UserName"]),
-                 DepotName = Convert.ToString(ds.Tables[0].Rows[0]["DepotName"]),
+                    DepotName = Convert.ToString(ds.Tables[0].Rows[0]["DepotName"]),
                     SiteAddress = Convert.ToString(ds.Tables[0].Rows[0]["SiteAddress"]),
                     Location = Convert.ToString(ds.Tables[0].Rows[0]["Location"]),
                     CustomerName = Convert.ToString(ds.Tables[0].Rows[0]["CustomerName"]),
@@ -374,8 +471,8 @@ namespace MyVizCollections.Controllers
 
 
 
-               
-            };
+
+                };
 
                 con.Close();
                 return View(model);
@@ -419,9 +516,9 @@ namespace MyVizCollections.Controllers
 
             string basePath = string.Empty;
             string filename = string.Empty;
-            string image1= string.Empty;
-            string image2= string.Empty;
-            string image3= string.Empty;
+            string image1 = string.Empty;
+            string image2 = string.Empty;
+            string image3 = string.Empty;
             string PRI = string.Empty;
             string D1 = string.Empty;
             string D2 = string.Empty;
@@ -451,7 +548,7 @@ namespace MyVizCollections.Controllers
                     break;
 
                 case "PRI":
-                    basePath = "D:\\ColourMySpace\\MyViz\\PRI\\" + ProjectID +"\\";
+                    basePath = "D:\\ColourMySpace\\MyViz\\PRI\\" + ProjectID + "\\";
                     PRI = "PRI_" + $"{ProjectID}.jpg";
                     break;
                 case "PDF1":
@@ -523,10 +620,9 @@ namespace MyVizCollections.Controllers
 
 
 
+
     }
 
 
 
 }
-
-

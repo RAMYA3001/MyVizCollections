@@ -1,4 +1,4 @@
-﻿@model PagedList.IPagedList<MyVizCollections.Models.AllLevelQueueBoard>
+﻿﻿@model PagedList.IPagedList<MyVizCollections.Models.AllLevelQueueBoard>
 @using PagedList.Mvc
 
 
@@ -24,6 +24,7 @@
     img {
         border-radius: 8px;
     }
+
     #myprogressBar {
         width: 1%;
         height: 20px;
@@ -32,6 +33,7 @@
         line-height: 32px;
         color: black;
     }
+
     #datepicker {
         font-size: 14px; /* Adjust as needed */
         line-height: 1.8; /* Adjust as needed */
@@ -48,21 +50,21 @@
     <button type="submit" class="btn btn-primary" id="btnSubmit1" style="height: 30px; margin-right: 15px;">Submit</button>
 
     @*<span style="margin-right: 10px;">OR</span>*@
-<label for="search" style=" margin-top: 11px;margin-left:-7px;margin-right:6px;">
-    OR
-</label>
-<select class="form-control" id="dropdownSelect3" style="width: 104px; margin-right: 10px " title=" Search Key">
-    @*<option value="" selected disabled>Selected</option>*@
-    <option value="tso.ProjectID">ProjectID</option>
-    <option value="tso.UserID">TSO</option>
-    <option value="tso.Wstatus">Status</option>
-    <option value="pt.IorEorMS">Type</option>
-    <option value="pt.ProjectCategory">Category</option>
-    <option value="fb.TSOInput">Feedback</option>
-    <option value="tso.ColourChoicebyTSO">CC</option>
-    <option value="tso.Priority">Priority</option>
-    <option value="tso.NexGenDealer">NxtGen</option>
-</select>
+    <label for="search" style=" margin-top: 11px;margin-left:-7px;margin-right:6px;">
+        OR
+    </label>
+    <select class="form-control" id="dropdownSelect3" style="width: 104px; margin-right: 10px " title=" Search Key">
+        @*<option value="" selected disabled>Selected</option>*@
+        <option value="tso.ProjectID">ProjectID</option>
+        <option value="tso.UserID">TSO</option>
+        <option value="tso.Wstatus">Status</option>
+        <option value="pt.IorEorMS">Type</option>
+        <option value="pt.ProjectCategory">Category</option>
+        <option value="fb.TSOInput">Feedback</option>
+        <option value="tso.ColourChoicebyTSO">CC</option>
+        <option value="tso.Priority">Priority</option>
+        <option value="tso.NexGenDealer">NxtGen</option>
+    </select>
 
     <input type="text" name="q" class="search-text form-control" placeholder="Search..." title="Search relevant details in the grid" data-toggle="tooltip" id="searchtxt" style="width: 121px; margin-right: 10px;">
 
@@ -98,8 +100,8 @@
     <button type="submit" class="btn btn-primary" id="btnClear" style="height: 30px; margin: 2px;">Clear</button>
 
     @*<a href="@Url.Action("ResolutionCheck", "AllLevelQueueBoard")" target="_blank">
-        <input type="button" class="btn btn-primary"  value="Resolution" style="margin-left:6px" />
-    </a>*@
+            <input type="button" class="btn btn-primary"  value="Resolution" style="margin-left:6px" />
+        </a>*@
 </div>
 <div class="panel panel-primary list-panel" id="list-panel" style="width:98%;margin-top:12px">
     <div class="panel-heading list-panel-heading">
@@ -120,11 +122,11 @@
             <thead>
                 <tr>
                     <th>ProjectID</th>
-                    <th>ProjectName</th>
-                    <th style="padding: 9px 25px;">RegdOn</th>
+                    <th style="padding: 9px 33px;">ProjectName</th>
+                    <th>RegdOn</th>
                     <th>RegdBy</th>
                     <th>St</th>
-                    <th style="padding: 9px 25px;">StDate</th>
+                    <th>StDate</th>
                     <th>Type</th>
                     <th>Category</th>
                     <th data-toggle="tooltip" title="SelectedImageLink">SILink</th>
@@ -302,7 +304,7 @@
             });
 
             $(function () {
-               
+
     $("#dropdownSelect3").val('@ViewBag.s1');
                  $("#searchtxt").val('@ViewBag.s2');
                  $("#searchtxt1").val('@ViewBag.s2');
@@ -409,6 +411,7 @@
                                     } else if (sourceType2 === "Image3") {
                                         imageUrl2 = "https://colourmyspace.co.in/MyVizCollections/AllLevelQueueBoard/DisplayImage?ProjectID=" + ProjectID2 + "&linkType=img3&sourcefile=" + p2;
 
+
                                     }
                                     else if (sourceType2 === "PRI") {
                                         imageUrl2 = "https://colourmyspace.co.in/MyVizCollections/AllLevelQueueBoard/DisplayImage?ProjectID=" + ProjectID2 + "&linkType=PRI";
@@ -439,4 +442,3 @@
 
     </div>
 </div>
-

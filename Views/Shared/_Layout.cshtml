@@ -38,16 +38,16 @@
                     </div>
                 <div class="row" style="margin-top: 15px;">
 
-                    <div class="col-md-3">
-                        <b> @(Session["UserName"]?.ToString() ?? "") @(Session["Password"]?.ToString() ?? "") </b>
+                    <div class="col-md-2">
+                        @*<b> @(Session["UserName"]?.ToString() ?? "") @(Session["Password"]?.ToString() ?? "") </b>*@
                     </div>
 
                     @*<div class="col-md-4"><b>Last Login  :  @Session["LastLogin"].ToString()</b></div>*@
                     <div class="col-md-2">
-                        <b style="margin-left:-240px;">MyVizCollections</b>
+                        <b style="margin-left:-102px;">MyVizCollections</b>
                     </div>
                     <div class="col-md-1">
-                        <b style="margin-left:-270px;"> @DateTime.Now.ToString("ddd, dd MMM yyy hh:mm:ss tt") </b>
+                        <b style="margin-left:-130px;"> @DateTime.Now.ToString("ddd, dd MMM yyy hh:mm:ss tt") </b>
                     </div>
                     <div class="col-md-1">
                         <a href="https://coloursgalore.com/ShadeCardViewNew" style="color:white" target="_blank">
@@ -57,6 +57,11 @@
                     <div class="col-md-1">
                         <a href="https://coloursgalore.com/ColourMatch/Login" style="color:white" target="_blank">
                             ColourMatch
+                        </a>
+                    </div>
+                    <div class="col-md-1">
+                        <a href="https://coloursgalore.com/ShadeCardViewNew/Home/GetSwatches" style="color:white" target="_blank">
+                            Swatches
                         </a>
                     </div>
                     <div class="col-md-1">

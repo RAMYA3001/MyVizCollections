@@ -97,16 +97,18 @@
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
                 <div class="form-group">
-                    @Html.LabelFor(model => model.Username, htmlAttributes: new { @class = "control-label" })
-                    @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
+                    <label class="control-label" for="Username">Username</label>
+                    <input class="form-control text-box single-line" id="Username" name="Username" type="text" value="">
+                    <span class="field-validation-valid text-danger" data-valmsg-for="Username" data-valmsg-replace="true"></span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="Password">Password</label>
+                    <input class="form-control text-box single-line" id="Password" name="Password" type="text" value="">
+                    <span class="field-validation-valid text-danger" data-valmsg-for="Password" data-valmsg-replace="true"></span>
                 </div>
 
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label" })
-                    @Html.PasswordFor(model => model.Password, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-                </div>
+
+             
 
                 <div class="form-group" style="text-align: center;">
                     <button type="submit" class="btn btn-primary">Login</button>
@@ -120,141 +122,4 @@
 
 </body>
 </html>
-
-<!--<html>
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyVizCollections</title>
-
-    <style>
-        body {
-            background-repeat: no-repeat;
-            background-size: cover;
-            margin: 0;
-            padding: 0;
-            height: 100%;
-        }
-
-        html {
-            height: 100%;
-        }
-
-        #login-container {
-            width: 300px;
-            margin: auto;
-            margin-top: 100px;
-            background-color: #375b91;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            font-family: 'Numans', sans-serif;
-            font-size: 14px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .control-label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: white;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-        }
-
-        .btn-primary {
-            background-color: #FFC312;
-            color: black;
-            border: none;
-            font-size: 15px;
-            padding: 7px 7px;
-        }
-
-            .btn-primary:hover {
-                background-color: white;
-            }
-
-        .text-danger {
-            color: #dc3545;
-        }
-
-        #content img {
-            width: 20%; /* Make the image responsive */
-            height: 226%; /* Maintain aspect ratio */
-            top: 0px;
-            left: 0px;
-        }
-
-        #content1 img {
-            width: 20%; /* Make the image responsive */
-            height: 220%; /* Maintain aspect ratio */
-            top: 143px;
-            left: 1165px;
-        }
-
-        .inline-block {
-            display: inline-block;
-        }
-    </style>
-</head>
-<body>
-
-
-    <div class="inline-block">
-        <div class="row">
-            <div class="col-md-3" id="content1">
-                <img src="~/images/CWLogo1.jpg" />
-            </div>
-            <div class="col-md-6" id="login-container">
-                <h2 style="text-align: center;color:white;font-family:inherit;">MyVizCollections</h2>
-                <h3 style="text-align: center; color: white; font-family: inherit; ">Login</h3>
-
-
-                @using (Html.BeginForm("Index", "Login", FormMethod.Post))
-                {
-                    @Html.AntiForgeryToken()
-
-                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.Username, htmlAttributes: new { @class = "control-label", style = "color: white;" })
-                        @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label", style = "color: white;" })
-                        @Html.PasswordFor(model => model.Password, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-                    </div>
-
-                    <div class="form-group" style="text-align: center;">
-                        <button type="submit" class="btn btn-primary">Login</button>
-
-                        <button type="button" class="btn btn-primary" onclick="window.location.href='@Url.Action("Index", "Login")'">Cancel</button>
-                    </div>
-                }
-            </div>
-            <div class="col-md-3" id="content">
-                <img src="~/images/Innovatus Logo.png" />
-            </div>
-        </div>
-
-
-    </div>-->
-
-    <!-- Add your scripts here if needed -->
-<!--</body>
-</html>-->
-
-
 
