@@ -38,6 +38,88 @@
         font-size: 14px; /* Adjust as needed */
         line-height: 1.8; /* Adjust as needed */
     }
+
+
+
+    #overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        z-index: 999;
+    }
+
+    #qaPopup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: 30%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        z-index: 1000;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+        #qaPopup .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            #qaPopup .popup-header h3 {
+                color: darkblue;
+                text-align: center;
+                flex-grow: 1;
+            }
+
+    #closePopup {
+        background: none;
+        border: none;
+        padding: 10px 20px;
+        color: #000;
+        cursor: pointer;
+    }
+
+    #saveQAResult, #closePopup {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+        #saveQAResult:disabled, #closePopup:disabled {
+            background-color: grey;
+            cursor: not-allowed;
+        }
+
+    #saveQAResult, #closePopup {
+        margin: 10px;
+    }
+
+    #buttons-container {
+        text-align: center;
+    }
+
+    /* Styling for the additional comments section */
+    #additionalComments {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+        #additionalComments textarea {
+            width: 100%;
+            padding: 10px;
+            resize: vertical;
+        }
+
+
 </style>
 <label for="pid1" style=" margin-left: 780px;  color: red;margin-bottom: 12px;">
     Compare
@@ -98,6 +180,120 @@
     </select>
     <button type="submit" class="btn btn-primary" title="Compare two different image in one single screen" id="btnCompare" style="height: 30px; margin: 2px;">Match</button>
     <button type="submit" class="btn btn-primary" id="btnClear" style="height: 30px; margin: 2px;">Clear</button>
+
+
+    <!-- Button to trigger popup -->
+    
+    <!-- Background overlay -->
+    <!--<div id="overlay" style="display:none;"></div>-->
+    <!-- Popup form -->
+    <!--<div id="qaPopup" style="display:none;">
+        <h3 style="color:darkblue; text-align:center;">SCAQA Feedback</h3>
+        <label for="projectID">Project ID:</label>
+        <input type="text" id="projectID" required /><br><br>
+
+        <label for="qaResult">QA Result:</label>
+        <select id="qaResult">
+            <option value="Pass">Pass</option>
+            <option value="Fail">Fail</option>
+        </select><br><br>
+
+        <label for="qaComments">Comments:</label>
+        <div id="qaComments">
+            <input type="checkbox" id="sectioningQuality" value="Sectioning quality">
+            <label for="sectioningQuality">Sectioning quality</label><br>
+            <input type="checkbox" id="mergedSections" value="Some sections seem merged / not clear">
+            <label for="mergedSections">Some sections seem merged / not clear</label><br>
+            <input type="checkbox" id="poorShadow" value="Shadow effects poor">
+            <label for="poorShadow">Shadow effects poor</label><br>
+            <input type="checkbox" id="poorColour" value="Colour choices poor">
+            <label for="poorColour">Colour choices poor</label><br>
+            <input type="checkbox" id="uncleanSurroundings" value="Unclean surroundings">
+            <label for="uncleanSurroundings">Unclean surroundings</label><br>
+            <input type="checkbox" id="poorCloning" value="Poor cloning">
+            <label for="poorCloning">Poor cloning</label><br>
+            <input type="checkbox" id="truncatedObjects" value="Some objects truncated abruptly">
+            <label for="truncatedObjects">Some objects truncated abruptly</label><br>
+            <input type="checkbox" id="badSky" value="Sky not good">
+            <label for="badSky">Sky not good</label><br>
+            <input type="checkbox" id="ignoredAreas" value="Unimportant areas ignored">
+            <label for="ignoredAreas">Unimportant areas ignored</label><br>
+
+        </div><br>-->
+    <!-- Textbox to show selected comment -->
+    <!--<textarea id="selectedComments" placeholder="Selected comments will appear here" readonly rows="4"style="width:306px;"></textarea><br><br>
+
+        <button id="saveQAResult" disabled>Save</button>
+        <button id="closePopup">Close</button>
+    </div>-->
+    <!-- Overlay Styles -->
+    @*/////////////////////////*@
+
+
+
+
+    @if (Session["username"] != null && Session["username"].ToString() == "SCAQA")
+    {
+        <button type="submit" class="btn btn-primary" title="SCAQA Feedback" id="showPopup" style="height: 30px; margin: 2px;">SCAQA</button>
+    }
+
+    <!-- Background overlay -->
+    <div id="overlay" style="display:none;"></div>
+
+    <!-- Popup form -->
+    <div id="qaPopup" style="display:none;">
+
+        <h3 style="color:darkblue; text-align:center;">SCAQA Feedback</h3>
+        <label for="projectID">Project ID:</label>
+        <input type="text" id="projectID" required /><br><br>
+
+        <label for="qaResult">QA Result:</label>
+        <select id="qaResult">
+            <option value="Pass">Pass</option>
+            <option value="Fail">Fail</option>
+        </select><br><br>
+
+        <label for="qaComments">Comments:</label><br>
+        <div id="qaComments">
+            <input type="checkbox" id="sectioningQuality" value="Sectioning quality">
+            <label for="sectioningQuality">Sectioning quality</label><br>
+            <input type="checkbox" id="mergedSections" value="Some sections seem merged / not clear">
+            <label for="mergedSections">Some sections seem merged / not clear</label><br>
+            <input type="checkbox" id="poorShadow" value="Shadow effects poor">
+            <label for="poorShadow">Shadow effects poor</label><br>
+            <input type="checkbox" id="poorColour" value="Colour choices poor">
+            <label for="poorColour">Colour choices poor</label><br>
+            <input type="checkbox" id="uncleanSurroundings" value="Unclean surroundings">
+            <label for="uncleanSurroundings">Unclean surroundings</label><br>
+            <input type="checkbox" id="poorCloning" value="Poor cloning">
+            <label for="poorCloning">Poor cloning</label><br>
+            <input type="checkbox" id="truncatedObjects" value="Some objects truncated abruptly">
+            <label for="truncatedObjects">Some objects truncated abruptly</label><br>
+            <input type="checkbox" id="badSky" value="Sky not good">
+            <label for="badSky">Sky not good</label><br>
+            <input type="checkbox" id="ignoredAreas" value="Unimportant areas ignored">
+            <label for="ignoredAreas">Unimportant areas ignored</label><br>
+        </div><br>
+
+        <!-- Textbox to show selected comment (hidden) -->
+        <textarea id="selectedComments" placeholder="Selected comments will appear here" readonly style="display:none;"></textarea>
+
+        <!-- Additional comment -->
+        <label for="additionalComments">Additional Comments:</label><br>
+        <textarea id="additionalComments" placeholder="Enter additional comments here" rows="3" style="width:100%;"></textarea>
+
+        <!-- Save and Close buttons centered -->
+        <div style="text-align:center;">
+            <button id="saveQAResult" disabled style="background-color: #337ab7; border-color: #2e6da4; color: white;">Save</button>
+            <button id="closePopup" style="background-color: #337ab7; border-color: #2e6da4; color: white;margin-left:-9px; ">Close</button>
+        </div>
+    </div>
+   
+
+
+
+
+
 
     @*<a href="@Url.Action("ResolutionCheck", "AllLevelQueueBoard")" target="_blank">
             <input type="button" class="btn btn-primary"  value="Resolution" style="margin-left:6px" />
@@ -436,6 +632,85 @@
 
 
             $("#progress").hide();
+
+            // Enable Save Button when mandatory fields are filled
+            function checkMandatoryFields() {
+                const projectID = document.getElementById('projectID').value.trim();
+                const qaResult = document.getElementById('qaResult').value;
+                const additionalComments = document.getElementById('additionalComments').value.trim();
+
+                // Save button enabled only when Project ID is filled and QA Result is selected, and additional comments are filled if QA result is "Fail"
+                document.getElementById('saveQAResult').disabled =
+                    !projectID || (qaResult === "Fail" && additionalComments === "");
+            }
+
+            // Show popup with overlay
+            document.getElementById('showPopup').addEventListener('click', () => {
+                document.getElementById('qaPopup').style.display = 'block';
+                document.getElementById('overlay').style.display = 'block'; // Show the overlay
+            });
+
+            // Close popup and hide overlay
+            document.getElementById('closePopup').addEventListener('click', () => {
+                console.log('Close button clicked');  // Add this line for debugging
+                document.getElementById('qaPopup').style.display = 'none';
+                document.getElementById('overlay').style.display = 'none';
+                document.getElementById('projectID').value = '';
+                document.getElementById('qaResult').value = 'Pass';
+                const checkboxes = document.querySelectorAll('#qaComments input[type="checkbox"]');
+                checkboxes.forEach(checkbox => checkbox.checked = false);
+                document.getElementById('additionalComments').value = '';
+                checkMandatoryFields();
+            });
+
+            // Populate selected comments when checkboxes are checked
+            document.querySelectorAll('#qaComments input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    const selectedComments = [];
+                    const checkedCheckboxes = document.querySelectorAll('#qaComments input[type="checkbox"]:checked');
+
+                    checkedCheckboxes.forEach(checkbox => {
+                        selectedComments.push(checkbox.value);
+                    });
+
+                    // Set the selected comments (even though it's hidden, it's being sent to the server)
+                    document.getElementById('selectedComments').value = selectedComments.join(', ');
+                    checkMandatoryFields();
+                });
+            });
+
+            // Save QA Result
+            document.getElementById('saveQAResult').addEventListener('click', () => {
+                const projectID = document.getElementById('projectID').value;
+                const qaResult = document.getElementById('qaResult').value;
+                const selectedComments = document.getElementById('selectedComments').value; // From selected checkboxes
+                const additionalComments = document.getElementById('additionalComments').value; // From the additional comment textarea
+
+                // Concatenate selected comments and additional comments
+                const finalComments = selectedComments + (selectedComments && additionalComments ? ', ' : '') + additionalComments;
+
+                fetch('/AllLevelQueueBoard/SaveQAFeedback', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ projectID, result: qaResult, comments: finalComments }) // Send the concatenated comments
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('QA Result saved successfully!');
+                            document.getElementById('qaPopup').style.display = 'none';
+                            document.getElementById('overlay').style.display = 'none'; // Hide the overlay
+                        } else {
+                            alert(`Error: ${data.message}`);
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+
+            // Input validation for Save button
+            document.getElementById('projectID').addEventListener('input', checkMandatoryFields);
+            document.getElementById('qaResult').addEventListener('change', checkMandatoryFields);
+            document.getElementById('additionalComments').addEventListener('input', checkMandatoryFields);
 
 
         </script>

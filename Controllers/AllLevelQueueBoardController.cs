@@ -33,11 +33,11 @@ namespace MyVizCollections.Controllers
                 }
 
                 // Retrieve category from session
-                string userCategory = Session["Category"]?.ToString();
+                string Username = Session["Username"]?.ToString();
 
                 // Determine imode based on user category
                 int imode = 1; // Default to 1
-                if (userCategory == "Staff")
+                if (Username == "Insy1" || Username == "SCAQA") // Fixed condition syntax
                 {
                     imode = 2; // Use imode 2 for staff
                 }
@@ -112,6 +112,14 @@ namespace MyVizCollections.Controllers
                 throw;
             }
         }
+
+
+
+
+
+
+
+
 
 
 
@@ -197,7 +205,7 @@ namespace MyVizCollections.Controllers
         //        throw;
         //    }
         //}
-       
+
 
 
         public ActionResult myModal(int projectid)
@@ -586,37 +594,152 @@ namespace MyVizCollections.Controllers
             }
         }
 
+
+
+
+        [HttpPost]
+        public JsonResult SaveQAFeedback(string projectID, string result, string comments)
+        {
+            string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
+
+            try
+            {
+                using (MySqlConnection con = new MySqlConnection(constr))
+                {
+                    using (MySqlCommand cmd = new MySqlCommand("SP_SCAQAFeedback", con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        // Add parameters
+                        cmd.Parameters.AddWithValue("@ProjectID", projectID);
+                        cmd.Parameters.AddWithValue("@Result", result);
+                        cmd.Parameters.AddWithValue("@Comments", comments);
+
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                        con.Close();
+                    }
+                }
+                return Json(new { success = true, message = "SCAQA feedback saved successfully!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Error: {ex.Message}" });
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         public ActionResult LaunchPreview(int Id)
         {
             string userid = Convert.ToString(Session["UserID"]);
-            string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
+            //string NexGenDealer = Convert.ToString(Session["LoginUser"]);
+            string Shades = "";
 
+            string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
             using (MySqlConnection con = new MySqlConnection(constr))
             {
                 DataSet ds = new DataSet();
                 MySqlCommand com = new MySqlCommand("Sp_InsertWstatusLog", con);
-                com.CommandTimeout = 1600;
                 com.CommandType = CommandType.StoredProcedure;
+                com.CommandTimeout = 1600;
                 com.Parameters.AddWithValue("@ProjectID", Id);
                 com.Parameters.AddWithValue("@TSOID", userid);
-
                 con.Open();
+                //com.ExecuteNonQuery();
                 MySqlDataAdapter ad = new MySqlDataAdapter(com);
                 ad.Fill(ds);
 
+                // String UrlToRedirect = String.Format(String.Concat("https://colourmyspace.co.in", "/MyVizKN/CROSOLanding.aspx?caseId={0}&previewCenter={1}&source=0"), "P521F12S3833", "PVC05");
+                String PreviewCentreCode = String.Empty;
+                String CaseIDfromKN = String.Empty;
                 String UrlToRedirect = "https://colourmyspace.co.in/MyViz/Login/Index";
-
                 if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
                 {
-                    string PreviewCentreCode = ds.Tables[0].Rows[0]["PreviewCentreCode"].ToString();
-                    string CaseIDfromKN = ds.Tables[0].Rows[0]["CaseIDfromKN"].ToString();
 
-                    UrlToRedirect = $"https://colourmyspace.co.in/MyVizKN/CROSOLanding.aspx?caseId={CaseIDfromKN}&previewCenter={PreviewCentreCode}&source=0";
+
+                    if (ds.Tables.Count > 1 && ds.Tables[1].Rows.Count > 0)
+                    {
+                        string DLR = ds.Tables[1].Rows[0]["DLR"].ToString();
+                        if (DLR == "Nexgen Dealer")
+                        {
+                            Shades = "KN Shades;KN Combos;KN Combinations;NG Shades";
+                        }
+                        else
+                        {
+                            Shades = "KN Shades;KN Combos;KN Combinations";
+                        }
+                    }
+                    else
+                    {
+                        Shades = "KN Shades;KN Combos;KN Combinations";
+                    }
+                    //}
+
+                    PreviewCentreCode = !String.IsNullOrEmpty(ds.Tables[0].Rows[0]["PreviewCentreCode"].ToString()) ? (Convert.ToString(ds.Tables[0].Rows[0]["PreviewCentreCode"])) : "NA";
+                    CaseIDfromKN = !String.IsNullOrEmpty(ds.Tables[0].Rows[0]["CaseIDfromKN"].ToString()) ? (Convert.ToString(ds.Tables[0].Rows[0]["CaseIDfromKN"])) : "NA";
+                    string returnURL = ("https://colourmyspace.co.in/MyViz/TSODashboard?UserID=" + userid);
+                    UrlToRedirect = String.Format(String.Concat("https://colourmyspace.co.in", "/MyVizKN/CROSOLanding.aspx?caseId={0}&previewCenter={1}&returnURL={2}&source=0&PL={3}"), CaseIDfromKN, PreviewCentreCode, returnURL, Shades);
+                    //UrlToRedirect = String.Format(String.Concat("https://colourmyspace.co.in", "/MyVizKN/CROSOLanding.aspx?caseId={0}&previewCenter={1}&source=0"), CaseIDfromKN, PreviewCentreCode, returnURL);
                 }
+                //else
+                //{
+                //    UrlToRedirect = String.Format(String.Concat("https://colourmyspace.co.in", "/MyVizKN/CROSOLanding.aspx?caseId={0}&previewCenter={1}&source=0"), "P521F12S3833", "PVC05");
 
+                //}
                 return Redirect(UrlToRedirect);
             }
         }
+
+
+
+
+
+
+
+        //public ActionResult LaunchPreview(int Id)
+        //{
+        //    string userid = Convert.ToString(Session["UserID"]);
+        //    string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
+
+        //    using (MySqlConnection con = new MySqlConnection(constr))
+        //    {
+        //        DataSet ds = new DataSet();
+        //        MySqlCommand com = new MySqlCommand("Sp_InsertWstatusLog", con);
+        //        com.CommandTimeout = 1600;
+        //        com.CommandType = CommandType.StoredProcedure;
+        //        com.Parameters.AddWithValue("@ProjectID", Id);
+        //        com.Parameters.AddWithValue("@TSOID", userid);
+
+        //        con.Open();
+        //        MySqlDataAdapter ad = new MySqlDataAdapter(com);
+        //        ad.Fill(ds);
+
+        //        String UrlToRedirect = "https://colourmyspace.co.in/MyViz/Login/Index";
+
+        //        if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+        //        {
+        //            string PreviewCentreCode = ds.Tables[0].Rows[0]["PreviewCentreCode"].ToString();
+        //            string CaseIDfromKN = ds.Tables[0].Rows[0]["CaseIDfromKN"].ToString();
+
+        //            UrlToRedirect = $"https://colourmyspace.co.in/MyVizKN/CROSOLanding.aspx?caseId={CaseIDfromKN}&previewCenter={PreviewCentreCode}&source=0";
+        //        }
+
+        //        return Redirect(UrlToRedirect);
+        //    }
+        //}
 
 
 
