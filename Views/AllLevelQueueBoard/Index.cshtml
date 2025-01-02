@@ -135,26 +135,40 @@
     <label for="search" style=" margin-top: 11px;margin-left:-7px;margin-right:6px;">
         OR
     </label>
-    <select class="form-control" id="dropdownSelect3" style="width: 104px; margin-right: 10px " title=" Search Key">
-        @*<option value="" selected disabled>Selected</option>*@
-        <option value="tso.ProjectID">ProjectID</option>
-        <option value="tso.UserID">TSO</option>
-        <option value="tso.Wstatus">Status</option>
-        <option value="pt.IorEorMS">Type</option>
-        <option value="pt.ProjectCategory">Category</option>
-        <option value="fb.TSOInput">Feedback</option>
-        <option value="tso.ColourChoicebyTSO">CC</option>
-        <option value="tso.Priority">Priority</option>
-        <option value="tso.NexGenDealer">NxtGen</option>
+    @*<select class="form-control" id="dropdownSelect3" style="width: 104px; margin-right: 10px " title=" Search Key">
+
+            <option value="tso.ProjectID" selected>ProjectID</option>
+            <option value="tso.UserID">TSO</option>
+            <option value="tso.Wstatus">Status</option>
+            <option value="pt.IorEorMS">Type</option>
+            <option value="pt.ProjectCategory">Category</option>
+            <option value="fb.TSOInput">Feedback</option>
+            <option value="tso.ColourChoicebyTSO">CC</option>
+            <option value="tso.Priority">Priority</option>
+            <option value="tso.NexGenDealer">NxtGen</option>
+        </select>*@
+    <select class="form-control" id="dropdownSelect3" style="width: 104px; margin-right: 10px " title="Search Key">
+        <option value="tso.ProjectID" @(ViewBag.s1 == "tso.ProjectID" ? "selected" : "")>ProjectID</option>
+        <option value="tso.UserID" @(ViewBag.s1 == "tso.UserID" ? "selected" : "")>TSO</option>
+        <option value="tso.Wstatus" @(ViewBag.s1 == "tso.Wstatus" ? "selected" : "")>Status</option>
+        <option value="pt.IorEorMS" @(ViewBag.s1 == "pt.IorEorMS" ? "selected" : "")>Type</option>
+        <option value="pt.ProjectCategory" @(ViewBag.s1 == "pt.ProjectCategory" ? "selected" : "")>Category</option>
+        <option value="fb.TSOInput" @(ViewBag.s1 == "fb.TSOInput" ? "selected" : "")>Feedback</option>
+        <option value="tso.ColourChoicebyTSO" @(ViewBag.s1 == "tso.ColourChoicebyTSO" ? "selected" : "")>CC</option>
+        <option value="tso.Priority" @(ViewBag.s1 == "tso.Priority" ? "selected" : "")>Priority</option>
+        <option value="tso.NexGenDealer" @(ViewBag.s1 == "tso.NexGenDealer" ? "selected" : "")>NxtGen</option>
     </select>
 
-    <input type="text" name="q" class="search-text form-control" placeholder="Search..." title="Search relevant details in the grid" data-toggle="tooltip" id="searchtxt" style="width: 121px; margin-right: 10px;">
+    <input type="text" name="q" class="search-text form-control" placeholder="Search..." title="Search relevant details in the grid" data-toggle="tooltip" id="searchtxt" style="width: 121px; margin-right: 2px; margin-left: -8px; ">
+  
 
     <button type="submit" class="btn btn-primary" id="btnSubmit" style="height: 30px;">Search</button>
+    <button type="submit" class="btn btn-primary" id="btnClear" style="height: 30px; margin: 2px;">Clear</button>
+
 </div>
 
 
-<div class="form-group" style="border: 2px solid #337ab7; padding: 41px 14px; display: flex; justify-content: flex-start; margin-bottom: 3px; margin-top: -119px; margin-left:580px; width: 708px; height: 1px;">
+<div class="form-group" style="border: 2px solid #337ab7; padding: 41px 14px; display: flex; justify-content: flex-start; margin-bottom: 3px; margin-top: -119px; margin-left:617px; width: 708px; height: 1px;">
     <label for="pid1" style=" margin-top: 11px;">
         Project1:
     </label>
@@ -179,57 +193,7 @@
 
     </select>
     <button type="submit" class="btn btn-primary" title="Compare two different image in one single screen" id="btnCompare" style="height: 30px; margin: 2px;">Match</button>
-    <button type="submit" class="btn btn-primary" id="btnClear" style="height: 30px; margin: 2px;">Clear</button>
-
-
-    <!-- Button to trigger popup -->
-    
-    <!-- Background overlay -->
-    <!--<div id="overlay" style="display:none;"></div>-->
-    <!-- Popup form -->
-    <!--<div id="qaPopup" style="display:none;">
-        <h3 style="color:darkblue; text-align:center;">SCAQA Feedback</h3>
-        <label for="projectID">Project ID:</label>
-        <input type="text" id="projectID" required /><br><br>
-
-        <label for="qaResult">QA Result:</label>
-        <select id="qaResult">
-            <option value="Pass">Pass</option>
-            <option value="Fail">Fail</option>
-        </select><br><br>
-
-        <label for="qaComments">Comments:</label>
-        <div id="qaComments">
-            <input type="checkbox" id="sectioningQuality" value="Sectioning quality">
-            <label for="sectioningQuality">Sectioning quality</label><br>
-            <input type="checkbox" id="mergedSections" value="Some sections seem merged / not clear">
-            <label for="mergedSections">Some sections seem merged / not clear</label><br>
-            <input type="checkbox" id="poorShadow" value="Shadow effects poor">
-            <label for="poorShadow">Shadow effects poor</label><br>
-            <input type="checkbox" id="poorColour" value="Colour choices poor">
-            <label for="poorColour">Colour choices poor</label><br>
-            <input type="checkbox" id="uncleanSurroundings" value="Unclean surroundings">
-            <label for="uncleanSurroundings">Unclean surroundings</label><br>
-            <input type="checkbox" id="poorCloning" value="Poor cloning">
-            <label for="poorCloning">Poor cloning</label><br>
-            <input type="checkbox" id="truncatedObjects" value="Some objects truncated abruptly">
-            <label for="truncatedObjects">Some objects truncated abruptly</label><br>
-            <input type="checkbox" id="badSky" value="Sky not good">
-            <label for="badSky">Sky not good</label><br>
-            <input type="checkbox" id="ignoredAreas" value="Unimportant areas ignored">
-            <label for="ignoredAreas">Unimportant areas ignored</label><br>
-
-        </div><br>-->
-    <!-- Textbox to show selected comment -->
-    <!--<textarea id="selectedComments" placeholder="Selected comments will appear here" readonly rows="4"style="width:306px;"></textarea><br><br>
-
-        <button id="saveQAResult" disabled>Save</button>
-        <button id="closePopup">Close</button>
-    </div>-->
-    <!-- Overlay Styles -->
-    @*/////////////////////////*@
-
-
+   
 
 
     @if (Session["username"] != null && Session["username"].ToString() == "SCAQA")
@@ -501,12 +465,29 @@
 
             $(function () {
 
-    $("#dropdownSelect3").val('@ViewBag.s1');
+
+                $('#dropdownSelect3').change(function () {
+                    const selectedValue1 = $(this).val(); // Get the selected value
+                    console.log("Selected value1:", selectedValue1);
+
+                    // Optionally, store this value in ViewBag (or update a hidden field, if required)
+                    // Example: update the ViewBag or make an AJAX call to send the data to the server
+                    // viewBagSelectedValue = selectedValue;  // For handling in server-side logic
+                });
+
+
+
+               // $("#dropdownSelect3").val('tso.ProjectID');
+                //$('#dropdownSelect3').trigger('change');    //
+                //$("#dropdownSelect3").val('@ViewBag.s1');
                  $("#searchtxt").val('@ViewBag.s2');
                  $("#searchtxt1").val('@ViewBag.s2');
                  $("#searchtxt2").val('@ViewBag.s2');
 
              });
+
+
+
 
             // Replicate the value of #searchtxt to #searchtxt1 and #searchtxt2
             $("#searchtxt").keyup(function () {
@@ -528,14 +509,18 @@
 
             });
 
+
+
             /*Click event for the Clear button*/
             $("#btnClear").click(function () {
+
                 /* Clear the search input*/
                 $("#searchtxt").val("");
                 $("#searchtxt1").val("");
                 $("#searchtxt2").val("");
                var url = "@Url.Action("Index", "AllLevelQueueBoard")";
-             window.location.href = url;
+                window.location.href = url;
+                $('#dropdownSelect3').val('tso.ProjectID'); // Reset to ProjectID
                });
 
             $("#btnSubmit1").click(function () {
@@ -711,6 +696,7 @@
             document.getElementById('projectID').addEventListener('input', checkMandatoryFields);
             document.getElementById('qaResult').addEventListener('change', checkMandatoryFields);
             document.getElementById('additionalComments').addEventListener('input', checkMandatoryFields);
+
 
 
         </script>
