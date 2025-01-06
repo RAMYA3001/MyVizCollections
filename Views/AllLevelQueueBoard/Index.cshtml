@@ -446,9 +446,13 @@
             Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
             @Html.PagedListPager(Model, page => Url.Action("Index", new { page, Fdate = ViewBag.Fdate, s1 = ViewBag.s1, s2 = ViewBag.s2 }))
         </div>
-
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
+        <script src="/path/to/datatables.min.js"></script>
+        <link href="/Content/PagedList.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+        <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.2.2/css/buttons.dataTables.min.css" />
+        <link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" />
         <script>
 
 
@@ -619,87 +623,184 @@
             $("#progress").hide();
 
             // Enable Save Button when mandatory fields are filled
-            function checkMandatoryFields() {
-                const projectID = document.getElementById('projectID').value.trim();
-                const qaResult = document.getElementById('qaResult').value;
-                const additionalComments = document.getElementById('additionalComments').value.trim();
 
-                // Save button enabled only when Project ID is filled and QA Result is selected, and additional comments are filled if QA result is "Fail"
-                document.getElementById('saveQAResult').disabled =
-                    !projectID || (qaResult === "Fail" && additionalComments === "");
-            }
 
-            // Show popup with overlay
-            document.getElementById('showPopup').addEventListener('click', () => {
-                document.getElementById('qaPopup').style.display = 'block';
-                document.getElementById('overlay').style.display = 'block'; // Show the overlay
-            });
+   // Enable Save Button when mandatory fields are filled
+   function checkMandatoryFields() {
+       const projectID = document.getElementById('projectID').value.trim();
+       const qaResult = document.getElementById('qaResult').value;
+       const additionalComments = document.getElementById('additionalComments').value.trim();
 
-            // Close popup and hide overlay
-            document.getElementById('closePopup').addEventListener('click', () => {
-                console.log('Close button clicked');  // Add this line for debugging
-                document.getElementById('qaPopup').style.display = 'none';
-                document.getElementById('overlay').style.display = 'none';
-                document.getElementById('projectID').value = '';
-                document.getElementById('qaResult').value = 'Pass';
-                const checkboxes = document.querySelectorAll('#qaComments input[type="checkbox"]');
-                checkboxes.forEach(checkbox => checkbox.checked = false);
-                document.getElementById('additionalComments').value = '';
-                checkMandatoryFields();
-            });
+       // Save button is enabled when Project ID is filled and QA Result is selected
+       document.getElementById('saveQAResult').disabled = !projectID || !qaResult;
+   }
 
-            // Populate selected comments when checkboxes are checked
-            document.querySelectorAll('#qaComments input[type="checkbox"]').forEach(checkbox => {
-                checkbox.addEventListener('change', () => {
-                    const selectedComments = [];
-                    const checkedCheckboxes = document.querySelectorAll('#qaComments input[type="checkbox"]:checked');
+   // Show popup with overlay
+   document.getElementById('showPopup').addEventListener('click', () => {
+       document.getElementById('qaPopup').style.display = 'block';
+       document.getElementById('overlay').style.display = 'block'; // Show the overlay
+   });
 
-                    checkedCheckboxes.forEach(checkbox => {
-                        selectedComments.push(checkbox.value);
-                    });
+   // Close popup and hide overlay
+   document.getElementById('closePopup').addEventListener('click', () => {
+       console.log('Close button clicked'); // Add this line for debugging
+       document.getElementById('qaPopup').style.display = 'none';
+       document.getElementById('overlay').style.display = 'none';
+       document.getElementById('projectID').value = '';
+       document.getElementById('qaResult').value = 'Pass';
+       const checkboxes = document.querySelectorAll('#qaComments input[type="checkbox"]');
+       checkboxes.forEach(checkbox => checkbox.checked = false);
+       document.getElementById('additionalComments').value = '';
+       checkMandatoryFields();
+   });
 
-                    // Set the selected comments (even though it's hidden, it's being sent to the server)
-                    document.getElementById('selectedComments').value = selectedComments.join(', ');
-                    checkMandatoryFields();
-                });
-            });
+   // Populate selected comments when checkboxes are checked
+   document.querySelectorAll('#qaComments input[type="checkbox"]').forEach(checkbox => {
+       checkbox.addEventListener('change', () => {
+           const selectedComments = [];
+           const checkedCheckboxes = document.querySelectorAll('#qaComments input[type="checkbox"]:checked');
 
-            // Save QA Result
-            document.getElementById('saveQAResult').addEventListener('click', () => {
-                const projectID = document.getElementById('projectID').value;
-                const qaResult = document.getElementById('qaResult').value;
-                const selectedComments = document.getElementById('selectedComments').value; // From selected checkboxes
-                const additionalComments = document.getElementById('additionalComments').value; // From the additional comment textarea
+           checkedCheckboxes.forEach(checkbox => {
+               selectedComments.push(checkbox.value);
+           });
 
-                // Concatenate selected comments and additional comments
-                const finalComments = selectedComments + (selectedComments && additionalComments ? ', ' : '') + additionalComments;
+           // Set the selected comments (even though it's hidden, it's being sent to the server)
+           document.getElementById('selectedComments').value = selectedComments.join(', ');
+           checkMandatoryFields();
+       });
+   });
 
-                fetch('/AllLevelQueueBoard/SaveQAFeedback', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ projectID, result: qaResult, comments: finalComments }) // Send the concatenated comments
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('QA Result saved successfully!');
-                            document.getElementById('qaPopup').style.display = 'none';
-                            document.getElementById('overlay').style.display = 'none'; // Hide the overlay
-                        } else {
-                            alert(`Error: ${data.message}`);
-                        }
-                    })
-                    .catch(error => console.error('Error:', error));
-            });
+   // Save QA Result
+   // Save QA Feedback
+   $('#saveQAResult').on('click', function () {
+       const projectID = $('#projectID').val().trim();
+       const qaResult = $('#qaResult').val();
+       const selectedComments = $('#selectedComments').val();
+       const additionalComments = $('#additionalComments').val().trim();
 
-            // Input validation for Save button
-            document.getElementById('projectID').addEventListener('input', checkMandatoryFields);
-            document.getElementById('qaResult').addEventListener('change', checkMandatoryFields);
-            document.getElementById('additionalComments').addEventListener('input', checkMandatoryFields);
+       const finalComments = [selectedComments, additionalComments].filter(Boolean).join(', ');
 
+       $.ajax({
+           url: '@Url.Action("SaveQAFeedback", "AllLevelQueueBoard")',
+           type: 'POST',
+           contentType: 'application/json',
+           data: JSON.stringify({ projectID: projectID, result: qaResult, comments: finalComments }),
+           success: function (data) {
+               if (data.success) {
+                   alert('QA Result saved successfully!');
+                   resetPopupFields();
+                   $('#qaPopup').hide();
+                   $('#overlay').hide();
+               } else {
+                   alert(`Error: ${data.message}`);
+               }
+           },
+           error: function (xhr, status, error) {
+               console.error('Error:', error);
+               alert('An error occurred while saving QA feedback.');
+           }
+       });
+   });
+
+   // Input validation for Save button
+   document.getElementById('projectID').addEventListener('input', checkMandatoryFields);
+   document.getElementById('qaResult').addEventListener('change', checkMandatoryFields);
+   document.getElementById('additionalComments').addEventListener('input', checkMandatoryFields);
+
+
+
+
+
+
+
+    //function checkMandatoryFields() {
+    //    const projectID = document.getElementById('projectID').value.trim();
+    //    const qaResult = document.getElementById('qaResult').value;
+
+    //    // Save button enabled only when Project ID is filled and QA Result is selected
+    //    document.getElementById('saveQAResult').disabled = !(projectID && qaResult);
+    //}
+
+    //// Show popup with overlay
+    //document.getElementById('showPopup').addEventListener('click', () => {
+    //    document.getElementById('qaPopup').style.display = 'block';
+    //    document.getElementById('overlay').style.display = 'block';
+    //});
+
+    //// Close popup and hide overlay
+    //document.getElementById('closePopup').addEventListener('click', () => {
+    //    document.getElementById('qaPopup').style.display = 'none';
+    //    document.getElementById('overlay').style.display = 'none';
+    //    resetPopupFields();
+    //});
+
+    //function resetPopupFields() {
+    //    document.getElementById('projectID').value = '';
+    //    document.getElementById('qaResult').value = 'Pass';
+    //    document.querySelectorAll('#qaComments input[type="checkbox"]').forEach(checkbox => checkbox.checked = false);
+    //    document.getElementById('additionalComments').value = '';
+    //    document.getElementById('selectedComments').value = '';
+    //    checkMandatoryFields();
+    //}
+
+    //// Populate selected comments
+    //document.querySelectorAll('#qaComments input[type="checkbox"]').forEach(checkbox => {
+    //    checkbox.addEventListener('change', () => {
+    //        const selectedComments = Array.from(document.querySelectorAll('#qaComments input[type="checkbox"]:checked'))
+    //            .map(checkbox => checkbox.value)
+    //            .join(', ');
+
+    //        document.getElementById('selectedComments').value = selectedComments;
+    //        checkMandatoryFields();
+    //    });
+    //});
+
+    //// Check mandatory fields for additional comments
+    //document.getElementById('additionalComments').addEventListener('input', checkMandatoryFields);
+
+    //// Save QA Feedback
+    //document.getElementById('saveQAResult').addEventListener('click', () => {
+    //    const projectID = document.getElementById('projectID').value.trim();
+    //    const qaResult = document.getElementById('qaResult').value;
+    //    const selectedComments = document.getElementById('selectedComments').value;
+    //    const additionalComments = document.getElementById('additionalComments').value.trim();
+
+    //    const finalComments = [selectedComments, additionalComments].filter(Boolean).join(', ');
+
+    //    fetch('/AllLevelQueueBoard/SaveQAFeedback', {
+    //        method: 'POST',
+    //        headers: {
+    //            'Content-Type': 'application/json',
+    //        },
+    //        body: JSON.stringify({ projectID, result: qaResult, comments: finalComments }),
+    //    })
+    //        .then(response => {
+    //            if (!response.ok) {
+    //                throw new Error(`Network response was not ok. Status: ${response.status}`);
+    //            }
+    //            return response.json();
+    //        })
+    //        .then(data => {
+    //            if (data.success) {
+    //                alert('QA Result saved successfully!');
+    //                resetPopupFields();
+    //                document.getElementById('qaPopup').style.display = 'none';
+    //                document.getElementById('overlay').style.display = 'none';
+    //            } else {
+    //                alert(`Error: ${data.message}`);
+    //            }
+    //        })
+    //        .catch(error => {
+    //            console.error('Error:', error);
+    //            alert('An error occurred while saving QA feedback.');
+    //        });
+    //});
+
+    //// Validate fields for Save button
+    //document.getElementById('projectID').addEventListener('input', checkMandatoryFields);
+    //document.getElementById('qaResult').addEventListener('change', checkMandatoryFields);
 
 
         </script>
-
     </div>
-</div>
+    </div>
