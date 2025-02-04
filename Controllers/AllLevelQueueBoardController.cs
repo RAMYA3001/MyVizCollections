@@ -13,9 +13,14 @@ using PagedList.Mvc;
 using System.IO;
 using System.Web.UI.WebControls;
 using System.Web;
+using System.Linq;
+
 using PagedList;
 using System.Globalization;
 using System.Diagnostics;
+using Google.Protobuf.WellKnownTypes;
+using Newtonsoft.Json;
+using System.Web.DynamicData;
 
 namespace MyVizCollections.Controllers
 {
@@ -35,16 +40,19 @@ namespace MyVizCollections.Controllers
                 // Retrieve category from session
                 string Username = Session["Username"]?.ToString();
 
-                // Determine imode based on user category
-                int imode = 1; // Default to 1
-                if (Username == "Insy1" || Username == "SCAQA") // Fixed condition syntax
-                {
-                    imode = 2; // Use imode 2 for staff
-                }
 
+                int imode = 1; // Default to 1
+                if (Username == "view") // Check if Username is "view"
+                {
+                    imode = 2; // Use imode 2 for "view"
+                }
+                else if (Username == "SCAQA") // Check if Username is "SCAQA"
+                {
+                    imode = 3; // Use imode 3 for "SCAQA"
+                }
                 using (MySqlConnection con = new MySqlConnection(constr))
                 {
-                    using (MySqlCommand cmd = new MySqlCommand("SP_Myvizcollectionssearchkey", con))
+                    using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_searchkey", con))
                     {
                         cmd.CommandTimeout = 1600;
                         cmd.CommandType = CommandType.StoredProcedure;
@@ -101,7 +109,7 @@ namespace MyVizCollections.Controllers
                         ViewBag.Fdate = Fdate;
                         ViewBag.s1 = s1;
                         ViewBag.s2 = s2;
-                        
+
                         return View(projects.ToPagedList(pageNumber, pageSize));
                     }
                 }
@@ -114,97 +122,6 @@ namespace MyVizCollections.Controllers
         }
 
 
-
-
-
-
-
-
-
-
-
-        //public ActionResult Index(int? page, string Fdate, string s1, string s2)
-        //{
-        //    string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
-
-        //    try
-        //    {
-
-        //        if (Fdate == null)
-        //        {
-        //            Fdate = DateTime.Now.ToString("yyyy-MM-dd");
-        //        }
-        //        using (MySqlConnection con = new MySqlConnection(constr))
-        //        {
-        //            using (MySqlCommand cmd = new MySqlCommand("SP_searchkeydropdown", con))
-        //            {
-        //                cmd.CommandTimeout = 1600;
-
-        //                cmd.CommandType = CommandType.StoredProcedure;
-        //                cmd.Parameters.AddWithValue("@From_date", Fdate);
-        //                cmd.Parameters.AddWithValue("@S_ID", s1);
-        //                cmd.Parameters.AddWithValue("@type1", s2);
-        //                con.Open();
-
-        //                List<AllLevelQueueBoard> projects = new List<AllLevelQueueBoard>();
-
-        //                using (MySqlDataReader rdr = cmd.ExecuteReader())
-        //                {
-        //                    while (rdr.Read())
-        //                    {
-        //                        AllLevelQueueBoard project = new AllLevelQueueBoard
-        //                        {
-
-        //                            ProjectID = rdr["ProjectID"] != DBNull.Value ? Convert.ToInt32(rdr["ProjectID"]) : 0,
-        //                            ProjectName = rdr["ProjectName"].ToString(),
-        //                            RegdOn = Convert.ToDateTime(rdr["RegdOn"]),
-        //                            RegdBy = rdr["RegdBy"].ToString(),
-        //                            FinalStatus = rdr["FinalStatus"].ToString(),
-        //                            FinalStatusDt = Convert.ToDateTime(rdr["FinalStatusDt"]),
-        //                            Type = rdr["Type"].ToString(),
-        //                            Category = rdr["Category"].ToString(),
-        //                            SelectedImageLink = rdr["SelectedImageLink"].ToString(),
-        //                            PRILink = rdr["PRILink"].ToString(),
-        //                            SCA1 = rdr["SCA1 Link"].ToString(),
-        //                            SCA2 = rdr["SCA2 Link"].ToString(),
-        //                            SCA3 = rdr["SCA3 Link"].ToString(),
-        //                            SIOption = rdr["SIOption"].ToString(),
-        //                            ImageFileName1 = rdr["ImageFileName1"].ToString(),
-        //                            ImageFileName2 = rdr["ImageFileName2"].ToString(),
-        //                            ImageFileName3 = rdr["ImageFileName3"].ToString(),
-        //                            Site = rdr["Site"].ToString(),
-        //                            Customer = rdr["Customer"].ToString(),
-        //                            FeedBack = rdr["FeedBack"].ToString(),
-        //                            CC = rdr["CC"].ToString(),
-        //                            DuplicateOf = rdr["DuplicateOf"].ToString(),
-        //                            Priority = rdr["Priority"].ToString(),
-        //                            NexGenDealer = rdr["NexGenDealer"].ToString(),
-
-        //                        };
-
-        //                        projects.Add(project);
-
-        //                    }
-        //                }
-        //                con.Close();
-
-        //                int pageSize = 10; // Adjust the page size as needed
-        //                int pageNumber = (page ?? 1);
-        //                //ViewBag.Fdate = DateTime.Now.ToString("yyyy-MM-dd");
-        //                ViewBag.Fdate = Fdate;
-        //                ViewBag.s1 = s1;
-        //                ViewBag.s2 = s2;
-
-        //                return View(projects.ToPagedList(pageNumber, pageSize));
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Handle the exception
-        //        throw;
-        //    }
-        //}
 
 
 
@@ -249,7 +166,15 @@ namespace MyVizCollections.Controllers
 
                     PSE = Convert.ToString(ds.Tables[0].Rows[0]["whoistheL6PSE"]),
                     QACPI = Convert.ToString(ds.Tables[0].Rows[0]["WhoistheL7QACPI"]),
-
+                    CPBody1 = Convert.ToString(ds.Tables[0].Rows[0]["CPBody1"]),
+                    CPBody2 = Convert.ToString(ds.Tables[0].Rows[0]["CPBody2"]),
+                    CPBody3 = Convert.ToString(ds.Tables[0].Rows[0]["CPBody3"]),
+                    CPBorder1 = Convert.ToString(ds.Tables[0].Rows[0]["CPBorder1"]),
+                    CPBorder2 = Convert.ToString(ds.Tables[0].Rows[0]["CPBorder2"]),
+                    CPBorder3 = Convert.ToString(ds.Tables[0].Rows[0]["CPBorder3"]),
+                    CPHighlight1 = Convert.ToString(ds.Tables[0].Rows[0]["CPHighlight1"]),
+                    CPHighlight2 = Convert.ToString(ds.Tables[0].Rows[0]["CPHighlight2"]),
+                    CPHighlight3 = Convert.ToString(ds.Tables[0].Rows[0]["CPHighlight3"]),
 
 
                 };
@@ -518,12 +443,14 @@ namespace MyVizCollections.Controllers
             // If the file does not exist, you might want to handle this case differently
             return HttpNotFound();
         }
-
+       
         private string GetImagePathByProjectID(int ProjectID, string linkType, string sourcefile)
         {
 
             string basePath = string.Empty;
             string filename = string.Empty;
+            
+           
             string image1 = string.Empty;
             string image2 = string.Empty;
             string image3 = string.Empty;
@@ -532,6 +459,9 @@ namespace MyVizCollections.Controllers
             string D2 = string.Empty;
             string D3 = string.Empty;
             //string sifile = string.Empty;
+
+
+
             switch (linkType)
             {
                 case "Source":
@@ -554,31 +484,81 @@ namespace MyVizCollections.Controllers
                     //filename = $"{ProjectID}.jpeg";
                     image3 = sourcefile;
                     break;
-
                 case "PRI":
                     basePath = "D:\\ColourMySpace\\MyViz\\PRI\\" + ProjectID + "\\";
                     PRI = "PRI_" + $"{ProjectID}.jpg";
                     break;
+             
+
                 case "PDF1":
                     basePath = "D:\\ColourMySpace\\MyViz\\PDF\\" + ProjectID + "\\";
-                    D1 = "1_D" + $"{ProjectID}.pdf";
+                    string checkfilename1 = basePath + "1_D" + $"{ProjectID}.pdf";
+                    if (System.IO.File.Exists(checkfilename1))
+                    {
+                        D1 = "1_D" + $"{ProjectID}.pdf";
+                    }
+                    else
+                    {
+                        D1 = "1_D" + $"{ProjectID}.jpg";
+                    }
+                    //D1 = Path.GetExtension(sourcefile)?.ToLower() == ".jpg" ?
+                    //    "1_D" + $"{ProjectID}.jpg" : "1_D" + $"{ProjectID}.pdf";
                     break;
                 case "PDF2":
                     basePath = "D:\\ColourMySpace\\MyViz\\PDF\\" + ProjectID + "\\";
-                    D2 = "2_D" + $"{ProjectID}.pdf";
+                    string checkfilename2 = basePath + "2_D" + $"{ProjectID}.pdf";
+                    if (System.IO.File.Exists(checkfilename2))
+                    {
+                        D1 = "2_D" + $"{ProjectID}.pdf";
+                    }
+                    else
+                    {
+                        D1 = "2_D" + $"{ProjectID}.jpg";
+                    }
+                    //D1 = Path.GetExtension(sourcefile)?.ToLower() == ".jpg" ?
+                    //    "1_D" + $"{ProjectID}.jpg" : "1_D" + $"{ProjectID}.pdf";
                     break;
+
+
+                   
                 case "PDF3":
                     basePath = "D:\\ColourMySpace\\MyViz\\PDF\\" + ProjectID + "\\";
-                    D3 = "3_D" + $"{ProjectID}.pdf";
+                    string checkfilename3 = basePath + "3_D" + $"{ProjectID}.pdf";
+                    if (System.IO.File.Exists(checkfilename3))
+                    {
+                        D1 = "3_D" + $"{ProjectID}.pdf";
+                    }
+                    else
+                    {
+                        D1 = "3_D" + $"{ProjectID}.jpg";
+                    }
+                  
                     break;
 
+
+                  
+                //case "PDF2":
+                //    basePath = "D:\\ColourMySpace\\MyViz\\PDF\\" + ProjectID + "\\";
+                //    D2 = "2_D" + $"{ProjectID}.pdf";
+                //    break;
+                //case "PDF3":
+                //    basePath = "D:\\ColourMySpace\\MyViz\\PDF\\" + ProjectID + "\\";
+                //    D3 = "3_D" + $"{ProjectID}.pdf";
+                //    break;
+
+
+                default:
+                    return null; // Return null for invalid linkType
             }
 
-            string imagePath = Path.Combine(basePath, filename, image1, image2, image3, PRI, D1, D2, D3);
+        
+
+        string imagePath = Path.Combine(basePath, filename,  image1, image2, image3, PRI, D1, D2, D3);
             return imagePath;
         }
 
-        private string GetContentType(string fileExtension)
+
+    private string GetContentType(string fileExtension)
         {
             switch (fileExtension.ToLower())
             {
@@ -597,6 +577,7 @@ namespace MyVizCollections.Controllers
 
 
 
+
         [HttpPost]
         public JsonResult SaveQAFeedback(string projectID, string result, string comments)
         {
@@ -606,6 +587,21 @@ namespace MyVizCollections.Controllers
             {
                 using (MySqlConnection con = new MySqlConnection(constr))
                 {
+                    // Check if feedback already exists
+                    using (MySqlCommand checkCmd = new MySqlCommand("SELECT COUNT(*) FROM SCAQA WHERE ProjectID = @ProjectID", con))
+                    {
+                        checkCmd.Parameters.AddWithValue("@ProjectID", projectID);
+                        con.Open();
+                        int feedbackCount = Convert.ToInt32(checkCmd.ExecuteScalar());
+                        con.Close();
+
+                        if (feedbackCount > 0)
+                        {
+                            return Json(new { success = false, message = "Feedback already exists for this project." });
+                        }
+                    }
+
+                    // If no feedback exists, save the new feedback
                     using (MySqlCommand cmd = new MySqlCommand("SP_SCAQAFeedback", con))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
@@ -620,6 +616,7 @@ namespace MyVizCollections.Controllers
                         con.Close();
                     }
                 }
+
                 return Json(new { success = true, message = "SCAQA feedback saved successfully!" });
             }
             catch (Exception ex)
@@ -630,16 +627,105 @@ namespace MyVizCollections.Controllers
 
 
 
+        public ActionResult Statuslog(int projectid)
+        {
+            string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
+            MySqlConnection con = new MySqlConnection(constr);
+            try
+            {
+                DataSet ds = new DataSet();
+
+                MySqlCommand com = new MySqlCommand("SP_Statuslog", con);
+                com.CommandTimeout = 1600;
+                com.CommandType = CommandType.StoredProcedure;
+                com.Parameters.AddWithValue("@Mode", 1);
+                com.Parameters.AddWithValue("@ProjectID", projectid);
+
+                con.Open();
+                MySqlDataAdapter ad = new MySqlDataAdapter(com);
+                ad.Fill(ds);
+
+                List<WStatusLog> statusLogs = new List<WStatusLog>();
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    foreach (DataRow row in ds.Tables[0].Rows)
+                    {
+                        WStatusLog model = new WStatusLog()
+                        {
+                            ProjectID = Convert.ToInt32(row["ProjectID"]),
+                            WorkStatus = Convert.ToString(row["WorkStatus"]),
+                            WorkStatusDesc = Convert.ToString(row["WorkStatusDesc"]),
+                            M_date = row["M_date"] != DBNull.Value ? Convert.ToDateTime(row["M_date"]) : (DateTime?)null
+                        };
+
+                        // Format M_date before adding to the list
+                        if (model.M_date.HasValue)
+                        {
+                            model.M_dateFormatted = model.M_date.Value.ToString("dd/MM/yyyy hh:mm:ss tt");
+                        }
+
+                        statusLogs.Add(model);
+                    }
+                }
 
 
+                // Fetch feedback from scaqa table
+                MySqlCommand feedbackCommand = new MySqlCommand("SELECT Result FROM scaqa WHERE ProjectID = @ProjectID", con);
+                feedbackCommand.Parameters.AddWithValue("@ProjectID", projectid);
+                string feedback = feedbackCommand.ExecuteScalar() as string;
+
+                ViewBag.Feedback = feedback; // Pass feedback to the view
+
+                return View("Statuslog", statusLogs);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if needed
+                return null;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+            }
+        }
 
 
+        //"D:\\ColoursGalore\\CW\\User_Data\\PDF_Files\\" + ProjectID + "\\";
+        //public ActionResult Appliedcolour(int ProjectID)
+        //{
+        //    // Get JSON data
+        //    string jsonFilePath = $"D:\\ColoursGalore\\CW\\User_Data\\JSON_Files\\{ProjectID}\\{option}_{ProjectID}.json";
+        //    DataModel jsonData = JsonConvert.DeserializeObject<DataModel>(System.IO.File.ReadAllText(jsonFilePath));
 
+        //    // Get layered images
+        //    var imageFiles = Directory.GetFiles(imagesDirectoryPath, "*.png");
+        //    var layeredImages = imageFiles.Select(imagePath =>
+        //    {
+        //        string fileName = Path.GetFileNameWithoutExtension(imagePath);
+        //        var plot = jsonData.Plot.FirstOrDefault(p => p.Name.Equals(fileName, StringComparison.OrdinalIgnoreCase));
+        //        if (plot != null)
+        //        {
+        //            return new LayeredImage
+        //            {
+        //                c = plot.C,
+        //                r = plot.r,
+        //                g = plot.g,
+        //                b = plot.b
+        //            };
+        //        }
+        //        return null;
+        //    });
 
-
-
-
-
+        //    return Json(new
+        //    {
+        //        Mainimage = mainImageUrl,
+        //        LayeredImages = layeredImages
+        //    }, JsonRequestBehavior.AllowGet);
+        //}
 
 
         public ActionResult LaunchPreview(int Id)
@@ -705,41 +791,6 @@ namespace MyVizCollections.Controllers
 
 
 
-
-
-
-
-        //public ActionResult LaunchPreview(int Id)
-        //{
-        //    string userid = Convert.ToString(Session["UserID"]);
-        //    string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
-
-        //    using (MySqlConnection con = new MySqlConnection(constr))
-        //    {
-        //        DataSet ds = new DataSet();
-        //        MySqlCommand com = new MySqlCommand("Sp_InsertWstatusLog", con);
-        //        com.CommandTimeout = 1600;
-        //        com.CommandType = CommandType.StoredProcedure;
-        //        com.Parameters.AddWithValue("@ProjectID", Id);
-        //        com.Parameters.AddWithValue("@TSOID", userid);
-
-        //        con.Open();
-        //        MySqlDataAdapter ad = new MySqlDataAdapter(com);
-        //        ad.Fill(ds);
-
-        //        String UrlToRedirect = "https://colourmyspace.co.in/MyViz/Login/Index";
-
-        //        if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
-        //        {
-        //            string PreviewCentreCode = ds.Tables[0].Rows[0]["PreviewCentreCode"].ToString();
-        //            string CaseIDfromKN = ds.Tables[0].Rows[0]["CaseIDfromKN"].ToString();
-
-        //            UrlToRedirect = $"https://colourmyspace.co.in/MyVizKN/CROSOLanding.aspx?caseId={CaseIDfromKN}&previewCenter={PreviewCentreCode}&source=0";
-        //        }
-
-        //        return Redirect(UrlToRedirect);
-        //    }
-        //}
 
 
 
