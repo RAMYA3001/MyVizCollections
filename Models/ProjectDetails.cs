@@ -48,6 +48,14 @@ namespace MyVizCollections.Models
         //public string Max { get; set; }
         public string PSE { get; set; }
         public string QACPI { get; set; }
-
+        public string CPBody1 { get; set; }
+        public string CPBody2 { get; set; }
+        public string CPBody3 { get; set; }
+        public string CPBorder1 { get; set; }
+        public string CPBorder2 { get; set; }
+        public string CPBorder3 { get; set; }
+        public string CPHighlight1 { get; set; }
+        public string CPHighlight2 { get; set; }
+        public string CPHighlight3 { get; set; }
     }
 }

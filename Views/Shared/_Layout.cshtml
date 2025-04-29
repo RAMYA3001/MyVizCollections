@@ -7,16 +7,18 @@
     @Styles.Render("~/Content/css")
     @Styles.Render("~/Content/datatables")
     @Scripts.Render("~/bundles/modernizr")
+
     @*@Scripts.Render("~/bundles/datatables")*@
     <style>
         #content {
             position: relative;
         }
 
+
             #content img {
                 position: absolute;
                 top: 0px;
-                left: -45px;
+                left: -111px;
                 right: -104px;
                 width: 105px;
                 height: 50px;
@@ -29,71 +31,77 @@
     </style>
 </head>
 <body>
-  
-   
-        <div class="navbar navbar-inverse navbar-fixed-top" style="color:wheat;">
-            <div class="container">
-                <div id="content">
-                        <img src="~/Images/colour-my-space-logo.jpg" />
-                    </div>
-                <div class="row" style="margin-top: 15px;">
 
-                    <div class="col-md-2">
-                        @*<b> @(Session["UserName"]?.ToString() ?? "") @(Session["Password"]?.ToString() ?? "") </b>*@
-                    </div>
 
-                    @*<div class="col-md-4"><b>Last Login  :  @Session["LastLogin"].ToString()</b></div>*@
-                    <div class="col-md-2">
-                        <b style="margin-left:-102px;">MyVizCollections</b>
-                    </div>
-                    <div class="col-md-1">
-                        <b style="margin-left:-130px;"> @DateTime.Now.ToString("ddd, dd MMM yyy hh:mm:ss tt") </b>
-                    </div>
-                    <div class="col-md-1">
-                        <a href="https://coloursgalore.com/ShadeCardViewNew" style="color:white" target="_blank">
-                            MyShades
-                        </a>
-                    </div>
-                    <div class="col-md-1">
-                        <a href="https://coloursgalore.com/ColourMatch/Login" style="color:white" target="_blank">
-                            ColourMatch
-                        </a>
-                    </div>
-                    <div class="col-md-1">
-                        <a href="https://coloursgalore.com/ShadeCardViewNew/Home/GetSwatches" style="color:white" target="_blank">
-                            Swatches
-                        </a>
-                    </div>
-                    <div class="col-md-1">
-                        <a href='@Url.Action("ResolutionCheck","AllLevelQueueBoard")' style="color:white" target="_blank">
-                            Resolution
-                        </a>
-                    </div>
-                    <div class="col-md-3">
-                        <a href='@Url.Action("Index","Login")' style="color:white;  margin-left: 200px;">
-                            Logout
-                        </a>
-                    </div>
+    <div class="navbar navbar-inverse navbar-fixed-top" style="color:wheat;">
+        <div class="container">
+            <div id="content">
+                <img src="~/Images/colour-my-space-logo.jpg" />
+            </div>
+            <div class="row" style="margin-top: 15px;">
+
+                <div class="col-md-3">
+                    @*<b> @(Session["UserName"]?.ToString() ?? "") @(Session["Password"]?.ToString() ?? "") </b>*@
                 </div>
 
-            </div>
-        </div>
-        </br>
-        <div class="container body-content">
-            @RenderBody()
-            <hr />
-            <footer>
-                <!--<p style="font-size:11px;">-->
-                @*&copy; @DateTime.Now.Year -*@
-                @*Disclaimer - MyViz does its best to provide a best match of colours with the Shade Cards.
-                    However, factors such as viewing medium, screen size & resolution, source quality, lighting, shades selected etc. can also impact. <br/>*@
-                <!--Colourmyspace.co.in
-                </p>-->
-            </footer>
-        </div>
+                @*<div class="col-md-4"><b>Last Login  :  @Session["LastLogin"].ToString()</b></div>*@
+                <div class="col-md-2">
+                    <b style="margin-left:-213px;">MyVizCollections</b>
+                </div>
+                <div class="col-md-3">
+                    <b style="margin-left:-130px;"> @DateTime.Now.ToString("ddd, dd MMM yyy hh:mm:ss tt") </b>
+                </div>
 
+                <div class="col-md-1 text-center">
+                    <a href='@Url.Action("Help","AllLevelQueueBoard")' style="color:white" target="_blank">
+                        Help
+                    </a>                 
+                </div>
+                @*<div class="col-md-1">
+            <a href="https://coloursgalore.com/ShadeCardViewNew" style="color:white" target="_blank">
+                MyShades
+            </a>
+        </div>
+        <div class="col-md-1">
+            <a href="https://coloursgalore.com/ColourMatch/Login" style="color:white" target="_blank">
+                ColourMatch
+            </a>
+        </div>
+        <div class="col-md-1">
+            <a href="https://coloursgalore.com/ShadeCardViewNew/Home/GetSwatches" style="color:white" target="_blank">
+                Swatches
+            </a>
+        </div>
+        <div class="col-md-1">
+            <a href='@Url.Action("ResolutionCheck","AllLevelQueueBoard")' style="color:white" target="_blank">
+                Resolution
+            </a>
+        </div>*@
+                <div class="col-md-3">
+                    <a href='@Url.Action("Index","Login")' style="color:white;  margin-left: 200px;">
+                        Logout
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    </br>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <!--<p style="font-size:11px;">-->
+            @*&copy; @DateTime.Now.Year -*@
+            @*Disclaimer - MyViz does its best to provide a best match of colours with the Shade Cards.
+                However, factors such as viewing medium, screen size & resolution, source quality, lighting, shades selected etc. can also impact. <br/>*@
+            <!--Colourmyspace.co.in
+            </p>-->
+        </footer>
+    </div>
+    
         @Scripts.Render("~/bundles/jquery")
         @Scripts.Render("~/bundles/bootstrap")
         @RenderSection("scripts", required: false)
-    </body>
+</body>
 </html>

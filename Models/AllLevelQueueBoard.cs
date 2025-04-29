@@ -18,11 +18,13 @@ namespace MyVizCollections.Models
         public string Category { get; set; }
         public string SelectedImageLink { get; set; }
         public string PRILink { get; set; }
+        public string PRITest { get; set; }
         public string SCA1 { get; set; }
         public string SCA2 { get; set; }
         public string SCA3 { get; set; }
         public string Preview { get; set; }
-
+        public int WStatusCount { get; set; }
+        public int WStsCount { get; set; }
         public string SIOption { get; set; }
 
         public string ImageFileName1 { get; set; }
@@ -34,7 +36,7 @@ namespace MyVizCollections.Models
         public string CC { get; set; }
         public string DuplicateOf { get; set; }
         public string NexGenDealer { get; set; }
-
+        public string Appliedcolour { get; set; }
         public string Priority { get; set; }
 
     }

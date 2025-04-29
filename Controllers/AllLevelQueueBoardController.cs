@@ -14,13 +14,13 @@ using System.IO;
 using System.Web.UI.WebControls;
 using System.Web;
 using System.Linq;
-
 using PagedList;
 using System.Globalization;
 using System.Diagnostics;
 using Google.Protobuf.WellKnownTypes;
 using Newtonsoft.Json;
 using System.Web.DynamicData;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace MyVizCollections.Controllers
 {
@@ -46,10 +46,11 @@ namespace MyVizCollections.Controllers
                 {
                     imode = 2; // Use imode 2 for "view"
                 }
-                else if (Username == "SCAQA") // Check if Username is "SCAQA"
+                else if (Username == "ActOn05") // Check if Username is "ActOn05"
                 {
-                    imode = 3; // Use imode 3 for "SCAQA"
+                    imode = 3; // Use imode 3 for "ActOn05"
                 }
+               
                 using (MySqlConnection con = new MySqlConnection(constr))
                 {
                     using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_searchkey", con))
@@ -82,6 +83,7 @@ namespace MyVizCollections.Controllers
                                     Category = rdr["Category"].ToString(),
                                     SelectedImageLink = rdr["SelectedImageLink"].ToString(),
                                     PRILink = rdr["PRILink"].ToString(),
+                                    PRITest = rdr["PRITest"].ToString(),
                                     SCA1 = rdr["SCA1 Link"].ToString(),
                                     SCA2 = rdr["SCA2 Link"].ToString(),
                                     SCA3 = rdr["SCA3 Link"].ToString(),
@@ -96,7 +98,22 @@ namespace MyVizCollections.Controllers
                                     DuplicateOf = rdr["DuplicateOf"].ToString(),
                                     Priority = rdr["Priority"].ToString(),
                                     NexGenDealer = rdr["NexGenDealer"].ToString(),
+                                    //WStatusCount = rdr["WStatusCount"] != DBNull.Value ? Convert.ToInt32(rdr["WStatusCount"]) : 0
+
                                 };
+
+                                // After adding project to the list
+                                using (MySqlConnection countCon = new MySqlConnection(constr))
+                                {
+                                    countCon.Open();
+                                    using (MySqlCommand countCmd = new MySqlCommand("SELECT COUNT(*) FROM wstatuslog WHERE ProjectID = @pid AND Workstatus NOT IN (85, 86)", countCon))
+                                    {
+                                        countCmd.Parameters.AddWithValue("@pid", project.ProjectID);
+                                        int count = Convert.ToInt32(countCmd.ExecuteScalar());
+                                        project.WStsCount = count; // Assuming you have a property in your model for this
+                                    }
+                                }
+
 
                                 projects.Add(project);
                             }
@@ -106,6 +123,7 @@ namespace MyVizCollections.Controllers
 
                         int pageSize = 10; // Adjust the page size as needed
                         int pageNumber = (page ?? 1);
+                       
                         ViewBag.Fdate = Fdate;
                         ViewBag.s1 = s1;
                         ViewBag.s2 = s2;
@@ -121,6 +139,15 @@ namespace MyVizCollections.Controllers
             }
         }
 
+        public ActionResult Help()
+        {
+            ViewBag.SISubmittedPath = @"D:\ColourMySpace\MyViz\SISubmitted";
+            ViewBag.PRIPath = @"D:\ColourMySpace\MyViz\PRI";
+            ViewBag.PRITestPath = @"D:\ColourMySpace\MyViz\PRITest";
+            ViewBag.PDFPath = @"D:\ColourMySpace\MyViz\PDF";
+
+            return View();
+        }
 
 
 
@@ -159,11 +186,8 @@ namespace MyVizCollections.Controllers
                     caseID = Convert.ToString(ds.Tables[0].Rows[0]["CaseID"]),
                     Options = Convert.ToString(ds.Tables[0].Rows[0]["IorEorMS"]),
                     remarks = Convert.ToString(ds.Tables[0].Rows[0]["Remarks"]),
-
                     statuscode = Convert.ToString(ds.Tables[0].Rows[0]["wstatus"]),
-
                     Priority = Convert.ToString(ds.Tables[0].Rows[0]["Priority"]) == "Y" ? "Yes" : "No",
-
                     PSE = Convert.ToString(ds.Tables[0].Rows[0]["whoistheL6PSE"]),
                     QACPI = Convert.ToString(ds.Tables[0].Rows[0]["WhoistheL7QACPI"]),
                     CPBody1 = Convert.ToString(ds.Tables[0].Rows[0]["CPBody1"]),
@@ -455,6 +479,7 @@ namespace MyVizCollections.Controllers
             string image2 = string.Empty;
             string image3 = string.Empty;
             string PRI = string.Empty;
+            string PRITest = string.Empty;
             string D1 = string.Empty;
             string D2 = string.Empty;
             string D3 = string.Empty;
@@ -488,8 +513,12 @@ namespace MyVizCollections.Controllers
                     basePath = "D:\\ColourMySpace\\MyViz\\PRI\\" + ProjectID + "\\";
                     PRI = "PRI_" + $"{ProjectID}.jpg";
                     break;
-             
 
+                 case "PRI_Test":
+                    basePath = "D:\\ColourMySpace\\MyViz\\PRITest\\" + ProjectID + "\\";
+                    PRITest = "PRITest_" + $"{ProjectID}.jpg";
+                    break;
+                  
                 case "PDF1":
                     basePath = "D:\\ColourMySpace\\MyViz\\PDF\\" + ProjectID + "\\";
                     string checkfilename1 = basePath + "1_D" + $"{ProjectID}.pdf";
@@ -536,15 +565,6 @@ namespace MyVizCollections.Controllers
                     break;
 
 
-                  
-                //case "PDF2":
-                //    basePath = "D:\\ColourMySpace\\MyViz\\PDF\\" + ProjectID + "\\";
-                //    D2 = "2_D" + $"{ProjectID}.pdf";
-                //    break;
-                //case "PDF3":
-                //    basePath = "D:\\ColourMySpace\\MyViz\\PDF\\" + ProjectID + "\\";
-                //    D3 = "3_D" + $"{ProjectID}.pdf";
-                //    break;
 
 
                 default:
@@ -553,7 +573,7 @@ namespace MyVizCollections.Controllers
 
         
 
-        string imagePath = Path.Combine(basePath, filename,  image1, image2, image3, PRI, D1, D2, D3);
+        string imagePath = Path.Combine(basePath, filename,  image1, image2, image3, PRI, PRITest, D1, D2, D3);
             return imagePath;
         }
 
@@ -578,8 +598,45 @@ namespace MyVizCollections.Controllers
 
 
 
+
+        //public JsonResult Qualitycheck(string projectID, string result, string comments)
+        //{
+        //    string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
+
+        //    try
+        //    {
+        //        using (MySqlConnection con = new MySqlConnection(constr))
+        //        {
+
+
+        //            // If no feedback exists, save the new feedback
+        //            using (MySqlCommand cmd = new MySqlCommand("SP_SCAQA", con))
+        //            {
+        //                cmd.CommandType = CommandType.StoredProcedure;
+
+        //                // Add parameters
+        //                cmd.Parameters.AddWithValue("@ProjectID_P", projectID);
+        //                cmd.Parameters.AddWithValue("@QCResult", result);
+        //                cmd.Parameters.AddWithValue("@QCComments", comments);
+
+        //                con.Open();
+        //                cmd.ExecuteNonQuery();
+        //                con.Close();
+        //            }
+        //        }
+
+        //        return Json(new { success = true, message = "Quality Check updated successfully!" });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { success = false, message = $"Error: {ex.Message}" });
+        //    }
+        //}
+
+
+
         [HttpPost]
-        public JsonResult SaveQAFeedback(string projectID, string result, string comments)
+        public JsonResult Qualitycheck(string projectID, string result, string comments)
         {
             string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
 
@@ -587,29 +644,14 @@ namespace MyVizCollections.Controllers
             {
                 using (MySqlConnection con = new MySqlConnection(constr))
                 {
-                    // Check if feedback already exists
-                    using (MySqlCommand checkCmd = new MySqlCommand("SELECT COUNT(*) FROM SCAQA WHERE ProjectID = @ProjectID", con))
-                    {
-                        checkCmd.Parameters.AddWithValue("@ProjectID", projectID);
-                        con.Open();
-                        int feedbackCount = Convert.ToInt32(checkCmd.ExecuteScalar());
-                        con.Close();
-
-                        if (feedbackCount > 0)
-                        {
-                            return Json(new { success = false, message = "Feedback already exists for this project." });
-                        }
-                    }
-
-                    // If no feedback exists, save the new feedback
-                    using (MySqlCommand cmd = new MySqlCommand("SP_SCAQAFeedback", con))
+                    using (MySqlCommand cmd = new MySqlCommand("SP_SCAQA", con))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
 
                         // Add parameters
-                        cmd.Parameters.AddWithValue("@ProjectID", projectID);
-                        cmd.Parameters.AddWithValue("@Result", result);
-                        cmd.Parameters.AddWithValue("@Comments", comments);
+                        cmd.Parameters.AddWithValue("@ProjectID_P", projectID);
+                        cmd.Parameters.AddWithValue("@QCResult", result);
+                        cmd.Parameters.AddWithValue("@QCComments", comments);
 
                         con.Open();
                         cmd.ExecuteNonQuery();
@@ -617,17 +659,20 @@ namespace MyVizCollections.Controllers
                     }
                 }
 
-                return Json(new { success = true, message = "SCAQA feedback saved successfully!" });
+                return Json(new { success = true, message = "Quality Check updated successfully!" });
             }
             catch (Exception ex)
             {
                 return Json(new { success = false, message = $"Error: {ex.Message}" });
             }
         }
+   
 
 
 
-        public ActionResult Statuslog(int projectid)
+
+
+public ActionResult Statuslog(int projectid)
         {
             string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
             MySqlConnection con = new MySqlConnection(constr);
@@ -643,6 +688,7 @@ namespace MyVizCollections.Controllers
 
                 con.Open();
                 MySqlDataAdapter ad = new MySqlDataAdapter(com);
+
                 ad.Fill(ds);
 
                 List<WStatusLog> statusLogs = new List<WStatusLog>();
@@ -670,12 +716,12 @@ namespace MyVizCollections.Controllers
                 }
 
 
-                // Fetch feedback from scaqa table
-                MySqlCommand feedbackCommand = new MySqlCommand("SELECT Result FROM scaqa WHERE ProjectID = @ProjectID", con);
-                feedbackCommand.Parameters.AddWithValue("@ProjectID", projectid);
-                string feedback = feedbackCommand.ExecuteScalar() as string;
+                //// Fetch feedback from scaqa table
+                //MySqlCommand feedbackCommand = new MySqlCommand("SELECT Result FROM scaqa WHERE ProjectID = @ProjectID", con);
+                //feedbackCommand.Parameters.AddWithValue("@ProjectID", projectid);
+                //string feedback = feedbackCommand.ExecuteScalar() as string;
 
-                ViewBag.Feedback = feedback; // Pass feedback to the view
+                //ViewBag.Feedback = feedback; // Pass feedback to the view
 
                 return View("Statuslog", statusLogs);
             }
@@ -694,38 +740,69 @@ namespace MyVizCollections.Controllers
         }
 
 
-        //"D:\\ColoursGalore\\CW\\User_Data\\PDF_Files\\" + ProjectID + "\\";
-        //public ActionResult Appliedcolour(int ProjectID)
-        //{
-        //    // Get JSON data
-        //    string jsonFilePath = $"D:\\ColoursGalore\\CW\\User_Data\\JSON_Files\\{ProjectID}\\{option}_{ProjectID}.json";
-        //    DataModel jsonData = JsonConvert.DeserializeObject<DataModel>(System.IO.File.ReadAllText(jsonFilePath));
 
-        //    // Get layered images
-        //    var imageFiles = Directory.GetFiles(imagesDirectoryPath, "*.png");
-        //    var layeredImages = imageFiles.Select(imagePath =>
-        //    {
-        //        string fileName = Path.GetFileNameWithoutExtension(imagePath);
-        //        var plot = jsonData.Plot.FirstOrDefault(p => p.Name.Equals(fileName, StringComparison.OrdinalIgnoreCase));
-        //        if (plot != null)
-        //        {
-        //            return new LayeredImage
-        //            {
-        //                c = plot.C,
-        //                r = plot.r,
-        //                g = plot.g,
-        //                b = plot.b
-        //            };
-        //        }
-        //        return null;
-        //    });
+        public ActionResult Myvizinsylog(int projectid)
+        {
+            string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
+            MySqlConnection con = new MySqlConnection(constr);
 
-        //    return Json(new
-        //    {
-        //        Mainimage = mainImageUrl,
-        //        LayeredImages = layeredImages
-        //    }, JsonRequestBehavior.AllowGet);
-        //}
+            try
+            {
+                DataSet ds = new DataSet();
+
+                MySqlCommand com = new MySqlCommand("SP_myvizinsylog_Collections", con);
+                com.CommandTimeout = 1600;
+                com.CommandType = CommandType.StoredProcedure;
+
+                // Only pass the one parameter that matches the stored procedure
+                com.Parameters.AddWithValue("Project_ID", projectid);
+
+                MySqlDataAdapter ad = new MySqlDataAdapter(com);
+                ad.Fill(ds);
+
+                List<WStatusLog> MyVizinsyLogs = new List<WStatusLog>();
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    foreach (DataRow row in ds.Tables[0].Rows)
+                    {
+                        WStatusLog model = new WStatusLog()
+                        {
+                            ProjectID = Convert.ToInt32(row["ProjectID"]),
+                            PSECode = Convert.ToString(row["PSECode"]),
+                            LogType = Convert.ToString(row["LogType"]),
+                            Remarks = Convert.ToString(row["Remarks"]),
+                            Count = row["Count"] != DBNull.Value ? Convert.ToInt32(row["Count"]) : 0,
+                            M_date = row["C_date"] != DBNull.Value ? Convert.ToDateTime(row["C_date"]) : (DateTime?)null
+                        
+                        };
+                   
+
+                        model.M_dateFormatted = model.M_date?.ToString("dd/MM/yyyy hh:mm:ss tt");
+
+                        MyVizinsyLogs.Add(model);
+                    }
+                }
+
+                return View("Myvizinsylog", MyVizinsyLogs);
+            }
+            catch (Exception ex)
+             {
+                // Optionally log the error
+                return Content("Error: " + ex.Message);
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+            }
+        }
+
+
+
+
+
+
 
 
         public ActionResult LaunchPreview(int Id)

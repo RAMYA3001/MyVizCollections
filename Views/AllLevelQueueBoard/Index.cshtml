@@ -121,20 +121,20 @@
 
 
 </style>
-<label for="pid1" style=" margin-left: 780px;  color: red;margin-bottom: 12px;">
+<label for="pid1" style=" margin-left: 835px;  color: red;margin-bottom: 12px;">
     Compare
 </label>
 
-<div style=" padding: 10px 10px; display: flex; align-items: center; width: 49%; margin-bottom: 24px;margin-left:-40px;">
+<div style=" padding: 10px 10px; display: flex; align-items: center; width: 49%; margin-bottom: 24px;margin-left:-98px;">
     <label for="example-datepicker" style="margin-right: 3px;">StDate:</label>
     <input type="date" id="datepicker" value="" style="margin-right: 3px;">
 
     <button type="submit" class="btn btn-primary" id="btnSubmit1" style="height: 30px; margin-right: 15px;">Submit</button>
 
     @*<span style="margin-right: 10px;">OR</span>*@
-    <label for="search" style=" margin-top: 11px;margin-left:-7px;margin-right:6px;">
+    @*<label for="search" style=" margin-top: 11px;margin-left:-7px;margin-right:6px;">
         OR
-    </label>
+    </label>*@
     @*<select class="form-control" id="dropdownSelect3" style="width: 104px; margin-right: 10px " title=" Search Key">
 
             <option value="tso.ProjectID" selected>ProjectID</option>
@@ -147,17 +147,18 @@
             <option value="tso.Priority">Priority</option>
             <option value="tso.NexGenDealer">NxtGen</option>
         </select>*@
-    <select class="form-control" id="dropdownSelect3" style="width: 104px; margin-right: 10px " title="Search Key">
-        <option value="tso.ProjectID" @(ViewBag.s1 == "tso.ProjectID" ? "selected" : "")>ProjectID</option>
-        <option value="tso.UserID" @(ViewBag.s1 == "tso.UserID" ? "selected" : "")>TSO</option>
-        <option value="tso.Wstatus" @(ViewBag.s1 == "tso.Wstatus" ? "selected" : "")>Status</option>
-        <option value="pt.IorEorMS" @(ViewBag.s1 == "pt.IorEorMS" ? "selected" : "")>Type</option>
-        <option value="pt.ProjectCategory" @(ViewBag.s1 == "pt.ProjectCategory" ? "selected" : "")>Category</option>
-        <option value="fb.TSOInput" @(ViewBag.s1 == "fb.TSOInput" ? "selected" : "")>Feedback</option>
-        <option value="tso.ColourChoicebyTSO" @(ViewBag.s1 == "tso.ColourChoicebyTSO" ? "selected" : "")>CC</option>
-        <option value="tso.Priority" @(ViewBag.s1 == "tso.Priority" ? "selected" : "")>Priority</option>
-        <option value="tso.NexGenDealer" @(ViewBag.s1 == "tso.NexGenDealer" ? "selected" : "")>NxtGen</option>
-    </select>
+<select class="form-control" id="dropdownSelect3" style="width: 104px; margin-right: 10px " title="Search Key">
+    <option value="tso.ProjectID" @(ViewBag.s1 == "tso.ProjectID" ? "selected" : "")>ProjectID</option>
+    <option value="tso.UserID" @(ViewBag.s1 == "tso.UserID" ? "selected" : "")>TSO</option>
+    <option value="tso.Wstatus" @(ViewBag.s1 == "tso.Wstatus" ? "selected" : "")>Status</option>
+    <option value="WStatusCount" @(ViewBag.s1 == "WStatusCount" ? "selected" : "")>St#</option>
+    <option value="pt.IorEorMS" @(ViewBag.s1 == "pt.IorEorMS" ? "selected" : "")>Type</option>
+    <option value="pt.ProjectCategory" @(ViewBag.s1 == "pt.ProjectCategory" ? "selected" : "")>Category</option>
+    <option value="fb.TSOInput" @(ViewBag.s1 == "fb.TSOInput" ? "selected" : "")>Feedback</option>
+    <option value="tso.ColourChoicebyTSO" @(ViewBag.s1 == "tso.ColourChoicebyTSO" ? "selected" : "")>CC</option>
+    <option value="tso.Priority" @(ViewBag.s1 == "tso.Priority" ? "selected" : "")>Priority</option>
+    <option value="tso.NexGenDealer" @(ViewBag.s1 == "tso.NexGenDealer" ? "selected" : "")>NxtGen</option>
+</select>
 
     <input type="text" name="q" class="search-text form-control" placeholder="Search..." title="Search relevant details in the grid" data-toggle="tooltip" id="searchtxt" style="width: 121px; margin-right: 2px; margin-left: -8px; ">
   
@@ -168,7 +169,7 @@
 </div>
 
 
-<div class="form-group" style="border: 2px solid #337ab7; padding: 41px 14px; display: flex; justify-content: flex-start; margin-bottom: 3px; margin-top: -119px; margin-left:617px; width: 708px; height: 1px;">
+<div class="form-group" style="border: 2px solid #337ab7; padding: 41px 14px; display: flex; justify-content: flex-start; margin-bottom: 3px; margin-top: -119px; margin-left:558px; width: 708px; height: 1px;">
     <label for="pid1" style=" margin-top: 11px;">
         Project1:
     </label>
@@ -193,13 +194,15 @@
 
     </select>
     <button type="submit" class="btn btn-primary" title="Compare two different image in one single screen" id="btnCompare" style="height: 30px; margin: 2px;">Match</button>
-   
 
 
-    @if (Session["username"] != null && Session["username"].ToString() == "SCAQA")
-    {
-        <button type="submit" class="btn btn-primary" title="SCAQA Feedback" id="showPopup" style="height: 30px; margin: 2px;">SCAQA</button>
-    }
+
+    @*@if (Session["username"] != null && Session["username"].ToString() == "ActOn05")
+        {
+            <button type="submit" class="btn btn-primary" title="SCAQA " id="showPopup" style="height: 30px; margin: 2px;">SCAQA</button>
+        }*@
+
+
 
     <!-- Background overlay -->
     <div id="overlay" style="display:none;"></div>
@@ -209,16 +212,18 @@
 
         <h3 style="color:darkblue; text-align:center;">SCAQA Feedback</h3>
         <label for="projectID">Project ID:</label>
-        <input type="text" id="projectID" required /><br><br>
+        <input type="text" id="projectID" value="" required readonly /><br><br>
 
-        <label for="qaResult">QA Result:</label>
+        <label for="qaResult">QC Result:</label>
         <select id="qaResult">
             <option value="Pass">Pass</option>
             <option value="Fail">Fail</option>
         </select><br><br>
 
-        <label for="qaComments">Comments:</label><br>
+        <!--<label for="qaComments">Comments:</label><br>
         <div id="qaComments">
+            <input type="checkbox" id="sectioningQualitygood" value="Sectioning quality good">
+            <label for="sectioningQualitygood">Sectioning quality good</label><br>
             <input type="checkbox" id="sectioningQuality" value="Sectioning quality">
             <label for="sectioningQuality">Sectioning quality</label><br>
             <input type="checkbox" id="mergedSections" value="Some sections seem merged / not clear">
@@ -237,13 +242,13 @@
             <label for="badSky">Sky not good</label><br>
             <input type="checkbox" id="ignoredAreas" value="Unimportant areas ignored">
             <label for="ignoredAreas">Unimportant areas ignored</label><br>
-        </div><br>
+        </div><br>-->
 
         <!-- Textbox to show selected comment (hidden) -->
-        <textarea id="selectedComments" placeholder="Selected comments will appear here" readonly style="display:none;"></textarea>
+        <!--<textarea id="selectedComments" placeholder="Selected comments will appear here" readonly style="display:none;"></textarea>-->
 
         <!-- Additional comment -->
-        <label for="additionalComments">Additional Comments:</label><br>
+        <label for="QCComments">QC Comments:</label><br>
         <textarea id="additionalComments" placeholder="Enter additional comments here" rows="3" style="width:100%;"></textarea>
 
         <!-- Save and Close buttons centered -->
@@ -252,10 +257,6 @@
             <button id="closePopup" style="background-color: #337ab7; border-color: #2e6da4; color: white;margin-left:-9px; ">Close</button>
         </div>
     </div>
-   
-
-
-
 
 
 
@@ -263,7 +264,7 @@
             <input type="button" class="btn btn-primary"  value="Resolution" style="margin-left:6px" />
         </a>*@
 </div>
-<div class="panel panel-primary list-panel" id="list-panel" style="width:98%;margin-top:12px">
+<div class="panel panel-primary list-panel" id="list-panel" style="width:115%;margin-top:12px;margin-left:-74px;">
     <div class="panel-heading list-panel-heading">
         <h1 class="panel-title list-panel-title">DashBoard</h1>
     </div>
@@ -286,17 +287,18 @@
                     <th>RegdOn</th>
                     <th>RegdBy</th>
                     <th>St</th>
+                    <th>St#</th>
                     <th>StDate</th>
-                    <th>Type</th>
-                    <th>Category</th>
                     <th data-toggle="tooltip" title="SelectedImageLink">SILink</th>
                     <th>PRILink</th>
+                    <th>PRITest</th>
                     <th>SCA1</th>
                     <th>SCA2 </th>
                     <th>SCA3</th>
                     <th>Source1</th>
                     <th>Source2</th>
                     <th>Source3</th>
+                    @*<th>Appliedcolour</th>*@
                     <th data-toggle="tooltip" title="SelectedImageOption">SIOpt</th>
                     <th>Preview</th>
                     <th>Site</th>
@@ -306,6 +308,16 @@
                     <th>DuplicateOf</th>
                     <th data-toggle="tooltip" title="Priority">PRI</th>
                     <th data-toggle="tooltip" title="NxtGen">NG</th>
+                    <th>Type</th>
+                    <th>Category</th>
+
+                    <th>
+                        @if (Session["username"] != null && Session["username"].ToString() == "ActOn05")
+                        {
+                            @:SCAQA
+                        }
+                    </th>
+
                 </tr>
             </thead>
 
@@ -314,7 +326,7 @@
                 {
                     <tr>
                         <td style="text-align-last:right">
-                            <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/myModal?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Project details, to update status" data-toggle="tooltip">@asset.ProjectID</a>
+                            <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/myModal?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Project details, to update status" data-toggle="tooltip" target="_blank">@asset.ProjectID</a>
                         </td>
 
 
@@ -323,16 +335,29 @@
 
                         <td>@String.Format("{0:ddd, dd MMM hh:mm tt}", asset.RegdOn)</td>
                         @*<td>@(Convert.ToDateTime(asset.RegdOn).ToString("dd/MM/yy"))</td>*@
-                        <td>@asset.RegdBy</td>
-                        <td>
-                            @asset.FinalStatus
+                        @*<td>@asset.RegdBy</td>*@
+
+
+                        <td style="text-align-last:right">
+                            <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/Myvizinsylog?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Myvizinsylog details" data-toggle="tooltip" target="_blank"> @asset.RegdBy</a>
                         </td>
+
+
+
+
+
+                        <td style="text-align-last:right">
+                            <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/Statuslog?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Status log details" data-toggle="tooltip" target="_blank"> @asset.FinalStatus</a>
+                        </td>
+
+
+
+                        <td>@asset.WStsCount</td>
 
                         <td>@string.Format("{0:ddd, dd MMM hh:mm tt}", asset.FinalStatusDt)</td>
                         @*<td>@(Convert.ToDateTime(asset.FinalStatusDt).ToString("dd/MM/yy"))</td>*@
 
-                        <td>@asset.Type</td>
-                        <td>@asset.Category</td>
+
                         <td>
                             @if (!string.IsNullOrEmpty(asset.SelectedImageLink))
                             {
@@ -355,6 +380,16 @@
                             }
                         </td>
 
+                        <td>
+                            @if (!string.IsNullOrEmpty(asset.PRITest))
+                            {
+                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID,linkType = "PRI_Test" })" target="_blank" title="Click to open PRITest" data-toggle="tooltip">@asset.ProjectID</a>
+                            }
+                            else
+                            {
+
+                            }
+                        </td>
                         <td>
                             @if (!string.IsNullOrEmpty(asset.SCA1))
                             {
@@ -419,7 +454,10 @@
                             }
                         </td>
 
+                        @*<td>
+            <a href="@Url.Action("Appliedcolour", "AllLevelQueueBoard")" target="_blank" title="Click to open Imagefile3" data-toggle="tooltip">@asset.Appliedcolour</a>
 
+        </td>*@
 
                         <td>
                             @asset.SIOption
@@ -434,6 +472,14 @@
                         <td>@asset.DuplicateOf</td>
                         <td>@asset.Priority</td>
                         <td>@asset.NexGenDealer</td>
+                        <td>@asset.Type</td>
+                        <td>@asset.Category</td>
+                        <td>
+                            @if (Session["username"] != null && Session["username"].ToString() == "ActOn05")
+                            {
+                                <button type="submit" class="btn btn-primary" title="SCAQA " id="showPopup" data-id="@asset.ProjectID" style="height: 30px; margin: 2px;" Readonly>SCAQA</button>
+                            }
+                        </td>
                     </tr>
 
 
@@ -470,13 +516,22 @@
             $(function () {
 
 
+                //$('#dropdownSelect3').change(function () {
+                //    const selectedValue1 = $(this).val(); // Get the selected value
+                //    console.log("Selected value1:", selectedValue1);
+
+
+                //});
                 $('#dropdownSelect3').change(function () {
                     const selectedValue1 = $(this).val(); // Get the selected value
                     console.log("Selected value1:", selectedValue1);
 
-                    // Optionally, store this value in ViewBag (or update a hidden field, if required)
-                    // Example: update the ViewBag or make an AJAX call to send the data to the server
-                    // viewBagSelectedValue = selectedValue;  // For handling in server-side logic
+                    // Check if the selected value is "WStatusCount"
+                    if (selectedValue1 === "WStatusCount") {
+                        $("#btnSubmit1").hide(); // Hide the button
+                    } else {
+                        $("#btnSubmit1").show(); // Show the button for other values
+                    }
                 });
 
 
@@ -504,14 +559,53 @@
             });
 
 
-            $("#btnSubmit").click(function () {
-                $("#progress").show();
-                var pid = $("#dropdownSelect3").val();
-                var pid1 = $("#searchtxt").val();
-               var url = "@Url.Action("Index", "AllLevelQueueBoard")" + "?s1=" + pid + "&s2=" + pid1;
-    window.location.href = url;
 
-            });
+
+
+
+
+
+        @*$("#btnSubmit").click(function () {
+            $("#progress").show();
+            var pid = $("#dropdownSelect3").val();
+            var pid1 = $("#searchtxt").val();
+           var url = "@Url.Action("Index", "AllLevelQueueBoard")" + "?s1=" + pid + "&s2=" + pid1;
+window.location.href = url;
+
+        });*@
+
+              $("#btnSubmit").click(function () {
+    $("#progress").show();
+
+    var selectedDropdown = $("#dropdownSelect3").val(); // s1
+    var searchText = $("#searchtxt").val(); // s2
+    var selectedDate = $("#datepicker").val(); // Fdate
+
+    var url = "@Url.Action("Index", "AllLevelQueueBoard")" + "?s1=" + selectedDropdown + "&s2=" + searchText;
+
+    if (selectedDropdown === "WStatusCount") {
+        url += "&Fdate=" + selectedDate; // Only add Fdate if dropdown is WStatusCount
+    //    $("#btnSubmit1").hide(); // Hide the button when the condition is met
+    //} else {
+    //    $("#btnSubmit1").show(); // Show the button if the condition is not met
+    }
+
+    window.location.href = url;
+});
+
+
+
+
+
+
+
+   $("#btnSubmit1").click(function () {
+       var curdate1 = $("#datepicker").val();
+       /*window.location.href = '/AllLevelQueueBoard/Index/?page=null&Fdate=' + curdate1;*/
+       var url = "@Url.Action("Index", "AllLevelQueueBoard")" + "?Fdate=" + curdate1;
+       window.location.href = url;
+
+   });
 
 
 
@@ -527,13 +621,7 @@
                 $('#dropdownSelect3').val('tso.ProjectID'); // Reset to ProjectID
                });
 
-            $("#btnSubmit1").click(function () {
-                var curdate1 = $("#datepicker").val();
-                /*window.location.href = '/AllLevelQueueBoard/Index/?page=null&Fdate=' + curdate1;*/
-                var url = "@Url.Action("Index", "AllLevelQueueBoard")" + "?Fdate=" + curdate1;
-                window.location.href = url;
 
-            });
 
 
                 function launchPreview(projectId) {
@@ -601,6 +689,7 @@
                                     else if (sourceType2 === "PRI") {
                                         imageUrl2 = "https://colourmyspace.co.in/MyVizCollections/AllLevelQueueBoard/DisplayImage?ProjectID=" + ProjectID2 + "&linkType=PRI";
                                     }
+
                                     // Open a new window to display the images
                                     var newWindow = window.open();
 
@@ -625,87 +714,47 @@
             // Enable Save Button when mandatory fields are filled
 
 
-   // Enable Save Button when mandatory fields are filled
-   function checkMandatoryFields() {
-       const projectID = document.getElementById('projectID').value.trim();
-       const qaResult = document.getElementById('qaResult').value;
-       const additionalComments = document.getElementById('additionalComments').value.trim();
 
-       // Save button is enabled when Project ID is filled and QA Result is selected
-       document.getElementById('saveQAResult').disabled = !projectID || !qaResult;
-   }
 
-   // Show popup with overlay
-   document.getElementById('showPopup').addEventListener('click', () => {
-       document.getElementById('qaPopup').style.display = 'block';
-       document.getElementById('overlay').style.display = 'block'; // Show the overlay
-   });
+            // Use event delegation to handle clicks on all SCAQA buttons
+$('#assets-data-table').on('click', '#showPopup', function () {
+    var projectID = $(this).data('id'); // Get the ProjectID from the clicked button
 
-   // Close popup and hide overlay
-   document.getElementById('closePopup').addEventListener('click', () => {
-       console.log('Close button clicked'); // Add this line for debugging
-       document.getElementById('qaPopup').style.display = 'none';
-       document.getElementById('overlay').style.display = 'none';
-       document.getElementById('projectID').value = '';
-       document.getElementById('qaResult').value = 'Pass';
-       const checkboxes = document.querySelectorAll('#qaComments input[type="checkbox"]');
-       checkboxes.forEach(checkbox => checkbox.checked = false);
-       document.getElementById('additionalComments').value = '';
-       checkMandatoryFields();
-   });
+    // Set the ProjectID in the popup input field
+    $('#projectID').val(projectID);
 
-   // Populate selected comments when checkboxes are checked
-   document.querySelectorAll('#qaComments input[type="checkbox"]').forEach(checkbox => {
-       checkbox.addEventListener('change', () => {
-           const selectedComments = [];
-           const checkedCheckboxes = document.querySelectorAll('#qaComments input[type="checkbox"]:checked');
+    // Show the overlay and the popup form
+    $('#overlay').show();
+    $('#qaPopup').show();
+});
 
-           checkedCheckboxes.forEach(checkbox => {
-               selectedComments.push(checkbox.value);
-           });
+// Close popup and hide overlay
+$('#closePopup').on('click', function () {
+    console.log('Close button clicked');
+    var url = "@Url.Action("Index", "AllLevelQueueBoard")";
+    window.location.href = url; // Redirect to the index page
+    $('#qaPopup').hide();
+    $('#overlay').hide();
+    $('#projectID').val('');  // Clear ProjectID field
+    $('#qaResult').val('Pass');
+    const checkboxes = $('#qaComments input[type="checkbox"]');
+    checkboxes.prop('checked', false);
+    $('#additionalComments').val('');
+    $('#selectedComments').val('');
+    resetPopupFields();
+});
 
-           // Set the selected comments (even though it's hidden, it's being sent to the server)
-           document.getElementById('selectedComments').value = selectedComments.join(', ');
-           checkMandatoryFields();
-       });
-   });
+// Populate selected comments when checkboxes are checked
+$('#qaComments input[type="checkbox"]').on('change', function () {
+    const selectedComments = [];
+    $('#qaComments input[type="checkbox"]:checked').each(function () {
+        selectedComments.push($(this).val());
+    });
 
-   // Save QA Result
-   // Save QA Feedback
-   $('#saveQAResult').on('click', function () {
-       const projectID = $('#projectID').val().trim();
-       const qaResult = $('#qaResult').val();
-       const selectedComments = $('#selectedComments').val();
-       const additionalComments = $('#additionalComments').val().trim();
-
-       const finalComments = [selectedComments, additionalComments].filter(Boolean).join(', ');
-
-       $.ajax({
-           url: '@Url.Action("SaveQAFeedback", "AllLevelQueueBoard")',
-           type: 'POST',
-           contentType: 'application/json',
-           data: JSON.stringify({ projectID: projectID, result: qaResult, comments: finalComments }),
-           success: function (data) {
-               if (data.success) {
-                   alert('QA Result saved successfully!');
-                   resetPopupFields();
-                   $('#qaPopup').hide();
-                   $('#overlay').hide();
-               } else {
-                   alert(`Error: ${data.message}`);
-               }
-           },
-           error: function (xhr, status, error) {
-               console.error('Error:', error);
-               alert('An error occurred while saving QA feedback.');
-           }
-       });
-   });
-
-   // Input validation for Save button
-   document.getElementById('projectID').addEventListener('input', checkMandatoryFields);
-   document.getElementById('qaResult').addEventListener('change', checkMandatoryFields);
-   document.getElementById('additionalComments').addEventListener('input', checkMandatoryFields);
+    // Set the selected comments (even though it's hidden, it's being sent to the server)
+    $('#selectedComments').val(selectedComments.join(', '));
+    checkMandatoryFields();
+});
 
 
 
@@ -713,92 +762,96 @@
 
 
 
-    //function checkMandatoryFields() {
-    //    const projectID = document.getElementById('projectID').value.trim();
-    //    const qaResult = document.getElementById('qaResult').value;
 
-    //    // Save button enabled only when Project ID is filled and QA Result is selected
-    //    document.getElementById('saveQAResult').disabled = !(projectID && qaResult);
-    //}
+// Save QA Result
+$('#saveQAResult').on('click', function () {
+    $("#progress").show();
+    const projectID = $('#projectID').val().trim();
+    const qaResult = $('#qaResult').val();
+  
+    const additionalComments = $('#additionalComments').val().trim();
 
-    //// Show popup with overlay
-    //document.getElementById('showPopup').addEventListener('click', () => {
-    //    document.getElementById('qaPopup').style.display = 'block';
-    //    document.getElementById('overlay').style.display = 'block';
-    //});
+ 
 
-    //// Close popup and hide overlay
-    //document.getElementById('closePopup').addEventListener('click', () => {
-    //    document.getElementById('qaPopup').style.display = 'none';
-    //    document.getElementById('overlay').style.display = 'none';
-    //    resetPopupFields();
-    //});
+    $.ajax({
+        url: '@Url.Action("Qualitycheck", "AllLevelQueueBoard")',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ projectID: projectID, result: qaResult, comments: additionalComments }),
+        success: function (data) {
+            if (data.success) {
+                alert('QA Result saved successfully!');
+                resetPopupFields();
+                $('#qaPopup').hide();
+                $('#overlay').hide();
+                location.reload();
+            } else {
+                alert(`Error: ${data.message}`);
+                resetPopupFields();
+            }
+        },
 
-    //function resetPopupFields() {
-    //    document.getElementById('projectID').value = '';
-    //    document.getElementById('qaResult').value = 'Pass';
-    //    document.querySelectorAll('#qaComments input[type="checkbox"]').forEach(checkbox => checkbox.checked = false);
-    //    document.getElementById('additionalComments').value = '';
-    //    document.getElementById('selectedComments').value = '';
-    //    checkMandatoryFields();
-    //}
+        error: function (xhr, status, error) {
+            console.error('Error:', error);
+            alert('An error occurred while saving QA feedback.');
+        }
+    });
+});
 
-    //// Populate selected comments
-    //document.querySelectorAll('#qaComments input[type="checkbox"]').forEach(checkbox => {
-    //    checkbox.addEventListener('change', () => {
-    //        const selectedComments = Array.from(document.querySelectorAll('#qaComments input[type="checkbox"]:checked'))
-    //            .map(checkbox => checkbox.value)
-    //            .join(', ');
+// Input validation for Save button
+document.getElementById('projectID').addEventListener('input', checkMandatoryFields);
+document.getElementById('qaResult').addEventListener('change', checkMandatoryFields);
+document.getElementById('additionalComments').addEventListener('input', checkMandatoryFields);
+$('#qaComments input[type="checkbox"]').on('change', checkMandatoryFields);
 
-    //        document.getElementById('selectedComments').value = selectedComments;
-    //        checkMandatoryFields();
-    //    });
-    //});
+// Reset popup fields
+function resetPopupFields() {
+    $('#projectID').val('');
+    $('#qaResult').val('Pass');
+    $('#selectedComments').val('');
+    $('#additionalComments').val('');
+    $('#qaComments input[type="checkbox"]').prop('checked', false);
+}
 
-    //// Check mandatory fields for additional comments
-    //document.getElementById('additionalComments').addEventListener('input', checkMandatoryFields);
+// Input validation for Save button
+function checkMandatoryFields() {
+    const projectID = $('#projectID').val().trim();
+    const qaResult = $('#qaResult').val();
+    const selectedComments = $('#selectedComments').val().trim();
+    const additionalComments = $('#additionalComments').val().trim();
 
-    //// Save QA Feedback
-    //document.getElementById('saveQAResult').addEventListener('click', () => {
-    //    const projectID = document.getElementById('projectID').value.trim();
-    //    const qaResult = document.getElementById('qaResult').value;
-    //    const selectedComments = document.getElementById('selectedComments').value;
-    //    const additionalComments = document.getElementById('additionalComments').value.trim();
+    // Enable the Save button only if ProjectID, QA Result, and at least one comment field are filled
+    $('#saveQAResult').prop('disabled', !(projectID && qaResult && (selectedComments || additionalComments)));
+}
 
-    //    const finalComments = [selectedComments, additionalComments].filter(Boolean).join(', ');
 
-    //    fetch('/AllLevelQueueBoard/SaveQAFeedback', {
-    //        method: 'POST',
-    //        headers: {
-    //            'Content-Type': 'application/json',
-    //        },
-    //        body: JSON.stringify({ projectID, result: qaResult, comments: finalComments }),
-    //    })
-    //        .then(response => {
-    //            if (!response.ok) {
-    //                throw new Error(`Network response was not ok. Status: ${response.status}`);
-    //            }
-    //            return response.json();
-    //        })
-    //        .then(data => {
-    //            if (data.success) {
-    //                alert('QA Result saved successfully!');
-    //                resetPopupFields();
-    //                document.getElementById('qaPopup').style.display = 'none';
-    //                document.getElementById('overlay').style.display = 'none';
-    //            } else {
-    //                alert(`Error: ${data.message}`);
-    //            }
-    //        })
-    //        .catch(error => {
-    //            console.error('Error:', error);
-    //            alert('An error occurred while saving QA feedback.');
-    //        });
-    //});
 
-    //// Validate fields for Save button
-    //document.getElementById('projectID').addEventListener('input', checkMandatoryFields);
-    //document.getElementById('qaResult').addEventListener('change', checkMandatoryFields);
+            function checkMandatoryFields() {
+                const projectID = $('#projectID').val().trim();
+                const qaResult = $('#qaResult').val();
+
+                // Enable Save button only if ProjectID and QA Result are selected
+                if (projectID && qaResult) {
+                    $('#saveQAResult').prop('disabled', false); // Enable button
+                } else {
+                    $('#saveQAResult').prop('disabled', true); // Disable button
+                }
+            }
+
+            // Ensure checkMandatoryFields runs on input changes
+            $('#projectID, #qaResult, #additionalComments').on('input change', checkMandatoryFields);
+            $('#qaComments input[type="checkbox"]').on('change', checkMandatoryFields);
+
+            // Run once when popup opens (to check if button should be enabled immediately)
+            $(document).ready(function () {
+                checkMandatoryFields();
+            });
+
+
+
+
+
+
 
 
         </script>

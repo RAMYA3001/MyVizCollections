@@ -26,7 +26,7 @@ namespace MyVizCollections.Controllers
                 Session["Password"] = user.Password;
                 return RedirectToAction("Index", "AllLevelQueueBoard");
             }
-            else if ((user.Username == "Insy1" && user.Password == "insy@1$2") || (user.Username == "SCAQA" && user.Password == "SCAQA@2#4"))
+            else if ((user.Username == "view" && user.Password == "view@2#4") ||  (user.Username == "ActOn05" && user.Password == "admin@2#4"))
 
             {
                 Session["Username"] = user.Username;
@@ -40,58 +40,6 @@ namespace MyVizCollections.Controllers
             }
         }
 
-
-        //public ActionResult Index(User user)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
-
-        //        using (MySqlConnection con = new MySqlConnection(constr))
-        //        {
-        //            string query = "SELECT Category, Status FROM users WHERE Username = @Username AND Password = @Password";
-        //            MySqlCommand cmd = new MySqlCommand(query, con);
-        //            cmd.Parameters.AddWithValue("@Username", user.Username);
-        //            cmd.Parameters.AddWithValue("@Password", user.Password); // Ensure password is hashed in production
-        //            con.Open();
-
-        //            using (MySqlDataReader reader = cmd.ExecuteReader())
-        //            {
-        //                if (reader.Read())
-        //                {
-        //                    string category = reader["Category"].ToString();
-        //                    string status = reader["Status"].ToString();
-
-        //                    if (status == "Active")
-        //                    {
-        //                        Session["Username"] = user.Username;
-        //                        Session["Category"] = category;
-
-        //                        // Redirect based on category
-        //                        if (category == "Admin")
-        //                        {
-        //                            return RedirectToAction("Index", "AllLevelQueueBoard");
-        //                        }
-        //                        else if (category == "Staff")
-        //                        {
-        //                            return RedirectToAction("Index", "AllLevelQueueBoard");
-        //                        }
-        //                    }
-        //                    else
-        //                    {
-        //                        ModelState.AddModelError(string.Empty, "User account is inactive.");
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    ModelState.AddModelError(string.Empty, "Invalid username or password.");
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    return View();
-        //}
 
         public ActionResult Logout()
         {
