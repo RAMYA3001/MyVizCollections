@@ -210,7 +210,7 @@
     <!-- Popup form -->
     <div id="qaPopup" style="display:none;">
 
-        <h3 style="color:darkblue; text-align:center;">SCAQA Feedback</h3>
+        <h3 style="color:darkblue; text-align:center;">SCAQA</h3>
         <label for="projectID">Project ID:</label>
         <input type="text" id="projectID" value="" required readonly /><br><br>
 
@@ -249,7 +249,7 @@
 
         <!-- Additional comment -->
         <label for="QCComments">QC Comments:</label><br>
-        <textarea id="additionalComments" placeholder="Enter additional comments here" rows="3" style="width:100%;"></textarea>
+        <textarea id="additionalComments" placeholder="Enter QC comments here" rows="3" style="width:100%;"></textarea>
 
         <!-- Save and Close buttons centered -->
         <div style="text-align:center;">
@@ -793,7 +793,7 @@ $('#saveQAResult').on('click', function () {
 
         error: function (xhr, status, error) {
             console.error('Error:', error);
-            alert('An error occurred while saving QA feedback.');
+            alert('An error occurred while saving QC Check.');
         }
     });
 });

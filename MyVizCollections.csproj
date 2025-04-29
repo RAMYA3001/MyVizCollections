@@ -207,6 +207,7 @@
     <Compile Include="Models\ProjectDetails.cs" />
     <Compile Include="Models\ResolutionCheck.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Models\WStatusLog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -302,6 +303,10 @@
     <Content Include="Views\ColourAI\PopularShades.cshtml" />
     <Content Include="Views\AllLevelQueueBoard\ResolutionCheck.cshtml" />
     <Content Include="Views\AllLevelQueueBoard\ResolutionModal.cshtml" />
+    <Content Include="Views\AllLevelQueueBoard\Statuslog.cshtml" />
+    <Content Include="Views\AllLevelQueueBoard\Help.cshtml" />
+    <Content Include="Views\Myvizinsylog.cshtml" />
+    <Content Include="Views\AllLevelQueueBoard\Myvizinsylog.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
