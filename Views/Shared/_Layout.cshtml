@@ -46,7 +46,7 @@
 
                 @*<div class="col-md-4"><b>Last Login  :  @Session["LastLogin"].ToString()</b></div>*@
                 <div class="col-md-2">
-                    <b style="margin-left:-213px;">MyVizCollections</b>
+                    <b style="margin-left:-213px;">@(Session["UserName"]?.ToString() ?? "")</b>
                 </div>
                 <div class="col-md-3">
                     <b style="margin-left:-130px;"> @DateTime.Now.ToString("ddd, dd MMM yyy hh:mm:ss tt") </b>

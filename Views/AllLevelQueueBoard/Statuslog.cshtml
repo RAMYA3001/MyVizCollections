@@ -7,7 +7,7 @@
 
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-content" style="width: 430px; padding-left: 15px; padding-right: 15px;">
+        <div class="modal-content" style="width: 494px; padding-left: 15px; padding-right: 15px;">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel" style="height: 0px;font-size:18px;color:darkblue"><b>Status log Details</b></h5>
                 <button type="button" class="close closeredirect" data-dismiss="modal" aria-label="Close">
@@ -21,6 +21,7 @@
                 <thead>
                     <tr style="height:30px;">
                         <th><b>ProjectID</b></th>
+                        <th><b>AssignedTo</b></th>
                         <th><b>Status</b></th>
                         <th><b>WorkStatus</b></th>
                         <th><b>Status Date</b></th>
@@ -31,6 +32,7 @@
                     {
                         <tr style="height:30px;">
                             <td>@Html.DisplayFor(modelItem => row.ProjectID)</td>
+                            <td>@Html.DisplayFor(modelItem => row.AssignedTo)</td>
                             <td>@Html.DisplayFor(modelItem => row.WorkStatus)</td>
                             <td>@Html.DisplayFor(modelItem => row.WorkStatusDesc)</td>
                             <td>@Html.DisplayFor(modelItem => row.M_dateFormatted)</td> <!-- Display formatted date -->

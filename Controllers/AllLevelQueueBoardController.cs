@@ -21,6 +21,7 @@ using Google.Protobuf.WellKnownTypes;
 using Newtonsoft.Json;
 using System.Web.DynamicData;
 using Org.BouncyCastle.Asn1.Ocsp;
+using System.Data.SqlClient;
 
 namespace MyVizCollections.Controllers
 {
@@ -148,6 +149,10 @@ namespace MyVizCollections.Controllers
 
             return View();
         }
+
+
+
+
 
 
 
@@ -666,13 +671,87 @@ namespace MyVizCollections.Controllers
                 return Json(new { success = false, message = $"Error: {ex.Message}" });
             }
         }
-   
+
+
+      [HttpGet]
+public JsonResult GetSCAQAData(string projectID)
+{
+    AllLevelQueueBoard data = null;
+
+    // Fetch the connection string for MySQL
+    string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
+    
+    // Create MySQL connection
+    MySqlConnection con = new MySqlConnection(constr);
+
+            // Prepare the query
+            //string query = "SELECT PSEID, CPEID, PSERemarks, CPERemarks FROM scaqa WHERE ProjectID = @ProjectID";
+            string query = @"SELECT scaqa.PSEID, scaqa.CPEID, scaqa.PSERemarks, scaqa.CPERemarks, fromtso.ProjectName 
+                         FROM scaqa 
+                         JOIN fromtso ON scaqa.ProjectID = fromtso.ProjectID 
+                         WHERE scaqa.ProjectID = @ProjectID";
+            try
+    {
+        // Use MySqlCommand for MySQL queries
+        using (MySqlCommand cmd = new MySqlCommand(query, con))
+        {
+            // Add the parameter for ProjectID
+            cmd.Parameters.AddWithValue("@ProjectID", projectID);
+            
+            // Open the connection
+            con.Open();
+
+            // Execute the query and read the results
+            using (MySqlDataReader reader = cmd.ExecuteReader())
+            {
+                if (reader.Read())
+                {
+                    // Populate the data model
+                    data = new AllLevelQueueBoard
+                    {
+                       
+                        PSEID = reader["PSEID"].ToString(),
+                        CPEID = reader["CPEID"].ToString(),
+                        PSERemarks = reader["PSERemarks"].ToString(),
+                        CPERemarks = reader["CPERemarks"].ToString(),
+                        ProjectName = reader["ProjectName"].ToString()
+                    };
+                }
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        // Log the exception (Optional, for debugging)
+        Console.WriteLine(ex.Message);
+        return Json(new { success = false, message = "An error occurred while retrieving data." }, JsonRequestBehavior.AllowGet);
+    }
+    finally
+    {
+        // Close the connection (if it's open)
+        if (con.State == System.Data.ConnectionState.Open)
+        {
+            con.Close();
+        }
+    }
+
+    // Return JSON response
+    if (data != null)
+    {
+        return Json(new { success = true, data = data }, JsonRequestBehavior.AllowGet);
+    }
+    else
+    {
+        return Json(new { success = false, message = "No data found." }, JsonRequestBehavior.AllowGet);
+    }
+}
 
 
 
 
 
-public ActionResult Statuslog(int projectid)
+
+        public ActionResult Statuslog(int projectid)
         {
             string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
             MySqlConnection con = new MySqlConnection(constr);
@@ -702,6 +781,7 @@ public ActionResult Statuslog(int projectid)
                             ProjectID = Convert.ToInt32(row["ProjectID"]),
                             WorkStatus = Convert.ToString(row["WorkStatus"]),
                             WorkStatusDesc = Convert.ToString(row["WorkStatusDesc"]),
+                            AssignedTo = Convert.ToString(row["AssignedTo"]),
                             M_date = row["M_date"] != DBNull.Value ? Convert.ToDateTime(row["M_date"]) : (DateTime?)null
                         };
 
@@ -738,6 +818,10 @@ public ActionResult Statuslog(int projectid)
                 }
             }
         }
+
+
+
+
 
 
 

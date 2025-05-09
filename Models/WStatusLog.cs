@@ -16,7 +16,7 @@ namespace MyVizCollections.Models
         public DateTime? M_date { get; set; }
         public string M_dateFormatted { get; set; }
 
-        
+        public string AssignedTo { get; set; }
         public string PSECode { get; set; }
         public string LogType { get; set; }
         public DateTime C_Date { get; set; }

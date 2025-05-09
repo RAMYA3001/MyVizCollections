@@ -56,7 +56,7 @@
         position: fixed;
         top: 50%;
         left: 50%;
-        width: 30%;
+        width: 34%;
         transform: translate(-50%, -50%);
         background-color: white;
         padding: 20px;
@@ -110,7 +110,9 @@
     /* Styling for the additional comments section */
     #additionalComments {
         width: 100%;
+        padding: 10px;
         margin-top: 10px;
+        resize: vertical;
     }
 
         #additionalComments textarea {
@@ -118,6 +120,95 @@
             padding: 10px;
             resize: vertical;
         }
+
+
+
+  
+    .popup-container {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 480px;
+        background: #fdfdfd;
+        border-radius: 8px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        padding: 20px;
+        z-index: 1000;
+    }
+
+    .popup-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #ccc;
+        margin-bottom: 10px;
+    }
+
+        .popup-header h3 {
+            margin: 0;
+            font-size: 20px;
+            color: #2c3e50;
+        }
+
+    .close-btn {
+        font-size: 22px;
+        color: #999;
+        cursor: pointer;
+    }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+    .instructions {
+        font-size: 13px;
+        margin-bottom: 15px;
+        color: #444;
+    }
+
+    .form-row {
+        margin-bottom: 12px;
+        font-size: 14px;
+        color: #333;
+    }
+
+        .form-row select,
+        .form-row textarea {
+            width: 18%;
+            padding: 6px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-top: 5px;
+        }
+
+    .help-text {
+        font-size: 12px;
+        color: #777;
+        margin-top: 10px;
+    }
+
+    .popup-actions {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+        .popup-actions button {
+            background-color: #337ab7;
+            border: none;
+            color: white;
+            padding: 8px 18px;
+            margin: 0 5px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+            .popup-actions button:hover {
+                background-color: #2e6da4;
+            }
+
+
 
 
 </style>
@@ -131,37 +222,21 @@
 
     <button type="submit" class="btn btn-primary" id="btnSubmit1" style="height: 30px; margin-right: 15px;">Submit</button>
 
-    @*<span style="margin-right: 10px;">OR</span>*@
-    @*<label for="search" style=" margin-top: 11px;margin-left:-7px;margin-right:6px;">
-        OR
-    </label>*@
-    @*<select class="form-control" id="dropdownSelect3" style="width: 104px; margin-right: 10px " title=" Search Key">
-
-            <option value="tso.ProjectID" selected>ProjectID</option>
-            <option value="tso.UserID">TSO</option>
-            <option value="tso.Wstatus">Status</option>
-            <option value="pt.IorEorMS">Type</option>
-            <option value="pt.ProjectCategory">Category</option>
-            <option value="fb.TSOInput">Feedback</option>
-            <option value="tso.ColourChoicebyTSO">CC</option>
-            <option value="tso.Priority">Priority</option>
-            <option value="tso.NexGenDealer">NxtGen</option>
-        </select>*@
-<select class="form-control" id="dropdownSelect3" style="width: 104px; margin-right: 10px " title="Search Key">
-    <option value="tso.ProjectID" @(ViewBag.s1 == "tso.ProjectID" ? "selected" : "")>ProjectID</option>
-    <option value="tso.UserID" @(ViewBag.s1 == "tso.UserID" ? "selected" : "")>TSO</option>
-    <option value="tso.Wstatus" @(ViewBag.s1 == "tso.Wstatus" ? "selected" : "")>Status</option>
-    <option value="WStatusCount" @(ViewBag.s1 == "WStatusCount" ? "selected" : "")>St#</option>
-    <option value="pt.IorEorMS" @(ViewBag.s1 == "pt.IorEorMS" ? "selected" : "")>Type</option>
-    <option value="pt.ProjectCategory" @(ViewBag.s1 == "pt.ProjectCategory" ? "selected" : "")>Category</option>
-    <option value="fb.TSOInput" @(ViewBag.s1 == "fb.TSOInput" ? "selected" : "")>Feedback</option>
-    <option value="tso.ColourChoicebyTSO" @(ViewBag.s1 == "tso.ColourChoicebyTSO" ? "selected" : "")>CC</option>
-    <option value="tso.Priority" @(ViewBag.s1 == "tso.Priority" ? "selected" : "")>Priority</option>
-    <option value="tso.NexGenDealer" @(ViewBag.s1 == "tso.NexGenDealer" ? "selected" : "")>NxtGen</option>
-</select>
+    <select class="form-control" id="dropdownSelect3" style="width: 104px; margin-right: 10px " title="Search Key">
+        <option value="tso.ProjectID" @(ViewBag.s1 == "tso.ProjectID" ? "selected" : "")>ProjectID</option>
+        <option value="tso.UserID" @(ViewBag.s1 == "tso.UserID" ? "selected" : "")>TSO</option>
+        <option value="tso.Wstatus" @(ViewBag.s1 == "tso.Wstatus" ? "selected" : "")>Status</option>
+        <option value="WStatusCount" @(ViewBag.s1 == "WStatusCount" ? "selected" : "")>St# >=</option>
+        <option value="pt.IorEorMS" @(ViewBag.s1 == "pt.IorEorMS" ? "selected" : "")>Type</option>
+        <option value="pt.ProjectCategory" @(ViewBag.s1 == "pt.ProjectCategory" ? "selected" : "")>Category</option>
+        <option value="fb.TSOInput" @(ViewBag.s1 == "fb.TSOInput" ? "selected" : "")>Feedback</option>
+        <option value="tso.ColourChoicebyTSO" @(ViewBag.s1 == "tso.ColourChoicebyTSO" ? "selected" : "")>CC</option>
+        <option value="tso.Priority" @(ViewBag.s1 == "tso.Priority" ? "selected" : "")>Priority</option>
+        <option value="tso.NexGenDealer" @(ViewBag.s1 == "tso.NexGenDealer" ? "selected" : "")>NxtGen</option>
+    </select>
 
     <input type="text" name="q" class="search-text form-control" placeholder="Search..." title="Search relevant details in the grid" data-toggle="tooltip" id="searchtxt" style="width: 121px; margin-right: 2px; margin-left: -8px; ">
-  
+
 
     <button type="submit" class="btn btn-primary" id="btnSubmit" style="height: 30px;">Search</button>
     <button type="submit" class="btn btn-primary" id="btnClear" style="height: 30px; margin: 2px;">Clear</button>
@@ -197,64 +272,74 @@
 
 
 
-    @*@if (Session["username"] != null && Session["username"].ToString() == "ActOn05")
-        {
-            <button type="submit" class="btn btn-primary" title="SCAQA " id="showPopup" style="height: 30px; margin: 2px;">SCAQA</button>
-        }*@
-
-
 
     <!-- Background overlay -->
     <div id="overlay" style="display:none;"></div>
 
-    <!-- Popup form -->
-    <div id="qaPopup" style="display:none;">
+    <div id="qaPopup" class="popup-container" style="display:none;">
+        <div class="popup-header">
 
-        <h3 style="color:darkblue; text-align:center;">SCAQA</h3>
-        <label for="projectID">Project ID:</label>
-        <input type="text" id="projectID" value="" required readonly /><br><br>
+            <h3>ActOn05</h3>
+            <span class="close-btn" id="closePopup">&times;</span>
+        </div>
 
-        <label for="qaResult">QC Result:</label>
-        <select id="qaResult">
-            <option value="Pass">Pass</option>
-            <option value="Fail">Fail</option>
-        </select><br><br>
+        <p class="instructions">
+            Download the Source from SILink or the PRI from PRILink and PRITest to verify before proceeding
+        </p>
 
-        <!--<label for="qaComments">Comments:</label><br>
-        <div id="qaComments">
-            <input type="checkbox" id="sectioningQualitygood" value="Sectioning quality good">
-            <label for="sectioningQualitygood">Sectioning quality good</label><br>
-            <input type="checkbox" id="sectioningQuality" value="Sectioning quality">
-            <label for="sectioningQuality">Sectioning quality</label><br>
-            <input type="checkbox" id="mergedSections" value="Some sections seem merged / not clear">
-            <label for="mergedSections">Some sections seem merged / not clear</label><br>
-            <input type="checkbox" id="poorShadow" value="Shadow effects poor">
-            <label for="poorShadow">Shadow effects poor</label><br>
-            <input type="checkbox" id="poorColour" value="Colour choices poor">
-            <label for="poorColour">Colour choices poor</label><br>
-            <input type="checkbox" id="uncleanSurroundings" value="Unclean surroundings">
-            <label for="uncleanSurroundings">Unclean surroundings</label><br>
-            <input type="checkbox" id="poorCloning" value="Poor cloning">
-            <label for="poorCloning">Poor cloning</label><br>
-            <input type="checkbox" id="truncatedObjects" value="Some objects truncated abruptly">
-            <label for="truncatedObjects">Some objects truncated abruptly</label><br>
-            <input type="checkbox" id="badSky" value="Sky not good">
-            <label for="badSky">Sky not good</label><br>
-            <input type="checkbox" id="ignoredAreas" value="Unimportant areas ignored">
-            <label for="ignoredAreas">Unimportant areas ignored</label><br>
-        </div><br>-->
+        <div class="form-row">
+            <label for="projectID">Project ID:</label>
 
-        <!-- Textbox to show selected comment (hidden) -->
-        <!--<textarea id="selectedComments" placeholder="Selected comments will appear here" readonly style="display:none;"></textarea>-->
+            <input type="text" id="projectID" value="" required readonly />
+            <br />
+            <strong>Project Name:</strong> <span id="projectName"></span>
 
-        <!-- Additional comment -->
-        <label for="QCComments">QC Comments:</label><br>
-        <textarea id="additionalComments" placeholder="Enter QC comments here" rows="3" style="width:100%;"></textarea>
+        </div>
+        <div id="pseIDRow" class="form-row">
+            <strong id="pseLabel">Referred by (PSE):</strong> <span id="pseID"></span>
+        </div>
 
-        <!-- Save and Close buttons centered -->
-        <div style="text-align:center;">
-            <button id="saveQAResult" disabled style="background-color: #337ab7; border-color: #2e6da4; color: white;">Save</button>
-            <button id="closePopup" style="background-color: #337ab7; border-color: #2e6da4; color: white;margin-left:-9px; ">Close</button>
+
+        <div id="pseRemarksRow" class="form-row">
+            <strong>Comment:</strong> <span id="pseRemarks"></span>
+        </div>
+
+
+        <div id="cpeFields" class="form-row">
+            <strong>Referred by (CPE):</strong> <span id="cpeiID"></span><br>
+            <strong>Comment:</strong> <span id="cpiRemarks"></span>
+        </div>
+
+        <div class="form-row">
+            <strong>Action:</strong>
+            <select id="qaResult">
+                <option value="Pass">Pass</option>
+                <option value="Fail">Fail</option>
+            </select>
+        </div>
+
+        @*<div class="form-row">
+            <strong>Action to be taken:</strong><br>
+            <textarea id="additionalComments" rows="3" placeholder="Enter QC comments here"></textarea>
+        </div>*@
+        <div class="form-row">
+            <label style="display: block; font-weight: bold;">
+                Action to be taken: <span style="font-size: 12px; color: red;">(Enter at least 5 characters)</span>
+            </label>
+            <textarea id="additionalComments" rows="3"  placeholder="Enter QC comments here"></textarea>
+            <span id="commentError" style="color: red; display: none;"></span>
+        </div>
+
+
+
+        <p class="help-text">
+            Help: If referred by PSE, status can be either 10 - Force assigned to same PSE or 90 - Rejected.<br>
+            If referred by CPE, status can be either 15 - Rework by same PSE or 45 - for CPE to do CPI.
+        </p>
+
+        <div class="popup-actions">
+            <button id="saveQAResult" disabled>Save</button>
+            <button id="closePopup1">Close</button>
         </div>
     </div>
 
@@ -284,17 +369,18 @@
                 <tr>
                     <th>ProjectID</th>
                     <th style="padding: 9px 33px;">ProjectName</th>
-                    <th>RegdOn</th>
-                    <th>RegdBy</th>
-                    <th>St</th>
-                    <th>St#</th>
+                    <th style="padding: 9px 25px;">RegdOn</th>
+                    <th data-toggle="tooltip" title="MyViz insylog details">RegdBy</th>
+                    <th data-toggle="tooltip" title="WStatus log details"> St</th>
+
+                    <th data-toggle="tooltip" title="No.of instance WStatuslog">St# </th>
                     <th>StDate</th>
                     <th data-toggle="tooltip" title="SelectedImageLink">SILink</th>
                     <th>PRILink</th>
                     <th>PRITest</th>
-                    <th>SCA1</th>
-                    <th>SCA2 </th>
-                    <th>SCA3</th>
+                    <th data-toggle="tooltip" title="SoftCopy Album 1">SCA1</th>
+                    <th data-toggle="tooltip" title="SoftCopy Album 2">SCA2 </th>
+                    <th data-toggle="tooltip" title="SoftCopy Album 3">SCA3 </th>
                     <th>Source1</th>
                     <th>Source2</th>
                     <th>Source3</th>
@@ -314,7 +400,7 @@
                     <th>
                         @if (Session["username"] != null && Session["username"].ToString() == "ActOn05")
                         {
-                            @:SCAQA
+                            @:ActOn05
                         }
                     </th>
 
@@ -455,9 +541,9 @@
                         </td>
 
                         @*<td>
-            <a href="@Url.Action("Appliedcolour", "AllLevelQueueBoard")" target="_blank" title="Click to open Imagefile3" data-toggle="tooltip">@asset.Appliedcolour</a>
+                                <a href="@Url.Action("Appliedcolour", "AllLevelQueueBoard")" target="_blank" title="Click to open Imagefile3" data-toggle="tooltip">@asset.Appliedcolour</a>
 
-        </td>*@
+                            </td>*@
 
                         <td>
                             @asset.SIOption
@@ -477,7 +563,7 @@
                         <td>
                             @if (Session["username"] != null && Session["username"].ToString() == "ActOn05")
                             {
-                                <button type="submit" class="btn btn-primary" title="SCAQA " id="showPopup" data-id="@asset.ProjectID" style="height: 30px; margin: 2px;" Readonly>SCAQA</button>
+                                <button type="submit" class="btn btn-primary" id="showPopup" data-id="@asset.ProjectID" style="height: 30px; margin: 2px;" Readonly>ActOn05</button>
                             }
                         </td>
                     </tr>
@@ -561,18 +647,6 @@
 
 
 
-
-
-
-
-        @*$("#btnSubmit").click(function () {
-            $("#progress").show();
-            var pid = $("#dropdownSelect3").val();
-            var pid1 = $("#searchtxt").val();
-           var url = "@Url.Action("Index", "AllLevelQueueBoard")" + "?s1=" + pid + "&s2=" + pid1;
-window.location.href = url;
-
-        });*@
 
               $("#btnSubmit").click(function () {
     $("#progress").show();
@@ -719,9 +793,110 @@ window.location.href = url;
             // Use event delegation to handle clicks on all SCAQA buttons
 $('#assets-data-table').on('click', '#showPopup', function () {
     var projectID = $(this).data('id'); // Get the ProjectID from the clicked button
-
+    var ProjectName = $(this).data('id1');
     // Set the ProjectID in the popup input field
     $('#projectID').val(projectID);
+    $('#ProjectName').val(ProjectName);
+
+
+$.ajax({
+    url: '@Url.Action("GetSCAQAData", "AllLevelQueueBoard")',
+    type: 'GET',
+    data: { projectID: projectID },
+    success: function (response) {
+        console.log("QA response:", response); // <--- Check this in browser console
+        if (response.success) {
+            $('#projectID').text(response.data.ProjectID);
+            $('#pseID').text(response.data.PSEID);
+            $('#cpeiID').text(response.data.CPEID);
+            $('#pseRemarks').text(response.data.PSERemarks);
+            $('#cpiRemarks').text(response.data.CPERemarks);
+            $('#projectName').text(response.data.ProjectName);
+
+
+            // Set popup heading based on whether CPEID is null or not
+            if (!response.data.CPEID || response.data.CPEID === "null" || response.data.CPEID.trim() === "") {
+                $('#qaPopup h3').html(
+                    '<div style="text-align: center;">' +
+                    '<div>Image Quality Referral</div>' +
+                    '<div>Act_On_05 - For Source Image from PSE</div>' +
+                    '</div>'
+                );
+
+                // Hide CPI fields
+                $('#cpeiID').closest('div').hide();
+                $('#cpiRemarks').closest('div').hide();
+
+                // Show PSE fields
+                $('#pseID').closest('div').show();
+                $('#pseRemarks').closest('div').show();
+
+
+                $('#qaResult').empty().append(
+                    $('<option>', { value: 'Pass', text: '10' }),
+                    $('<option>', { value: 'Fail', text: '90' })
+                );
+
+
+
+
+            } else {
+
+                $('#qaPopup h3').html(
+                    '<div style="text-align: center;">' +
+                    '<div>Image Quality Referral</div>' +
+                    '<div>Act_On_05 for PRI from CPE</div>' +
+                    '</div>'
+                );
+
+              
+
+                // Show CPI fields
+                $('#cpeiID').closest('div').show();
+                $('#cpiRemarks').closest('div').show();
+                // Update PSE label and value
+                $('#pseLabel').text('PSE Name:');
+                $('#pseID').text(response.data.PSEID);
+                $('#pseID').closest('div').show();
+           
+             
+
+           
+
+                // Hide PSE fields
+                $('#pseRemarks').closest('div').hide();
+
+            
+
+
+                $('#qaResult').empty().append(
+                    $('<option>', { value: 'Pass', text: '45' }),
+                    $('<option>', { value: 'Fail', text: '15' })
+                );
+
+
+
+            }
+
+
+
+
+
+            $('#overlay').show();
+            $('#qaPopup').show();
+        } else {
+            alert(response.message);
+        }
+
+
+    },
+    error: function () {
+        alert('Error retrieving QA data.');
+    }
+});
+
+
+
 
     // Show the overlay and the popup form
     $('#overlay').show();
@@ -757,6 +932,12 @@ $('#qaComments input[type="checkbox"]').on('change', function () {
 });
 
 
+           $(document).ready(function () {
+    $('#closePopup1').click(function () {
+        var url = "@Url.Action("Index", "AllLevelQueueBoard")";
+        window.location.href = url;
+    });
+});
 
 
 
@@ -764,14 +945,17 @@ $('#qaComments input[type="checkbox"]').on('change', function () {
 
 
 // Save QA Result
-$('#saveQAResult').on('click', function () {
+            $('#saveQAResult').on('click', function () {
+                if (!confirm('Are you sure the details are correct?')) {
+                    return; // If user cancels, don't proceed
+                }
     $("#progress").show();
     const projectID = $('#projectID').val().trim();
     const qaResult = $('#qaResult').val();
-  
+
     const additionalComments = $('#additionalComments').val().trim();
 
- 
+
 
     $.ajax({
         url: '@Url.Action("Qualitycheck", "AllLevelQueueBoard")',
@@ -780,7 +964,7 @@ $('#saveQAResult').on('click', function () {
         data: JSON.stringify({ projectID: projectID, result: qaResult, comments: additionalComments }),
         success: function (data) {
             if (data.success) {
-                alert('QA Result saved successfully!');
+                alert('Act_On_05 Completed!');
                 resetPopupFields();
                 $('#qaPopup').hide();
                 $('#overlay').hide();
@@ -852,8 +1036,25 @@ function checkMandatoryFields() {
 
 
 
+            function checkMandatoryFields() {
+                const projectID = $('#projectID').val().trim();
+                const qaResult = $('#qaResult').val();
+                const additionalComments = $('#additionalComments').val().trim();
+
+                const isCommentValid = additionalComments.length >= 5;
+
+                if (!isCommentValid) {
+                    $('#commentError').show();
+                } else {
+                    $('#commentError').hide();
+                }
+
+                const enable = projectID && qaResult && isCommentValid;
+                $('#saveQAResult').prop('disabled', !enable);
+            }
+
 
 
         </script>
     </div>
-    </div>
+</div>
