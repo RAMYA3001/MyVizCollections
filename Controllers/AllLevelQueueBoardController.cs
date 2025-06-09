@@ -140,17 +140,44 @@ namespace MyVizCollections.Controllers
             }
         }
 
+        //public ActionResult Help()
+        //{
+        //    ViewBag.SISubmittedPath = @"D:\ColourMySpace\MyViz\SISubmitted";
+        //    ViewBag.PRIPath = @"D:\ColourMySpace\MyViz\PRI";
+        //    ViewBag.PRITestPath = @"D:\ColourMySpace\MyViz\PRITest";
+        //    ViewBag.PDFPath = @"D:\ColourMySpace\MyViz\PDF";          
+        //    ViewBag.Json= @"D:\ColourMySpace\MyViz\JSON_Files";
+
+        //    return View();
+        //}
+
+
         public ActionResult Help()
         {
-            ViewBag.SISubmittedPath = @"D:\ColourMySpace\MyViz\SISubmitted";
-            ViewBag.PRIPath = @"D:\ColourMySpace\MyViz\PRI";
-            ViewBag.PRITestPath = @"D:\ColourMySpace\MyViz\PRITest";
-            ViewBag.PDFPath = @"D:\ColourMySpace\MyViz\PDF";
+            // MyViz Paths
+            ViewBag.MV_SISubmittedPath = @"D:\WEB_APP\MyViz\SISubmitted";
+            ViewBag.MV_PRIPath = @"D:\WEB_APP\MyViz\PRI";
+            ViewBag.MV_PRITestPath = @"D:\WEB_APP\MyViz\PRITest";
+            ViewBag.MV_PDFPath = @"D:\ColoursGalore\CW\User_Data\PDF_Files";
+            ViewBag.MV_Json = @"D:\ColoursGalore\CW\User_Data\JSON_Files";
+
+            // CW Paths
+            ViewBag.CW_SISubmittedPath = @"D:\ColourMySpace\MyViz\SISubmitted";
+            ViewBag.CW_PRIPath = @"D:\ColourMySpace\MyViz\PRI";
+            ViewBag.CW_PRITestPath = @"D:\ColourMySpace\MyViz\PRITest";
+            ViewBag.CW_PDFPath = @"D:\ColourMySpace\MyViz\PDF";
+            ViewBag.CW_Json = @"D:\ColourMySpace\MyViz\JSON_Files";
+
+            // JK Paths
+            ViewBag.JK_SISubmittedPath = @"D:\WEB_APP\JkPaints\jkpaints\SISubmitted";
+            ViewBag.JK_SISelectedPath = @"D:\WEB_APP\JkPaints\jkpaints\SISelected";
+            ViewBag.JK_PRIPath = @"D:\WEB_APP\JkPaints\jkpaints\PRI";
+            ViewBag.JK_PRITestPath = @"D:\WEB_APP\JkPaints\jkpaints\PRITest";
+            ViewBag.JK_PDFPath = @"D:\WEB_APP\JkPaints\JkpaintsKN\User_Data\PDF_Files";
+            ViewBag.JK_Json = @"D:\WEB_APP\JkPaints\JkpaintsKN\User_Data\JSON_Files";
 
             return View();
         }
-
-
 
 
 
@@ -686,7 +713,7 @@ public JsonResult GetSCAQAData(string projectID)
 
             // Prepare the query
             //string query = "SELECT PSEID, CPEID, PSERemarks, CPERemarks FROM scaqa WHERE ProjectID = @ProjectID";
-            string query = @"SELECT scaqa.PSEID, scaqa.CPEID, scaqa.PSERemarks, scaqa.CPERemarks, fromtso.ProjectName 
+            string query = @"SELECT fromtso.WhoistheL6PSE, scaqa.CPEID, scaqa.PSERemarks, scaqa.CPERemarks, fromtso.ProjectName 
                          FROM scaqa 
                          JOIN fromtso ON scaqa.ProjectID = fromtso.ProjectID 
                          WHERE scaqa.ProjectID = @ProjectID";
@@ -709,8 +736,8 @@ public JsonResult GetSCAQAData(string projectID)
                     // Populate the data model
                     data = new AllLevelQueueBoard
                     {
-                       
-                        PSEID = reader["PSEID"].ToString(),
+
+                        WhoistheL6PSE = reader["WhoistheL6PSE"].ToString(),
                         CPEID = reader["CPEID"].ToString(),
                         PSERemarks = reader["PSERemarks"].ToString(),
                         CPERemarks = reader["CPERemarks"].ToString(),
@@ -881,6 +908,83 @@ public JsonResult GetSCAQAData(string projectID)
                     con.Close();
             }
         }
+
+
+
+
+        public ActionResult SCAQALog(int projectid)
+        {
+            string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
+            MySqlConnection con = new MySqlConnection(constr);
+
+            try
+            {
+                DataSet ds = new DataSet();
+
+                MySqlCommand com = new MySqlCommand("SP_SCAQA_log", con);
+                com.CommandTimeout = 1600;
+                com.CommandType = CommandType.StoredProcedure;
+
+                // Match parameter name exactly as in the procedure
+                com.Parameters.AddWithValue("Project_ID", projectid);
+
+                MySqlDataAdapter ad = new MySqlDataAdapter(com);
+                ad.Fill(ds);
+
+                List<WStatusLog> SCAQALog = new List<WStatusLog>();
+
+                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                {
+                    foreach (DataRow row in ds.Tables[0].Rows)
+                    {
+                        WStatusLog model = new WStatusLog()
+                        {
+                            ProjectID = Convert.ToInt32(row["ProjectID"]),
+                            Status = Convert.ToString(row["Status"]),
+                            StRemarks = Convert.ToString(row["StRemarks"]),
+                            SourcePixel = Convert.ToString(row["SourcePixel"]),
+                            SourceFileSize = Convert.ToString(row["SourceFileSize"]),
+                            QCComments = Convert.ToString(row["QCComments"]),
+                            QCResult = Convert.ToString(row["QCResult"]),
+                            PSEID = Convert.ToString(row["WhoistheL6PSE"]),
+                            CPEID = Convert.ToString(row["CPEID"]),
+                            PRIPixels = Convert.ToString(row["PRIPixels"]),
+                            PRIFilesize = Convert.ToString(row["PRIFilesize"]),
+                            Notes = Convert.ToString(row["Notes"]),
+                            //C_id = Convert.ToString(row["C_id"]),
+                            //C_date = row["C_Date"] != DBNull.Value ? Convert.ToDateTime(row["C_Date"]) : (DateTime?)null,
+                            PSERemarks = Convert.ToString(row["PSERemarks"]),
+                            CPERemarks = Convert.ToString(row["CPERemarks"]),
+                            TimeTaken = Convert.ToString(row["TimeTaken"])
+                        };
+
+
+                        SCAQALog.Add(model);
+                    }
+                }
+
+                return View("SCAQALog", SCAQALog);
+            }
+            catch (Exception ex)
+            {
+                return Content("Error: " + ex.Message);
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+            }
+        }
+
+
+
+
+
+
+
+
+
+
 
 
 

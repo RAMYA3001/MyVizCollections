@@ -1,27 +1,26 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Help - Path Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h4>Path Details</h4>
+
 <style>
     .table {
-        width: 63%;
+        width: 80%;
         max-width: 100%;
         margin-bottom: 20px;
     }
 
-    element.style {
-        color: #337ab7;
-    }
-
     thead th {
-        background-color: #337ab7; /* Background color */
-        color: #fff; /* Text color */
-        border-color: #2e6da4; /* Border color */
+        background-color: #337ab7;
+        color: #fff;
+        border-color: #2e6da4;
     }
 </style>
+
+<!-- MyViz Paths -->
+<h5><u>MyViz Paths</u></h5>
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -30,24 +29,47 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td><strong>SISubmitted</strong></td>
-            <td>@ViewBag.SISubmittedPath</td>
-        </tr>
-        <tr>
-            <td><strong>PRI</strong></td>
-            <td>@ViewBag.PRIPath</td>
-        </tr>
-        <tr>
-            <td><strong>PRI Test</strong></td>
-            <td>@ViewBag.PRITestPath</td>
-        </tr>
-        <tr>
-            <td><strong>PDF</strong></td>
-            <td>@ViewBag.PDFPath</td>
-        </tr>
+        <tr><td><strong>SISubmitted</strong></td><td>@ViewBag.MV_SISubmittedPath</td></tr>
+        <tr><td><strong>PRI</strong></td><td>@ViewBag.MV_PRIPath</td></tr>
+        <tr><td><strong>PRI Test</strong></td><td>@ViewBag.MV_PRITestPath</td></tr>
+        <tr><td><strong>PDF(.pdf or .jpg)</strong></td><td>@ViewBag.MV_PDFPath</td></tr>
+        <tr><td><strong>Json</strong></td><td>@ViewBag.CW_Json</td></tr>
     </tbody>
 </table>
 
+<!-- CW Paths -->
+<h5><u>Colour Wizard (CW) Paths</u></h5>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>File Name</th>
+            <th>Location</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td><strong>SISubmitted</strong></td><td>@ViewBag.CW_SISubmittedPath</td></tr>
+        <tr><td><strong>PRI</strong></td><td>@ViewBag.CW_PRIPath</td></tr>
+        <tr><td><strong>PRI Test</strong></td><td>@ViewBag.CW_PRITestPath</td></tr>
+        <tr><td><strong>PDF</strong></td><td>@ViewBag.CW_PDFPath</td></tr>
+        <tr><td><strong>Json</strong></td><td>@ViewBag.CW_Json</td></tr>
+    </tbody>
+</table>
 
-
+<!-- JK Paths -->
+<h5><u>JK Paths</u></h5>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>File Name</th>
+            <th>Location</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td><strong>SISubmitted</strong></td><td>@ViewBag.JK_SISubmittedPath</td></tr>
+        <tr><td><strong>SISelected</strong></td><td>@ViewBag.JK_SISelectedPath</td></tr>
+        <tr><td><strong>PRI</strong></td><td>@ViewBag.JK_PRIPath</td></tr>
+        <tr><td><strong>PRI Test</strong></td><td>@ViewBag.JK_PRITestPath</td></tr>
+        <tr><td><strong>PDF</strong></td><td>@ViewBag.JK_PDFPath</td></tr>
+        <tr><td><strong>Json</strong></td><td>@ViewBag.JK_Json</td></tr>
+    </tbody>
+</table>

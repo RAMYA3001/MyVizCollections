@@ -22,5 +22,28 @@ namespace MyVizCollections.Models
         public DateTime C_Date { get; set; }
         public int Count { get; set; }
         public string Remarks { get; set; }
-    }
+
+
+     
+        public string Status { get; set; }
+        public string StRemarks { get; set; }
+        public string SourcePixel { get; set; }
+        public string SourceFileSize { get; set; }
+        public string QCComments { get; set; }
+        public string QCResult { get; set; }
+        public string PSEID { get; set; }
+        public string CPEID { get; set; }
+        public string PRIPixels { get; set; }
+        public string PRIFilesize { get; set; }
+        public string Notes { get; set; }
+        public string C_id { get; set; }
+        public DateTime? C_date { get; set; }         // This maps to C_Date
+        public string PSERemarks { get; set; }
+        public string CPERemarks { get; set; }
+        public string TimeTaken { get; set; }
+
+      
+
+
+}
 }

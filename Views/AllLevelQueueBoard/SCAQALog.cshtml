@@ -1,0 +1,134 @@
+﻿
+@model List<MyVizCollections.Models.WStatusLog>
+
+@{
+    ViewBag.Title = "SCAQALog";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="width: 494px; padding-left: 15px; padding-right: 15px;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel" style="height: 0px;font-size:18px;color:darkblue"><b>SCAQA Details</b></h5>
+                <button type="button" class="close closeredirect" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+
+            <table style="font-family: Arial; font-size: 12px; font-weight: 300; border-collapse: separate; border-spacing: 10px 2px;">
+                @foreach (var row in Model)
+                {
+                    <tr style="height:30px;">
+                        <td><b>Project ID</b></td>
+                        <td>:</td>
+                        <td>@row.ProjectID</td>
+                    </tr>
+                    <tr style="height:30px;">
+                        <td><b>Status</b></td>
+                        <td>:</td>
+                        <td>@row.Status</td>
+                    </tr>
+                    <tr style="height:30px;">
+                        <td><b>Status Remarks</b></td>
+                        <td>:</td>
+                        <td>@row.StRemarks</td>
+                    </tr>
+                    <tr style="height:30px;">
+                        <td><b>Source Pixel</b></td>
+                        <td>:</td>
+                        <td>@row.SourcePixel</td>
+                    </tr>
+                    <tr style="height:30px;">
+                        <td><b>Source File Size</b></td>
+                        <td>:</td>
+                        <td>@row.SourceFileSize</td>
+                    </tr>
+                    <tr style="height:30px;">
+                        <td><b>QC Comments</b></td>
+                        <td>:</td>
+                        <td>@row.QCComments</td>
+                    </tr>
+                    <tr style="height:30px;">
+                        <td><b>QC Result</b></td>
+                        <td>:</td>
+                        <td>@row.QCResult</td>
+                    </tr>
+                    <tr style="height:30px;">
+                        <td><b>PSE ID</b></td>
+                        <td>:</td>
+                        <td>@row.PSEID</td>
+                    </tr>
+                    <tr style="height:30px;">
+                        <td><b>CPE ID</b></td>
+                        <td>:</td>
+                        <td>@row.CPEID</td>
+                    </tr>
+                    <tr style="height:30px;">
+                        <td><b>PRI Pixels</b></td>
+                        <td>:</td>
+                        <td>@row.PRIPixels</td>
+                    </tr>
+                    <tr style="height:30px;">
+                        <td><b>PRI File Size</b></td>
+                        <td>:</td>
+                        <td>@row.PRIFilesize</td>
+                    </tr>
+                    <tr style="height:30px;">
+                        <td><b>Notes</b></td>
+                        <td>:</td>
+                        <td>@row.Notes</td>
+                    </tr>
+
+                    <tr style="height:30px;">
+                        <td><b>PSE Remarks</b></td>
+                        <td>:</td>
+                        <td>@row.PSERemarks</td>
+                    </tr>
+                    <tr style="height:30px;">
+                        <td><b>CPE Remarks</b></td>
+                        <td>:</td>
+                        <td>@row.CPERemarks</td>
+                    </tr>
+                    <tr style="height:30px;">
+                        <td><b>Time Taken</b></td>
+                        <td>:</td>
+                        <td>@row.TimeTaken</td>
+                    </tr>
+                }
+            </table>
+
+
+
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+<script>
+    // Keep the existing script that opens the modal, remove the closeredirect click event, it's not needed
+    $(function () {
+        $("#exampleModal").modal("show");
+    });
+</script>
+
+
+<script>
+    $(function () {
+        $("#exampleModal").modal("show");
+        $(".closeredirect").click(function () {
+
+            window.close();
+
+
+        });
+    });
+
+
+
+</script>

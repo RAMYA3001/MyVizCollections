@@ -1,0 +1,104 @@
+﻿@model List<MyVizCollections.Models.WStatusLog>
+
+@{
+    ViewBag.Title = "SCAQALog";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="width: 494px; padding-left: 15px; padding-right: 15px;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel" style="height: 0px;font-size:18px;color:darkblue"><b>SCAQA log Details</b></h5>
+                <button type="button" class="close closeredirect" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+
+
+            <table style="font-family: Arial; font-size: 12px; font-weight: 300; border-collapse: separate; border-spacing: 10px 2px;">
+                <thead>
+                    <tr style="height:30px;">
+                        <th><b>Project ID</b></th>
+                        <th><b>Status</b></th>
+                        <th><b>Status Remarks</b></th>
+                        <th><b>Source Pixel</b></th>
+                        <th><b>Source File Size</b></th>
+                        <th><b>QC Comments</b></th>
+                        <th><b>QC Result</b></th>
+                        <th><b>PSE ID</b></th>
+                        <th><b>CPE ID</b></th>
+                        <th><b>PRI Pixels</b></th>
+                        <th><b>PRI File Size</b></th>
+                        <th><b>Notes</b></th>
+                        <th><b>Created By</b></th>
+                        <th><b>Status Date</b></th>
+                        <th><b>PSE Remarks</b></th>
+                        <th><b>CPE Remarks</b></th>
+                        <th><b>Time Taken</b></th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in Model)
+                    {
+                        <tr style="height:30px;">
+                            <td>@Html.DisplayFor(modelItem => row.ProjectID)</td>
+                            <td>@Html.DisplayFor(modelItem => row.Status)</td>
+                            <td>@Html.DisplayFor(modelItem => row.StRemarks)</td>
+                            <td>@Html.DisplayFor(modelItem => row.SourcePixel)</td>
+                            <td>@Html.DisplayFor(modelItem => row.SourceFileSize)</td>
+                            <td>@Html.DisplayFor(modelItem => row.QCComments)</td>
+                            <td>@Html.DisplayFor(modelItem => row.QCResult)</td>
+                            <td>@Html.DisplayFor(modelItem => row.PSEID)</td>
+                            <td>@Html.DisplayFor(modelItem => row.CPEID)</td>
+                            <td>@Html.DisplayFor(modelItem => row.PRIPixels)</td>
+                            <td>@Html.DisplayFor(modelItem => row.PRIFilesize)</td>
+                            <td>@Html.DisplayFor(modelItem => row.Notes)</td>
+                            <td>@Html.DisplayFor(modelItem => row.PSERemarks)</td>
+                            <td>
+                                @Html.DisplayFor(modelItem => row.CPERemarks)
+
+                                                    </td>
+                        <td>@Html.DisplayFor(modelItem => row.TimeTaken)</td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+<script>
+    // Keep the existing script that opens the modal, remove the closeredirect click event, it's not needed
+    $(function () {
+        $("#exampleModal").modal("show");
+    });
+</script>
+
+
+<script>
+    $(function () {
+        $("#exampleModal").modal("show");
+        @*$(".closeredirect").click(function () {
+
+            window.location.href = '@Url.Action("Index", "AllLevelQueueBoard")';
+
+
+        });*@
+        $(".closeredirect").click(function () {
+            window.close();
+        });
+    });
+
+
+
+</script>

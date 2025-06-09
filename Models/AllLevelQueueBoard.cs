@@ -42,7 +42,7 @@ namespace MyVizCollections.Models
         public string QCResult { get; set; }
         public string QCComments { get; set; }
         public string CPERemarks { get; set; }
-        public string PSEID { get; set; }
+        public string WhoistheL6PSE { get; set; }
         public string PSERemarks { get; set; }
 
         // Add this property if missing

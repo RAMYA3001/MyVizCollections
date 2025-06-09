@@ -438,7 +438,13 @@
 
 
 
-                        <td>@asset.WStsCount</td>
+                        <td style="text-align-last:right">
+                            <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/SCAQALog?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view SCAQA details" data-toggle="tooltip" target="_blank"> @asset.WStsCount</a>
+                        </td>
+
+
+
+                        @*<td>@asset.WStsCount</td>*@
 
                         <td>@string.Format("{0:ddd, dd MMM hh:mm tt}", asset.FinalStatusDt)</td>
                         @*<td>@(Convert.ToDateTime(asset.FinalStatusDt).ToString("dd/MM/yy"))</td>*@
@@ -541,9 +547,9 @@
                         </td>
 
                         @*<td>
-                                <a href="@Url.Action("Appliedcolour", "AllLevelQueueBoard")" target="_blank" title="Click to open Imagefile3" data-toggle="tooltip">@asset.Appliedcolour</a>
+            <a href="@Url.Action("Appliedcolour", "AllLevelQueueBoard")" target="_blank" title="Click to open Imagefile3" data-toggle="tooltip">@asset.Appliedcolour</a>
 
-                            </td>*@
+        </td>*@
 
                         <td>
                             @asset.SIOption
@@ -807,7 +813,7 @@ $.ajax({
         console.log("QA response:", response); // <--- Check this in browser console
         if (response.success) {
             $('#projectID').text(response.data.ProjectID);
-            $('#pseID').text(response.data.PSEID);
+            $('#pseID').text(response.data.WhoistheL6PSE);
             $('#cpeiID').text(response.data.CPEID);
             $('#pseRemarks').text(response.data.PSERemarks);
             $('#cpiRemarks').text(response.data.CPERemarks);
@@ -856,7 +862,7 @@ $.ajax({
                 $('#cpiRemarks').closest('div').show();
                 // Update PSE label and value
                 $('#pseLabel').text('PSE Name:');
-                $('#pseID').text(response.data.PSEID);
+                $('#pseID').text(response.data.WhoistheL6PSE);
                 $('#pseID').closest('div').show();
            
              
