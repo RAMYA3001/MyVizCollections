@@ -20,13 +20,13 @@ namespace MyVizCollections.Controllers
 
         public ActionResult Index(User user)
         {
-            if (user.Username == "Insyadmin" && user.Password == "admin@2#4")
+            if (user.Username == "Insyadmin" && user.Password == "!n&dia@12$")
             {
                 Session["Username"] = user.Username;
                 Session["Password"] = user.Password;
                 return RedirectToAction("Index", "AllLevelQueueBoard");
             }
-            else if ((user.Username == "view" && user.Password == "view@2#4") ||  (user.Username == "ActOn05" && user.Password == "admin@2#4"))
+            else if ((user.Username == "view" && user.Password == "view@2#4") ||  (user.Username == "ActOn05" && user.Password == "@Act#$05&"))
 
             {
                 Session["Username"] = user.Username;
