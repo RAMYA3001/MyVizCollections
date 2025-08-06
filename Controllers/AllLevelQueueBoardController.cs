@@ -51,10 +51,14 @@ namespace MyVizCollections.Controllers
                 {
                     imode = 3; // Use imode 3 for "ActOn05"
                 }
-               
+                else if (Username == "admin") // Check if Username is "admin"
+                {
+                    imode = 4; // Use imode 3 for "ActOn05"
+                }
+
                 using (MySqlConnection con = new MySqlConnection(constr))
                 {
-                    using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_searchkey", con))
+                    using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_searchkey_test", con))
                     {
                         cmd.CommandTimeout = 1600;
                         cmd.CommandType = CommandType.StoredProcedure;
@@ -99,6 +103,9 @@ namespace MyVizCollections.Controllers
                                     DuplicateOf = rdr["DuplicateOf"].ToString(),
                                     Priority = rdr["Priority"].ToString(),
                                     NexGenDealer = rdr["NexGenDealer"].ToString(),
+                                    EmailStatus = rdr["EmailStatus"].ToString(),
+                                    EMailValues = rdr["EMailValues"].ToString(),
+                                 
                                     //WStatusCount = rdr["WStatusCount"] != DBNull.Value ? Convert.ToInt32(rdr["WStatusCount"]) : 0
 
                                 };

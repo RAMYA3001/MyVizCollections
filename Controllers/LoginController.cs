@@ -26,7 +26,8 @@ namespace MyVizCollections.Controllers
                 Session["Password"] = user.Password;
                 return RedirectToAction("Index", "AllLevelQueueBoard");
             }
-            else if ((user.Username == "view" && user.Password == "view@2#4") ||  (user.Username == "ActOn05" && user.Password == "@Act#$05&"))
+            else if ((user.Username == "view" && user.Password == "view@2#4") ||  (user.Username == "ActOn05" && user.Password == "@Act#$05&") || (user.Username == "admin" && user.Password == "admin@2#4"))
+
 
             {
                 Session["Username"] = user.Username;

@@ -38,7 +38,10 @@ namespace MyVizCollections.Models
         public string NexGenDealer { get; set; }
         public string Appliedcolour { get; set; }
         public string Priority { get; set; }
-
+       
+              public string EmailStatus { get; set; }
+        
+            public string EMailValues { get; set; }
         public string QCResult { get; set; }
         public string QCComments { get; set; }
         public string CPERemarks { get; set; }
