@@ -51,7 +51,7 @@ namespace MyVizCollections.Controllers
                 {
                     imode = 3; // Use imode 3 for "ActOn05"
                 }
-                else if (Username == "admin") // Check if Username is "admin"
+                else if (Username == "Admin") // Check if Username is "admin"
                 {
                     imode = 4; // Use imode 3 for "ActOn05"
                 }
