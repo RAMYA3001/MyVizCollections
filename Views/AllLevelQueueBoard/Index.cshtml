@@ -224,16 +224,19 @@
 
     <select class="form-control" id="dropdownSelect3" style="width: 104px; margin-right: 10px " title="Search Key">
         <option value="tso.ProjectID" @(ViewBag.s1 == "tso.ProjectID" ? "selected" : "")>ProjectID</option>
-        <option value="tso.UserID" @(ViewBag.s1 == "tso.UserID" ? "selected" : "")>TSO</option>
         <option value="tso.Wstatus" @(ViewBag.s1 == "tso.Wstatus" ? "selected" : "")>Status</option>
-        <option value="WStatusCount" @(ViewBag.s1 == "WStatusCount" ? "selected" : "")>St# >=</option>
-        <option value="pt.IorEorMS" @(ViewBag.s1 == "pt.IorEorMS" ? "selected" : "")>Type</option>
-        <option value="pt.ProjectCategory" @(ViewBag.s1 == "pt.ProjectCategory" ? "selected" : "")>Category</option>
-        <option value="fb.TSOInput" @(ViewBag.s1 == "fb.TSOInput" ? "selected" : "")>Feedback</option>
-        <option value="tso.ColourChoicebyTSO" @(ViewBag.s1 == "tso.ColourChoicebyTSO" ? "selected" : "")>CC</option>
-        <option value="tso.Priority" @(ViewBag.s1 == "tso.Priority" ? "selected" : "")>Priority</option>
-        <option value="tso.NexGenDealer" @(ViewBag.s1 == "tso.NexGenDealer" ? "selected" : "")>NxtGen</option>
-    </select>
+        @if (Session["username"] == null || Session["username"].ToString() != "Admin")
+        {
+            <option value="tso.UserID" @(ViewBag.s1 == "tso.UserID" ? "selected" : "")>TSO</option>
+            <option value="WStatusCount" @(ViewBag.s1 == "WStatusCount" ? "selected" : "")>St# >=</option>
+            <option value="pt.IorEorMS" @(ViewBag.s1 == "pt.IorEorMS" ? "selected" : "")>Type</option>
+            <option value="pt.ProjectCategory" @(ViewBag.s1 == "pt.ProjectCategory" ? "selected" : "")>Category</option>
+            <option value="fb.TSOInput" @(ViewBag.s1 == "fb.TSOInput" ? "selected" : "")>Feedback</option>
+            <option value="tso.ColourChoicebyTSO" @(ViewBag.s1 == "tso.ColourChoicebyTSO" ? "selected" : "")>CC</option>
+            <option value="tso.Priority" @(ViewBag.s1 == "tso.Priority" ? "selected" : "")>Priority</option>
+            <option value="tso.NexGenDealer" @(ViewBag.s1 == "tso.NexGenDealer" ? "selected" : "")>NxtGen</option>
+        }
+        </select>
 
     <input type="text" name="q" class="search-text form-control" placeholder="Search..." title="Search relevant details in the grid" data-toggle="tooltip" id="searchtxt" style="width: 121px; margin-right: 2px; margin-left: -8px; ">
 
