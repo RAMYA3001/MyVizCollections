@@ -58,7 +58,7 @@ namespace MyVizCollections.Controllers
 
                 using (MySqlConnection con = new MySqlConnection(constr))
                 {
-                    using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_searchkey_test", con))
+                    using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_searchkey", con))
                     {
                         cmd.CommandTimeout = 1600;
                         cmd.CommandType = CommandType.StoredProcedure;
@@ -105,7 +105,9 @@ namespace MyVizCollections.Controllers
                                     NexGenDealer = rdr["NexGenDealer"].ToString(),
                                     EmailStatus = rdr["EmailStatus"].ToString(),
                                     EMailValues = rdr["EMailValues"].ToString(),
-                                 
+                                    PSEName = rdr["PSE Name"].ToString(),
+                                    CPEName = rdr["CPE Name"].ToString(),
+
                                     //WStatusCount = rdr["WStatusCount"] != DBNull.Value ? Convert.ToInt32(rdr["WStatusCount"]) : 0
 
                                 };

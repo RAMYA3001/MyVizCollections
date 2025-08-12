@@ -32,6 +32,9 @@ namespace MyVizCollections.Models
         public string ImageFileName3 { get; set; }
         public string Site { get; set; }
         public string Customer { get; set; }
+        public string PSEName { get; set; }
+        public string CPEName { get; set; }
+
         public string FeedBack { get; set; }
         public string CC { get; set; }
         public string DuplicateOf { get; set; }
