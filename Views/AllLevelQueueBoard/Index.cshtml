@@ -209,27 +209,24 @@
             }
 </style>
 @* Label shown only to non-admin *@
-@if (Session["username"] == null || Session["username"].ToString() != "Admin")
-{
+
     <label for="pid1" style=" margin-left: 835px;  color: red;margin-bottom: 12px;">
         Compare
     </label>
-}
+
 
 <div style=" padding: 10px 10px; display: flex; align-items: center; width: 49%; margin-bottom: 24px;margin-left:-98px;">
-    @if (Session["username"] == null || Session["username"].ToString() != "Admin")
-    {
+    
         <label for="example-datepicker" style="margin-right: 3px;">StDate:</label>
         <input type="date" id="datepicker" value="" style="margin-right: 3px;">
 
         <button type="submit" class="btn btn-primary" id="btnSubmit1" style="height: 30px; margin-right: 15px;">Submit</button>
-    }
+    
 
     <select class="form-control" id="dropdownSelect3" style="width: 104px; margin-right: 10px " title="Search Key">
         <option value="tso.ProjectID" @(ViewBag.s1 == "tso.ProjectID" ? "selected" : "")>ProjectID</option>
         <option value="tso.Wstatus" @(ViewBag.s1 == "tso.Wstatus" ? "selected" : "")>Status</option>
-        @if (Session["username"] == null || Session["username"].ToString() != "Admin")
-        {
+       
             <option value="tso.UserID" @(ViewBag.s1 == "tso.UserID" ? "selected" : "")>TSO</option>
             <option value="WStatusCount" @(ViewBag.s1 == "WStatusCount" ? "selected" : "")>St# >=</option>
             <option value="pt.IorEorMS" @(ViewBag.s1 == "pt.IorEorMS" ? "selected" : "")>Type</option>
@@ -238,7 +235,7 @@
             <option value="tso.ColourChoicebyTSO" @(ViewBag.s1 == "tso.ColourChoicebyTSO" ? "selected" : "")>CC</option>
             <option value="tso.Priority" @(ViewBag.s1 == "tso.Priority" ? "selected" : "")>Priority</option>
             <option value="tso.NexGenDealer" @(ViewBag.s1 == "tso.NexGenDealer" ? "selected" : "")>NxtGen</option>
-        }
+        
     </select>
 
     <input type="text" name="q" class="search-text form-control" placeholder="Search..." title="Search relevant details in the grid" data-toggle="tooltip" id="searchtxt" style="width: 121px; margin-right: 2px; margin-left: -8px; ">
@@ -248,8 +245,7 @@
 </div>
 
     @* Form shown only to non-admin *@
-    @if (Session["username"] == null || Session["username"].ToString() != "Admin")
-    {
+    
         <div class="form-group" style="border: 2px solid #337ab7; padding: 41px 14px; display: flex; justify-content: flex-start; margin-bottom: 3px; margin-top: -119px; margin-left:558px; width: 708px; height: 1px;">
             <label for="pid1" style=" margin-top: 11px;">
                 Project1:
@@ -275,7 +271,7 @@
             </select>
             <button type="submit" class="btn btn-primary" title="Compare two different image in one single screen" id="btnCompare" style="height: 30px; margin: 2px;">Match</button>
         </div>
-    }
+    
 
     <!-- Background overlay -->
     <div id="overlay" style="display:none;"></div>
@@ -372,27 +368,20 @@
                 <thead>
                     <tr>
                         <th>ProjectID</th>
-                        @if (Session["username"] == null || Session["username"].ToString() != "Admin")
-                        {
-
+                       
                             <th style="padding: 9px 33px;">ProjectName</th>
 
                             <th style="padding: 9px 25px;">RegdOn</th>
-                        }
-                        @if (Session["username"] == null || Session["username"].ToString() != "Admin")
-                        {
+                        
+                       
                             <th data-toggle="tooltip" title="MyViz insylog details">RegdBy</th>
 
                             <th data-toggle="tooltip" title="WStatus log details"> St</th>
-                        }
-                        @if (Session["username"] == null || Session["username"].ToString() != "Admin")
-                        {
+                        
                             <th data-toggle="tooltip" title="No.of instance WStatuslog">St# </th>
 
                             <th>StDate</th>
-                        }
-                        @if (Session["username"] == null || Session["username"].ToString() != "Admin")
-                        {
+                       
                             <th data-toggle="tooltip" title="SelectedImageLink">SILink</th>
                             <th>PRILink</th>
                             <th>PRITest</th>
@@ -404,29 +393,7 @@
                             <th>Source3</th>
 
                             <th data-toggle="tooltip" title="SelectedImageOption">SIOpt</th>
-                            <th>Preview</th>
-                        }
-
-                        @if (Session["username"] == null || Session["username"].ToString() == "Admin")
-                        {
-                            <th style=" width: 120px; ">Current Status</th>
-                            @*<th>Current Status Date</th>*@
-                            <th>PSE Name</th>
-                            <th>CPE Name</th>
-                            <th>Submitted on</th>
-                            <th>Delivery on</th>
-                            <th>Remaining TAT hours</th>
-                            @*<th>EmailStatus </th>
-            <th>
-                EMailValues
-            </th>*@
-
-                        }
-
-
-
-                        @if (Session["username"] == null || Session["username"].ToString() != "Admin")
-                        {
+                            <th>Preview</th>                  
                             <th>Site</th>
                             <th>Customer</th>
                             <th>FeedBack</th>
@@ -436,7 +403,7 @@
                             <th data-toggle="tooltip" title="NxtGen">NG</th>
                             <th>Type</th>
                             <th>Category</th>
-                        }
+                        
                         <th>
                             @if (Session["username"] != null && Session["username"].ToString() == "ActOn05")
                             {
@@ -455,34 +422,27 @@
                                 <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/myModal?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Project details, to update status" data-toggle="tooltip" target="_blank">@asset.ProjectID</a>
                             </td>
 
-                            @if (Session["username"] == null || Session["username"].ToString() != "Admin")
-                            {
+                          
                                 <!-- Other table cells -->
                                 <td>@asset.ProjectName</td>
 
                                 @*<td>@String.Format("{0:ddd, dd MMM hh:mm tt}", asset.RegdOn)</td>*@
                                 <td>@String.Format("{0:dd-MMM-yyyy hh:mm tt}", asset.RegdOn)</td>
-                            }
+                            
                             @*<td>@(Convert.ToDateTime(asset.RegdOn).ToString("dd/MM/yy"))</td>*@
                             @*<td>@asset.RegdBy</td>*@
 
-                            @if (Session["username"] == null || Session["username"].ToString() != "Admin")
-                            {
-                                <td style="text-align-last:left">
+                             <td style="text-align-last:left">
                                     <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/Myvizinsylog?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Myvizinsylog details" data-toggle="tooltip" target="_blank"> @asset.RegdBy</a>
                                 </td>
-
-
-
 
 
                                 <td style="text-align-last:left">
                                     <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/Statuslog?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Status log details" data-toggle="tooltip" target="_blank"> @asset.FinalStatus</a>
                                 </td>
-                            }
+                            
 
-                            @if (Session["username"] == null || Session["username"].ToString() != "Admin")
-                            {
+                           
 
                                 <td style="text-align-last:left">
                                     <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/SCAQALog?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view SCAQA details" data-toggle="tooltip" target="_blank"> @asset.WStsCount</a>
@@ -493,11 +453,9 @@
                                 @*<td>@asset.WStsCount</td>*@
 
                                 <td>@string.Format("{0:dd-MMM-yyyy hh:mm tt}", asset.FinalStatusDt)</td>
-                            }
+                            
                             @*<td>@(Convert.ToDateTime(asset.FinalStatusDt).ToString("dd/MM/yy"))</td>*@
-                            @if (Session["username"] == null || Session["username"].ToString() != "Admin")
-                            {
-
+                          
                                 <td>
                                     @if (!string.IsNullOrEmpty(asset.SelectedImageLink))
                                     {
@@ -605,71 +563,9 @@
                                 <td>
                                     <button id="previewButton" class="btn btn-primary btn-sm" onclick="launchPreview(@asset.ProjectID)">Preview</button>
                                 </td>
-                            }
+                            
 
-                            @if (Session["username"] == null || Session["username"].ToString() == "Admin")
-
-                            {
-                                <td style="text-align-last:left">
-                                    <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/Statuslog?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Status log details" data-toggle="tooltip" target="_blank"> @asset.FinalStatus</a>
-                                </td>
-                                @*<td>@string.Format("{0:dd-MMM-yyyy hh:mm tt}", asset.FinalStatusDt)</td>*@
-                                <td>@asset.PSEName</td>
-                                <td>@asset.CPEName</td>
-                                <td>@String.Format("{0:dd-MMM-yyyy hh:mm tt}", asset.RegdOn)</td>
-
-                                <td>
-                                    @{
-                                        DateTime? deliveryOn = asset.RegdOn?.AddHours(24);
-                                    }
-                                    @(deliveryOn.HasValue ? String.Format("{0:dd-MMM-yyyy hh:mm tt}", deliveryOn.Value) : "N/A")
-                                </td>
-                                <td>
-                                    @{
-                                        if (deliveryOn.HasValue)
-                                        {
-                                            int finalStatusCode;
-                                            bool parseSuccess = int.TryParse(asset.FinalStatus, out finalStatusCode);
-
-                                            double remainingTATHours;
-
-                                            // Use FinalStatusDt only if status is 60 and FinalStatusDt exists
-                                            if (parseSuccess && finalStatusCode == 60 && asset.FinalStatusDt.HasValue)
-                                            {
-                                                remainingTATHours = (deliveryOn.Value - asset.FinalStatusDt.Value).TotalHours;
-                                            }
-                                            else
-                                            {
-                                                remainingTATHours = (deliveryOn.Value - DateTime.Now).TotalHours;
-                                            }
-
-                                            int hours = (int)remainingTATHours;
-                                            int minutes = (int)Math.Round(Math.Abs((remainingTATHours - hours) * 60));
-
-                                            if (minutes == 60)
-                                            {
-                                                if (remainingTATHours >= 0)
-                                                {
-                                                    hours += 1;
-                                                }
-                                                else
-                                                {
-                                                    hours -= 1;
-                                                }
-                                                minutes = 0;
-                                            }
-
-                                            string sign = remainingTATHours < 0 ? "-" : "";
-                                            string formattedTime = $"{sign}{Math.Abs(hours)}.{minutes:D2} Hrs";
-
-                                            @formattedTime
-                                        }
-                                        else
-                                        {
-                                            @("N/A")
-                                        }
-                                    }
-                                </td>
+                          
 
 
 
@@ -683,13 +579,10 @@
 
                                 @*<td>@asset.EmailStatus</td>
                                     <td>@asset.EMailValues</td>*@
-                            }
+                            
 
 
 
-
-                            @if (Session["username"] == null || Session["username"].ToString() != "Admin")
-                            {
                                 <td>@asset.Site</td>
                                 <td>@asset.Customer</td>
                                 <td>@asset.FeedBack</td>
@@ -699,7 +592,7 @@
                                 <td>@asset.NexGenDealer</td>
                                 <td>@asset.Type</td>
                                 <td>@asset.Category</td>
-                            }
+                            
                             <td>
                                 @if (Session["username"] != null && Session["username"].ToString() == "ActOn05")
                                 {
