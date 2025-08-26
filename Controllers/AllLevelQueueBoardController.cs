@@ -242,7 +242,7 @@ namespace MyVizCollections.Controllers
                     CPHighlight1 = Convert.ToString(ds.Tables[0].Rows[0]["CPHighlight1"]),
                     CPHighlight2 = Convert.ToString(ds.Tables[0].Rows[0]["CPHighlight2"]),
                     CPHighlight3 = Convert.ToString(ds.Tables[0].Rows[0]["CPHighlight3"]),
-
+                    CPSplRequest = Convert.ToString(ds.Tables[0].Rows[0]["CPSplRequest"])
 
                 };
 

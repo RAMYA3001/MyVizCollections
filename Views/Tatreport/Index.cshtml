@@ -255,18 +255,21 @@
                 <thead>
                     <tr>
                         <th>ProjectID</th>
-                      
-                            <th style=" width: 120px; ">Current Status</th>
-                            @*<th>Current Status Date</th>*@
-                            <th>PSE Name</th>
-                            <th>CPE Name</th>
-                            <th>Submitted on</th>
-                            <th>Delivery on</th>
-                            <th>Remaining TAT hours</th>
-                            @*<th>EmailStatus </th>
-            <th>
-                EMailValues
-            </th>*@
+                        <th>Remaining TAT hours</th>
+                        <th style=" width: 120px; ">Current Status</th>
+                        @*<th>Current Status Date</th>*@
+                        <th>PSE Name</th>
+                        <th>CPE Name</th>
+                        <th>Source1</th>
+                        <th>Source2</th>
+                        <th>Source3</th>
+                        <th>Submitted on</th>
+                        <th>Delivery on</th>
+
+                        @*<th>EmailStatus </th>
+        <th>
+            EMailValues
+        </th>*@
 
                     </tr>
                 </thead>
@@ -274,73 +277,98 @@
                 <tbody>
                     @foreach (var asset in Model)
                     {
-                        <tr>
-                            <td style="text-align-last:left">
-                                <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/myModal?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Project details, to update status" data-toggle="tooltip" target="_blank">@asset.ProjectID</a>
-                            </td>
+                        DateTime? deliveryOn = asset.RegdOn?.AddHours(24);<!-- Moved here -->
+                    <tr>
+                        <td style="text-align-last:left">
+                            <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/myModal?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Project details, to update status" data-toggle="tooltip" target="_blank">@asset.ProjectID</a>
+                        </td>
 
 
-                          
-                                <td style="text-align-last:left">
-                                    <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/Statuslog?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Status log details" data-toggle="tooltip" target="_blank"> @asset.FinalStatus</a>
-                                </td>
-                                @*<td>@string.Format("{0:dd-MMM-yyyy hh:mm tt}", asset.FinalStatusDt)</td>*@
-                                <td>@asset.PSEName</td>
-                                <td>@asset.CPEName</td>
-                                <td>@String.Format("{0:dd-MMM-yyyy hh:mm tt}", asset.RegdOn)</td>
+                        <td>
+                            @{
+                                if (deliveryOn.HasValue)
+                                {
+                                    int finalStatusCode;
+                                    bool parseSuccess = int.TryParse(asset.FinalStatus, out finalStatusCode);
 
-                                <td>
-                                    @{
-                                        DateTime? deliveryOn = asset.RegdOn?.AddHours(24);
+                                    double remainingTATHours;
+
+                                    // Use FinalStatusDt only if status is 60 and FinalStatusDt exists
+                                    if (parseSuccess && finalStatusCode == 60 && asset.FinalStatusDt.HasValue)
+                                    {
+                                        remainingTATHours = (deliveryOn.Value - asset.FinalStatusDt.Value).TotalHours;
                                     }
-                                    @(deliveryOn.HasValue ? String.Format("{0:dd-MMM-yyyy hh:mm tt}", deliveryOn.Value) : "N/A")
-                                </td>
-                                <td>
-                                    @{
-                                        if (deliveryOn.HasValue)
+                                    else
+                                    {
+                                        remainingTATHours = (deliveryOn.Value - DateTime.Now).TotalHours;
+                                    }
+
+                                    int hours = (int)remainingTATHours;
+                                    int minutes = (int)Math.Round(Math.Abs((remainingTATHours - hours) * 60));
+
+                                    if (minutes == 60)
+                                    {
+                                        if (remainingTATHours >= 0)
                                         {
-                                            int finalStatusCode;
-                                            bool parseSuccess = int.TryParse(asset.FinalStatus, out finalStatusCode);
-
-                                            double remainingTATHours;
-
-                                            // Use FinalStatusDt only if status is 60 and FinalStatusDt exists
-                                            if (parseSuccess && finalStatusCode == 60 && asset.FinalStatusDt.HasValue)
-                                            {
-                                                remainingTATHours = (deliveryOn.Value - asset.FinalStatusDt.Value).TotalHours;
-                                            }
-                                            else
-                                            {
-                                                remainingTATHours = (deliveryOn.Value - DateTime.Now).TotalHours;
-                                            }
-
-                                            int hours = (int)remainingTATHours;
-                                            int minutes = (int)Math.Round(Math.Abs((remainingTATHours - hours) * 60));
-
-                                            if (minutes == 60)
-                                            {
-                                                if (remainingTATHours >= 0)
-                                                {
-                                                    hours += 1;
-                                                }
-                                                else
-                                                {
-                                                    hours -= 1;
-                                                }
-                                                minutes = 0;
-                                            }
-
-                                            string sign = remainingTATHours < 0 ? "-" : "";
-                                            string formattedTime = $"{sign}{Math.Abs(hours)}.{minutes:D2} Hrs";
-
-                                            @formattedTime
+                                            hours += 1;
                                         }
                                         else
                                         {
-                                            @("N/A")
+                                            hours -= 1;
                                         }
-                                        }
-                                </td>
+                                        minutes = 0;
+                                    }
+
+                                    string sign = remainingTATHours < 0 ? "-" : "";
+                                    string formattedTime = $"{sign}{Math.Abs(hours)}.{minutes:D2} Hrs";
+
+                                    @formattedTime
+                                }
+                                else
+                                {
+                                    @("N/A")
+                                }
+                            }
+                        </td>
+
+
+
+
+                        <td style="text-align-last:left">
+                            <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/Statuslog?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Status log details" data-toggle="tooltip" target="_blank"> @asset.FinalStatus</a>
+                        </td>
+                        @*<td>@string.Format("{0:dd-MMM-yyyy hh:mm tt}", asset.FinalStatusDt)</td>*@
+                        <td>@asset.PSEName</td>
+                        <td>@asset.CPEName</td>
+                        <td>
+                            @if ((asset.FinalStatus == "45" || asset.FinalStatus == "46" || asset.FinalStatus == "47") &&
+                                 !string.IsNullOrEmpty(asset.ImageFileName1))
+                            {
+                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "img1", sourcefile = asset.ImageFileName1 })" target="_blank" title="Click to open Imagefile1" data-toggle="tooltip">@asset.ProjectID</a>
+                            }
+                        </td>
+
+                        <td>
+                            @if ((asset.FinalStatus == "45" || asset.FinalStatus == "46" || asset.FinalStatus == "47") &&
+                                 !string.IsNullOrEmpty(asset.ImageFileName2))
+                            {
+                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "img2", sourcefile = asset.ImageFileName2 })" target="_blank" title="Click to open Imagefile2" data-toggle="tooltip">@asset.ProjectID</a>
+                            }
+                        </td>
+
+                        <td>
+                            @if ((asset.FinalStatus == "45" || asset.FinalStatus == "46" || asset.FinalStatus == "47") &&
+                                 !string.IsNullOrEmpty(asset.ImageFileName3))
+                            {
+                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "img3", sourcefile = asset.ImageFileName3 })" target="_blank" title="Click to open Imagefile3" data-toggle="tooltip">@asset.ProjectID</a>
+                            }
+                        </td>
+                        <td>@String.Format("{0:dd-MMM-yyyy hh:mm tt}", asset.RegdOn)</td>
+
+                        <td>
+
+                            @(deliveryOn.HasValue ? String.Format("{0:dd-MMM-yyyy hh:mm tt}", deliveryOn.Value) : "N/A")
+                        </td>
 
 
 
@@ -352,18 +380,18 @@
 
 
 
-                                @*<td>@asset.EmailStatus</td>
-                                    <td>@asset.EMailValues</td>*@
-                            
+                        @*<td>@asset.EmailStatus</td>
+        <td>@asset.EMailValues</td>*@
 
 
 
 
-                        </tr>
+
+                    </tr>
 
 
 
-                                        }
+                    }
                 </tbody>
             </table>
 

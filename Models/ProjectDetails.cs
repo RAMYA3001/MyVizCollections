@@ -24,7 +24,7 @@ namespace MyVizCollections.Models
         public string Options { get; set; }
 
         public string Resolution { get; set; }
-
+        public string CPSplRequest { get; set; }
         public string Size { get; set; }
 
         public string caseID { get; set; }
