@@ -3,6 +3,8 @@
 @{
     Layout = null;
     ViewBag.Title = "Index";
+    var bannerMessage = Session["BannerMessage"] as string;
+    bool isCustomBanner = Session["IsCustomBanner"] != null && (bool)Session["IsCustomBanner"];
 }
 
 <!DOCTYPE html>
@@ -16,19 +18,25 @@
             margin: 0;
             padding: 0;
             height: 100%;
+            overflow-x: hidden; 
         }
 
         html {
             height: 100%;
+            overflow-x: hidden; 
         }
+
 
         .container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 100px;
+            
+            margin-top: 92px;
             padding: 0 225px;
         }
+
+       
 
         #login-container {
             width: 300px;
@@ -64,6 +72,7 @@
             font-family: 'Numans', sans-serif;
         }
 
+
             .link-bar a {
                 color: purple;
                 text-decoration: none;
@@ -97,55 +106,211 @@
         #login-container img {
             width: 100px;
         }
-    </style>
+
+
+
+
+
+        .example1 {
+            height: 50px;
+            width: 80%;
+            left: 50%;
+            margin: 0 auto; /* centers it */
+            overflow: hidden;
+            top: 0;
+            left: 0;
+            right: 0;
+            overflow: hidden;
+            position: relative;
+            margin-top: 30px;
+            font-family: 'Numans', sans-serif;
+            background-color: transparent; /* Or set background if needed */
+            z-index: 9999;
+        }
+     
+        .scrolling-text {
+            display: inline-block;
+            white-space: nowrap;
+            position: absolute;
+            will-change: transform;
+            color: #E92155;
+            font-size: 2em;
+            line-height: 50px;
+            /* Add space before & after the message */
+            padding-left: 200px;
+            padding-right: 200px;
+            animation: scrollBanner linear infinite;
+        }
+        /* Use a dynamic keyframe only if needed. This is a placeholder. */
+        @@keyframes scrollBanner {
+            0% {
+                transform: translateX(0%);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .example1 h3 {
+            font-size: 3em;
+            color: #E92155;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            line-height: 50px;
+            text-align: center;
+            /* Starting position */
+            -moz-transform: translateX(100%);
+            -webkit-transform: translateX(100%);
+            transform: translateX(100%);
+            /* Apply animation to this element */
+            -moz-animation: example1 15s linear infinite;
+            -webkit-animation: example1 15s linear infinite;
+            animation: example1 15s linear infinite;
+        }
+
+        @@-moz-keyframes example1 {
+            0% {
+                -moz-transform: translateX(100%);
+            }
+
+            100% {
+                -moz-transform: translateX(-100%);
+            }
+        }
+
+        @@-webkit-keyframes example1 {
+            0% {
+                -webkit-transform: translateX(100%);
+            }
+
+            100% {
+                -webkit-transform: translateX(-100%);
+            }
+        }
+
+        @@keyframes example1 {
+            0% {
+                -moz-transform: translateX(100%); /* Firefox bug fix */
+                -webkit-transform: translateX(100%); /* Firefox bug fix */
+                transform: translateX(100%);
+            }
+
+            100% {
+                -moz-transform: translateX(-100%); /* Firefox bug fix */
+                -webkit-transform: translateX(-100%); /* Firefox bug fix */
+                transform: translateX(-100%);
+            }
+        }
+        </style>
 </head>
 <body>
-
-    <div class="container">
-
-        <img src="~/images/Innovatus Logo.png" alt="Innovatus Logo" style="width:210px;">
-
-        <div id="login-container">
-            <h2 style="text-align: center;">MyVizCollections</h2>
-            <h3 style="text-align: center;">Login</h3>
-
-            @using (Html.BeginForm("Index", "Login", FormMethod.Post))
-            {
-                @Html.AntiForgeryToken()
-
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-                <div class="form-group">
-                    <label class="control-label" for="Username">Username</label>
-                    <input class="form-control text-box single-line" id="Username" name="Username" type="text" value="">
-                    <span class="field-validation-valid text-danger" data-valmsg-for="Username" data-valmsg-replace="true"></span>
+   
+      
+            <div class="example1">
+                <div class="scrolling-text" id="scrollText">
+                    @if (isCustomBanner)
+                    {
+                        @Html.Raw($"{bannerMessage}<span style='display:inline-block; width:400px;'></span>{bannerMessage}")
+                    }
+                    else
+                    {
+                        <em style="font-style: normal;">
+                            @Html.Raw($"{bannerMessage}<span style='display:inline-block; width:400px;'></span>{bannerMessage}")
+                        </em>
+                    }
                 </div>
-                <div class="form-group">
-                    <label class="control-label" for="Password">Password</label>
-                    <input class="form-control text-box single-line" id="Password" name="Password" type="text" value="">
-                    <span class="field-validation-valid text-danger" data-valmsg-for="Password" data-valmsg-replace="true"></span>
+            </div>
+            
+
+            <div class="container">
+
+
+                <img src="~/images/Innovatus Logo.png" alt="Innovatus Logo" style="width:210px;">
+
+                <div id="login-container">
+                    <h2 style="text-align: center;">MyVizCollections</h2>
+                    <h3 style="text-align: center;">Login</h3>
+
+                    @using (Html.BeginForm("Index", "Login", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                        <div class="form-group">
+                            <label class="control-label" for="Username">Username</label>
+                            <input class="form-control text-box single-line" id="Username" name="Username" type="text" value="">
+                            <span class="field-validation-valid text-danger" data-valmsg-for="Username" data-valmsg-replace="true"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="Password">Password</label>
+                            <input class="form-control text-box single-line" id="Password" name="Password" type="text" value="">
+                            <span class="field-validation-valid text-danger" data-valmsg-for="Password" data-valmsg-replace="true"></span>
+                        </div>
+
+
+
+
+                        <div class="form-group" style="text-align: center;">
+                            <button type="submit" class="btn btn-primary">Login</button>
+                            <button type="button" class="btn btn-primary" onclick="window.location.href='@Url.Action("Index", "Login")'">Cancel</button>
+                        </div>
+                    }
                 </div>
 
+                <img src="~/images/CWLogo1.jpg" alt="CWLogo1" style="width:230px;">
+            </div>
+            <div class="link-bar">
+                @*<p style="font-size: small; color: black" ;>One-stop app to know all about the Preview Work we do. The links are:</p>*@
+                <p>
+
+                    <a style="font-size: small; color: royalblue" ; href="https://colourmyspace.co.in/MyVizCollections" target="_blank">
+                        MyViz - Nerolac
+                    </a><br>
+
+                    <a style="font-size: small; color: royalblue" ; href="https://coloursgalore.com/CWUVCollections" target="_blank">
+                        CW - Indigo and others
+                    </a><br>
+
+                    <a style="font-size: small; color: royalblue" ; href="https://bincrm.com/JKPaintsCollections" target="_blank">
+                        JK - JKMaxxPaints
+                    </a><br>
+
+                </p>
 
 
 
-                <div class="form-group" style="text-align: center;">
-                    <button type="submit" class="btn btn-primary">Login</button>
-                    <button type="button" class="btn btn-primary" onclick="window.location.href='@Url.Action("Index", "Login")'">Cancel</button>
-                </div>
-            }
-        </div>
+            </div>
 
-        <img src="~/images/CWLogo1.jpg" alt="CWLogo1" style="width:230px;">
-    </div>
-
-
-    <div class="link-bar">
-        <a href="https://coloursgalore.com/CWUVCollections" target="_blank">CWUVCollections</a><br />
-
-        <a href="https://bincrm.com/JKPaintsCollections" target="_blank">JKPaintsCollections</a>
-    </div>
 
 </body>
 </html>
 
+<script>
+    function setScrollSpeed() {
+        const text = document.getElementById('scrollText');
+        const container = text.parentElement;
+
+        const textWidth = text.offsetWidth;
+        const containerWidth = container.offsetWidth;
+
+        // Total width of scrolling content (2x for duplicated text)
+        const distance = textWidth / 2;
+
+        const speedFactor = 100; // pixels per second
+        const duration = distance / speedFactor;
+
+        text.style.animationDuration = duration + 's';
+
+        // Restart animation
+        text.style.animation = 'none';
+        void text.offsetWidth; // force reflow
+        text.style.animation = `scrollBanner ${duration}s linear infinite`;
+    }
+
+    window.onload = setScrollSpeed;
+    window.onresize = setScrollSpeed;
+</script>

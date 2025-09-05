@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
 using System.Linq;
 using System.Web;
+using MySql.Data.MySqlClient;
 
 
 namespace MyVizCollections.Models
@@ -56,7 +59,12 @@ namespace MyVizCollections.Models
         // Add this property if missing
         public string CPEID { get; set; }
 
+        public string BannerMessage { get; set; }
 
 
     }
+
+  
+
+
 }

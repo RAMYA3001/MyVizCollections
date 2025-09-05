@@ -29,7 +29,7 @@ namespace MyVizCollections.Controllers
     {
 
 
-        public ActionResult Index(int? page, string Fdate, string s1, string s2)
+        public ActionResult Index( string Fdate, string s1, string s2)
         {
             string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
 
@@ -45,7 +45,7 @@ namespace MyVizCollections.Controllers
 
 
                 int imode = 1; // Default to 1
-                if (Username == "view") // Check if Username is "view"
+                if (Username == "viewreport") // Check if Username is "view"
                 {
                     imode = 2; // Use imode 2 for "view"
                 }
@@ -60,7 +60,7 @@ namespace MyVizCollections.Controllers
 
                 using (MySqlConnection con = new MySqlConnection(constr))
                 {
-                    using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_searchkey", con))
+                    using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_searchkey_Index", con))
                     {
                         cmd.CommandTimeout = 1600;
                         cmd.CommandType = CommandType.StoredProcedure;
@@ -133,14 +133,15 @@ namespace MyVizCollections.Controllers
 
                         con.Close();
 
-                        int pageSize = 10; // Adjust the page size as needed
-                        int pageNumber = (page ?? 1);
+                        //int pageSize = 10; // Adjust the page size as needed
+                        //int pageNumber = (page ?? 1);
 
                         ViewBag.Fdate = Fdate;
                         ViewBag.s1 = s1;
                         ViewBag.s2 = s2;
 
-                        return View(projects.ToPagedList(pageNumber, pageSize));
+                        //return View(projects.ToPagedList(pageNumber, pageSize));
+                        return View(projects);
                     }
                 }
             }

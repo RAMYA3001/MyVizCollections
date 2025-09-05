@@ -1,5 +1,5 @@
-﻿﻿@model PagedList.IPagedList<MyVizCollections.Models.AllLevelQueueBoard>
-@using PagedList.Mvc
+﻿@*﻿@model PagedList.IPagedList<MyVizCollections.Models.AllLevelQueueBoard>*@
+@*@using PagedList.Mvc*@
 
 
 @{
@@ -368,20 +368,20 @@
                 <thead>
                     <tr>
                         <th>ProjectID</th>
-                       
-                            <th style="padding: 9px 33px;">ProjectName</th>
 
-                            <th style="padding: 9px 25px;">RegdOn</th>
-                        
-                       
-                            <th data-toggle="tooltip" title="MyViz insylog details">RegdBy</th>
+                        <th style="padding: 9px 33px;">ProjectName</th>
 
-                            <th data-toggle="tooltip" title="WStatus log details"> St</th>
-                        
-                            <th data-toggle="tooltip" title="No.of instance WStatuslog">St# </th>
+                        <th style="padding: 9px 25px;">RegdOn</th>
 
-                            <th>StDate</th>
-                       
+
+                        <th data-toggle="tooltip" title="MyViz insylog details">RegdBy</th>
+
+                        <th data-toggle="tooltip" title="WStatus log details"> St</th>
+
+                        <th data-toggle="tooltip" title="No.of instance WStatuslog">St# </th>
+                        <th style="padding: 9px 28px;"> StDate</th>
+                           
+                            <th >EmailSent</th>
                             <th data-toggle="tooltip" title="SelectedImageLink">SILink</th>
                             <th>PRILink</th>
                             <th>PRITest</th>
@@ -393,7 +393,7 @@
                             <th>Source3</th>
 
                             <th data-toggle="tooltip" title="SelectedImageOption">SIOpt</th>
-                            <th>Preview</th>                  
+                            <th>Preview</th>
                             <th>Site</th>
                             <th>Customer</th>
                             <th>FeedBack</th>
@@ -403,15 +403,15 @@
                             <th data-toggle="tooltip" title="NxtGen">NG</th>
                             <th>Type</th>
                             <th>Category</th>
-                        
-                        <th>
-                            @if (Session["username"] != null && Session["username"].ToString() == "ActOn05")
-                            {
-                                @:ActOn05
-                            }
-                        </th>
 
-                    </tr>
+                            <th>
+                                @if (Session["username"] != null && Session["username"].ToString() == "ActOn05")
+                                {
+                                    @:ActOn05
+                                }
+                            </th>
+
+</tr>
                 </thead>
 
                 <tbody>
@@ -422,177 +422,182 @@
                                 <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/myModal?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Project details, to update status" data-toggle="tooltip" target="_blank">@asset.ProjectID</a>
                             </td>
 
-                          
-                                <!-- Other table cells -->
-                                <td>@asset.ProjectName</td>
 
-                                @*<td>@String.Format("{0:ddd, dd MMM hh:mm tt}", asset.RegdOn)</td>*@
-                                <td>@String.Format("{0:dd-MMM-yyyy hh:mm tt}", asset.RegdOn)</td>
-                            
+                            <!-- Other table cells -->
+                            <td>@asset.ProjectName</td>
+
+                            @*<td>@String.Format("{0:ddd, dd MMM hh:mm tt}", asset.RegdOn)</td>*@
+                            <td>@String.Format("{0:dd-MMM-yyyy hh:mm tt}", asset.RegdOn)</td>
+
                             @*<td>@(Convert.ToDateTime(asset.RegdOn).ToString("dd/MM/yy"))</td>*@
                             @*<td>@asset.RegdBy</td>*@
 
-                             <td style="text-align-last:left">
-                                    <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/Myvizinsylog?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Myvizinsylog details" data-toggle="tooltip" target="_blank"> @asset.RegdBy</a>
-                                </td>
+                            <td style="text-align-last:left">
+                                <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/Myvizinsylog?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Myvizinsylog details" data-toggle="tooltip" target="_blank"> @asset.RegdBy</a>
+                            </td>
 
 
-                                <td style="text-align-last:left">
-                                    <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/Statuslog?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Status log details" data-toggle="tooltip" target="_blank"> @asset.FinalStatus</a>
-                                </td>
-                            
-
-                           
-
-                                <td style="text-align-last:left">
-                                    <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/SCAQALog?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view SCAQA details" data-toggle="tooltip" target="_blank"> @asset.WStsCount</a>
-                                </td>
+                            <td style="text-align-last:left">
+                                <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/Statuslog?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Status log details" data-toggle="tooltip" target="_blank"> @asset.FinalStatus</a>
+                            </td>
 
 
 
-                                @*<td>@asset.WStsCount</td>*@
 
-                                <td>@string.Format("{0:dd-MMM-yyyy hh:mm tt}", asset.FinalStatusDt)</td>
-                            
+                            <td style="text-align-last:left">
+                                <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/SCAQALog?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view SCAQA details" data-toggle="tooltip" target="_blank"> @asset.WStsCount</a>
+                            </td>
+
+
+
+                            @*<td>@asset.WStsCount</td>*@
+
+                            <td>@string.Format("{0:dd-MMM-yyyy hh:mm tt}", asset.FinalStatusDt)</td>
+                            <td>
+                                @if (asset.FinalStatus == "50" && asset.EmailStatus == "S")
+                                {
+                                    <span style="color:red">Yes</span>
+                                }
+                                else if (asset.FinalStatus == "60" && asset.EmailStatus == "S")
+                                {
+                                    @:Yes
+                                }
+                                else if (asset.FinalStatus == "60" && string.IsNullOrWhiteSpace(asset.EmailStatus))
+                                {
+                                    <span style="color:red">No</span>
+                                }
+                                else
+                                {
+                                    @asset.EmailStatus
+                                }
+                            </td>
                             @*<td>@(Convert.ToDateTime(asset.FinalStatusDt).ToString("dd/MM/yy"))</td>*@
-                          
-                                <td>
-                                    @if (!string.IsNullOrEmpty(asset.SelectedImageLink))
-                                    {
-                                        <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "Source", sourcefile = asset.SelectedImageLink })" target="_blank" title="Click to open SelectedImageLink" data-toggle="tooltip">@asset.ProjectID</a>
-                                    }
-                                    else
-                                    {
 
-                                    }
-                                </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(asset.SelectedImageLink))
+                                {
+                                    <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "Source", sourcefile = asset.SelectedImageLink })" target="_blank" title="Click to open SelectedImageLink" data-toggle="tooltip">@asset.ProjectID</a>
+                                }
+                                else
+                                {
 
-                                <td>
-                                    @if (!string.IsNullOrEmpty(asset.PRILink))
-                                    {
-                                        <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "PRI" })" target="_blank" title="Click to open PRILink" data-toggle="tooltip">@asset.ProjectID</a>
-                                    }
-                                    else
-                                    {
+                                }
+                            </td>
 
-                                    }
-                                </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(asset.PRILink))
+                                {
+                                    <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "PRI" })" target="_blank" title="Click to open PRILink" data-toggle="tooltip">@asset.ProjectID</a>
+                                }
+                                else
+                                {
 
-                                <td>
-                                    @if (!string.IsNullOrEmpty(asset.PRITest))
-                                    {
-                                        <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "PRI_Test" })" target="_blank" title="Click to open PRITest" data-toggle="tooltip">@asset.ProjectID</a>
-                                    }
-                                    else
-                                    {
+                                }
+                            </td>
 
-                                    }
-                                </td>
-                                <td>
-                                    @if (!string.IsNullOrEmpty(asset.SCA1))
-                                    {
-                                        <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "PDF1" })" target="_blank" title="Click to open SCA1Link" data-toggle="tooltip">@asset.ProjectID</a>
-                                    }
-                                    else
-                                    {
+                            <td>
+                                @if (!string.IsNullOrEmpty(asset.PRITest))
+                                {
+                                    <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "PRI_Test" })" target="_blank" title="Click to open PRITest" data-toggle="tooltip">@asset.ProjectID</a>
+                                }
+                                else
+                                {
 
-                                    }
-                                </td>
-                                <td>
-                                    @if (!string.IsNullOrEmpty(asset.SCA2))
-                                    {
-                                        <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "PDF2" })" target="_blank" title="Click to open SCA2Link" data-toggle="tooltip">@asset.ProjectID</a>
-                                    }
-                                    else
-                                    {
+                                }
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(asset.SCA1))
+                                {
+                                    <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "PDF1" })" target="_blank" title="Click to open SCA1Link" data-toggle="tooltip">@asset.ProjectID</a>
+                                }
+                                else
+                                {
 
-                                    }
-                                </td>
-                                <td>
-                                    @if (!string.IsNullOrEmpty(asset.SCA3))
-                                    {
-                                        <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "PDF3" })" target="_blank" title="Click to open SCA3Link" data-toggle="tooltip">@asset.ProjectID</a>
-                                    }
-                                    else
-                                    {
+                                }
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(asset.SCA2))
+                                {
+                                    <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "PDF2" })" target="_blank" title="Click to open SCA2Link" data-toggle="tooltip">@asset.ProjectID</a>
+                                }
+                                else
+                                {
 
-                                    }
-                                </td>
+                                }
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(asset.SCA3))
+                                {
+                                    <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "PDF3" })" target="_blank" title="Click to open SCA3Link" data-toggle="tooltip">@asset.ProjectID</a>
+                                }
+                                else
+                                {
 
-                                <td>
-                                    @if (!string.IsNullOrEmpty(asset.ImageFileName1))
-                                    {
-                                        <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "img1", sourcefile = asset.ImageFileName1 })" target="_blank" title="Click to open Imagefile1" data-toggle="tooltip">@asset.ProjectID</a>
-                                    }
-                                    else
-                                    {
+                                }
+                            </td>
 
-                                    }
-                                </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(asset.ImageFileName1))
+                                {
+                                    <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "img1", sourcefile = asset.ImageFileName1 })" target="_blank" title="Click to open Imagefile1" data-toggle="tooltip">@asset.ProjectID</a>
+                                }
+                                else
+                                {
 
-                                <td>
-                                    @if (!string.IsNullOrEmpty(asset.ImageFileName2))
-                                    {
-                                        <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "img2", sourcefile = asset.ImageFileName2 })" target="_blank" title="Click to open Imagefile2" data-toggle="tooltip">@asset.ProjectID</a>
-                                    }
-                                    else
-                                    {
+                                }
+                            </td>
 
-                                    }
-                                </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(asset.ImageFileName2))
+                                {
+                                    <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "img2", sourcefile = asset.ImageFileName2 })" target="_blank" title="Click to open Imagefile2" data-toggle="tooltip">@asset.ProjectID</a>
+                                }
+                                else
+                                {
 
-                                <td>
-                                    @if (!string.IsNullOrEmpty(asset.ImageFileName3))
-                                    {
-                                        <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "img3", sourcefile = asset.ImageFileName3 })" target="_blank" title="Click to open Imagefile3" data-toggle="tooltip">@asset.ProjectID</a>
-                                    }
-                                    else
-                                    {
+                                }
+                            </td>
 
-                                    }
-                                </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(asset.ImageFileName3))
+                                {
+                                    <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "img3", sourcefile = asset.ImageFileName3 })" target="_blank" title="Click to open Imagefile3" data-toggle="tooltip">@asset.ProjectID</a>
+                                }
+                                else
+                                {
 
-                                @*<td>
-                                        <a href="@Url.Action("Appliedcolour", "AllLevelQueueBoard")" target="_blank" title="Click to open Imagefile3" data-toggle="tooltip">@asset.Appliedcolour</a>
+                                }
+                            </td>
 
-                                    </td>*@
+                            @*<td>
+            <a href="@Url.Action("Appliedcolour", "AllLevelQueueBoard")" target="_blank" title="Click to open Imagefile3" data-toggle="tooltip">@asset.Appliedcolour</a>
 
-                                <td>
-                                    @asset.SIOption
-                                </td>
-                                <td>
-                                    <button id="previewButton" class="btn btn-primary btn-sm" onclick="launchPreview(@asset.ProjectID)">Preview</button>
-                                </td>
-                            
+        </td>*@
 
-                          
+                            <td>
+                                @asset.SIOption
+                            </td>
+                            <td>
+                                <button id="previewButton" class="btn btn-primary btn-sm" onclick="launchPreview(@asset.ProjectID)">Preview</button>
+                            </td>
 
 
-
+                            @*<td>@asset.EmailStatus</td>
+        <td>@asset.EMailValues</td>*@
 
 
 
 
+                            <td>@asset.Site</td>
+                            <td>@asset.Customer</td>
+                            <td>@asset.FeedBack</td>
+                            <td>@asset.CC</td>
+                            <td>@asset.DuplicateOf</td>
+                            <td>@asset.Priority</td>
+                            <td>@asset.NexGenDealer</td>
+                            <td>@asset.Type</td>
+                            <td>@asset.Category</td>
 
-
-
-
-                                @*<td>@asset.EmailStatus</td>
-                                    <td>@asset.EMailValues</td>*@
-                            
-
-
-
-                                <td>@asset.Site</td>
-                                <td>@asset.Customer</td>
-                                <td>@asset.FeedBack</td>
-                                <td>@asset.CC</td>
-                                <td>@asset.DuplicateOf</td>
-                                <td>@asset.Priority</td>
-                                <td>@asset.NexGenDealer</td>
-                                <td>@asset.Type</td>
-                                <td>@asset.Category</td>
-                            
                             <td>
                                 @if (Session["username"] != null && Session["username"].ToString() == "ActOn05")
                                 {
@@ -608,8 +613,8 @@
             </table>
 
             <div class="text-center">
-                Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
-                @Html.PagedListPager(Model, page => Url.Action("Index", new { page, Fdate = ViewBag.Fdate, s1 = ViewBag.s1, s2 = ViewBag.s2 }))
+                @*Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount*@
+                @*@Html.PagedListPager(Model, page => Url.Action("Index", new { page, Fdate = ViewBag.Fdate, s1 = ViewBag.s1, s2 = ViewBag.s2 }))*@
             </div>
             <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
             <script src="/path/to/datatables.min.js"></script>

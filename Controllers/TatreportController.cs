@@ -30,12 +30,16 @@ namespace MyVizCollections.Controllers
     {
         // GET: Tat
        
-            public ActionResult Index(int? page, string Fdate, string s1, string s2)
+            public ActionResult Index(string Fdate, string s1, string s2)
             {
                 string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
                 List<AllLevelQueueBoard> projects = new List<AllLevelQueueBoard>(); // declare here
-
-                try
+           
+            Session["ZECount"] = TatreportController.GetImgLCount("00");
+            Session["TECount"] = TatreportController.GetImgLCount("10");
+            Session["TWCount"] = TatreportController.GetImgLCount("20");
+            Session["FFCount"] = TatreportController.GetImgLCount("45");
+            try
                 {
                     if (Fdate == null)
                     {
@@ -54,7 +58,7 @@ namespace MyVizCollections.Controllers
 
                     using (MySqlConnection con = new MySqlConnection(constr))
                     {
-                        using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_searchkey", con))
+                        using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_searchkey_Index", con))
                         {
                             cmd.CommandTimeout = 1600;
                             cmd.CommandType = CommandType.StoredProcedure;
@@ -120,38 +124,42 @@ namespace MyVizCollections.Controllers
                         }
                     }
 
-                    // Calculate Remaining TAT Hours for each project
-                    foreach (var proj in projects)
-                    {
-                        if (proj.RegdOn.HasValue)
-                        {
-                            proj.DeliveryOn = proj.RegdOn.Value.AddHours(24);
-                            DateTime refTime = (proj.FinalStatus == "60" && proj.FinalStatusDt.HasValue)
-                                ? proj.FinalStatusDt.Value
-                                : DateTime.Now;
+                // Calculate Remaining TAT Hours for each project
+                //foreach (var proj in projects)
+                //{
+                //    if (proj.RegdOn.HasValue)
+                //    {
+                //        proj.DeliveryOn = proj.RegdOn.Value.AddHours(24);
+                //        DateTime refTime = (proj.FinalStatus == "60" && proj.FinalStatusDt.HasValue)
+                //            ? proj.FinalStatusDt.Value
+                //            : DateTime.Now;
 
-                            proj.RemainingTATHours = (proj.DeliveryOn - refTime).TotalHours;
-                        }
-                        else
-                        {
-                            proj.RemainingTATHours = double.MaxValue;
-                        }
-                    }
+                //        proj.RemainingTATHours = (proj.DeliveryOn - refTime).TotalHours;
+                //    }
+                //    else
+                //    {
+                //        proj.RemainingTATHours = double.MaxValue;
+                //    }
+                //}
 
-                    // Sort by RemainingTATHours if Admin
-                    if (Username == "tatreport")
-                    {
-                        projects = projects.OrderBy(p => p.RemainingTATHours).ToList();
-                    }
+                // Sort by RemainingTATHours if Admin
+                // Sort by FinalStatus ASC and then by RemainingTATHours ASC if Admin
+                if (Username == "tatreport")
+                {
+                    projects = projects
+                        .OrderBy(p => p.FinalStatus)                // first priority
+                        .ThenBy(p => p.RemainingTATHours)           // second priority
+                        .ToList();
+                }
 
-                    int pageSize = 10;
-                    int pageNumber = (page ?? 1);
+                //int pageSize = 10;
+                //int pageNumber = (page ?? 1);
 
-                    ViewBag.Fdate = Fdate;
+                ViewBag.Fdate = Fdate;
                     ViewBag.s1 = s1;
                     ViewBag.s2 = s2;
 
-                    return View(projects.ToPagedList(pageNumber, pageSize));
+                    return View(projects);
                 }
                 catch (Exception ex)
                 {
@@ -159,5 +167,48 @@ namespace MyVizCollections.Controllers
                     throw;
                 }
             }
+
+     
+        public static string GetImgLCount(string SType)
+        {
+            string query;
+            List<AllLevelQueueBoard> items = new List<AllLevelQueueBoard>();
+            AllLevelQueueBoard tSO = new AllLevelQueueBoard();
+            string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
+            MySqlConnection con = new MySqlConnection(constr);
+            DateTime NextDate = DateTime.Now.AddDays(1);
+            DataSet ds = new DataSet();
+            if (SType == "00")
+                query = "select * From fromtso where wstatus='00'";
+            else if (SType == "10")
+                query = "select * From fromtso where wstatus='10'";
+            else if (SType == "20")
+                query = "select * From fromtso where wstatus='20'";
+            else if (SType == "45")
+                query = "select * From fromtso where wstatus='45'";
+            else
+                query = "select * From fromtso where wstatus='50'";
+
+            con.Open();
+            MySqlCommand cmd = new MySqlCommand(query, con);
+            cmd.CommandType = CommandType.Text;
+            MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
+            sda.Fill(ds);
+
+            //tSO.BannerMessage = ds.Tables[0].Rows.Count.ToString();
+
+            //if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            //{
+            //    tSO.BannerMessage = ds.Tables[0].Rows[0]["BannerMessage"].ToString();
+            //}
+            //else
+            //{
+            //    tSO.BannerMessage = "";
+            //}
+
+            con.Close();
+            // ✅ Return count as string
+            return ds.Tables[0].Rows.Count.ToString();
         }
     }
+}

@@ -1,4 +1,4 @@
-﻿﻿@model PagedList.IPagedList<MyVizCollections.Models.AllLevelQueueBoard>
+﻿@*﻿@model PagedList.IPagedList<MyVizCollections.Models.AllLevelQueueBoard>*@
 @using PagedList.Mvc
 
 
@@ -212,96 +212,111 @@
 
 
 <div style=" padding: 10px 10px; display: flex; align-items: center; width: 49%; margin-bottom: 24px;margin-left:-98px;">
-  
+
 
     <select class="form-control" id="dropdownSelect3" style="width: 104px; margin-right: 10px " title="Search Key">
         <option value="tso.ProjectID" @(ViewBag.s1 == "tso.ProjectID" ? "selected" : "")>ProjectID</option>
         <option value="tso.Wstatus" @(ViewBag.s1 == "tso.Wstatus" ? "selected" : "")>Status</option>
-      
+
     </select>
 
     <input type="text" name="q" class="search-text form-control" placeholder="Search..." title="Search relevant details in the grid" data-toggle="tooltip" id="searchtxt" style="width: 121px; margin-right: 2px; margin-left: -8px; ">
 
     <button type="submit" class="btn btn-primary" id="btnSubmit" style="height: 30px;">Search</button>
-    <button type="submit" class="btn btn-primary" id="btnClear" style="height: 30px; margin: 2px;">Clear</button>
+    <button type="submit" class="btn btn-primary" id="btnClear" style="height: 30px; margin: 2px;">Refresh</button>
+
+
+    <!-- Status line in horizontal format -->
+    <p style="font-size: small; color: black; margin: 0; padding-left: 10px; white-space: nowrap;">
+        Status || 00 : @Session["ZECount"].ToString()
+        || 10 : @Session["TECount"].ToString()
+        || 20 : @Session["TWCount"].ToString()
+        || 45 : @Session["FFCount"].ToString()
+    </p>
+
+
+    <div>
+        <a href="~/Content/docs/HolidayList2025.pdf" target="_blank" class="btn btn-primary" style="height: 30px;margin-left:448px;">
+            Holiday List
+        </a>
+
+    </div>
 </div>
 
-   
-
-    
 
 
-    @*<a href="@Url.Action("ResolutionCheck", "AllLevelQueueBoard")" target="_blank">
-            <input type="button" class="btn btn-primary"  value="Resolution" style="margin-left:6px" />
-        </a>*@
+
+
+
+@*<a href="@Url.Action("ResolutionCheck", "AllLevelQueueBoard")" target="_blank">
+        <input type="button" class="btn btn-primary"  value="Resolution" style="margin-left:6px" />
+    </a>*@
     </div>
-    <div class="panel panel-primary list-panel" id="list-panel" style="width:90%;margin-top:12px;margin-left:9px;">
-        <div class="panel-heading list-panel-heading">
-            <h1 class="panel-title list-panel-title">DashBoard</h1>
+<div class="panel panel-primary list-panel" id="list-panel" style="width:95%;margin-top:5px;margin-left:9px;">
+    <div class="panel-heading list-panel-heading">
+        <h1 class="panel-title list-panel-title">DashBoard - Status (10 to 60)</h1>
+    </div>
+    <div id="progress" class="modal">
+        <div class="center" style="margin-left: 535px; margin-top: 300px;">
+
+            <img src="~/images/loader4.gif" style="width:80px !important" />
         </div>
-        <div id="progress" class="modal">
-            <div class="center" style="margin-left: 535px; margin-top: 300px;">
-
-                <img src="~/images/loader4.gif" style="width:80px !important" />
-            </div>
-        </div>
+    </div>
 
 
-        <div class="container body-content" style="width: 1600px;"></div>
+    <div class="container body-content" style="width: 1600px;"></div>
 
-        <div class="panel-body" style="width: 100%; overflow: auto;">
+    <div class="panel-body" style="width: 100%; overflow: auto;">
 
-            <table id="assets-data-table" class="table table-striped table-bordered" style="width: 100%; position: relative;">
-                <thead>
-                    <tr>
-                        <th>ProjectID</th>
-                        <th>Remaining TAT hours</th>
-                        <th style=" width: 120px; ">Current Status</th>
-                        @*<th>Current Status Date</th>*@
-                        <th>PSE Name</th>
-                        <th>CPE Name</th>
-                        <th>Source1</th>
-                        <th>Source2</th>
-                        <th>Source3</th>
-                        <th>Submitted on</th>
-                        <th>Delivery on</th>
+        <table id="assets-data-table" class="table table-striped table-bordered" style="width: 100%; position: relative;">
+            <thead>
+                <tr>
+                    <th>ProjectID</th>
+                    <th>Remaining TAT hours</th>
+                    <th style=" width: 120px; ">Current Status</th>
+                    <th>EmailSent</th>
+                    <th>PSE Name</th>
+                    <th>CPE Name</th>
+                    <th>Source1</th>
+                    <th>Source2</th>
+                    <th>Source3</th>
+                    <th>Submitted on</th>
+                    <th>Delivery on</th>
 
-                        @*<th>EmailStatus </th>
-        <th>
+
+                    @*<th>
             EMailValues
         </th>*@
 
-                    </tr>
-                </thead>
+                </tr>
+            </thead>
 
-                <tbody>
-                    @foreach (var asset in Model)
-                    {
-                        DateTime? deliveryOn = asset.RegdOn?.AddHours(24);<!-- Moved here -->
-                    <tr>
-                        <td style="text-align-last:left">
-                            <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/myModal?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Project details, to update status" data-toggle="tooltip" target="_blank">@asset.ProjectID</a>
-                        </td>
+            <tbody>
+                @foreach (var asset in Model)
+                {
+                    DateTime? deliveryOn = asset.RegdOn?.AddHours(24);<!-- Moved here -->
+                <tr>
+                    <td style="text-align-last:left">
+                        <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/myModal?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Project details, to update status" data-toggle="tooltip" target="_blank">@asset.ProjectID</a>
+                    </td>
 
 
-                        <td>
-                            @{
-                                if (deliveryOn.HasValue)
+
+
+                    <td>
+                        @{
+                            if (deliveryOn.HasValue)
+                            {
+                                string formattedTime;
+
+                                if (asset.FinalStatus == "60")
                                 {
-                                    int finalStatusCode;
-                                    bool parseSuccess = int.TryParse(asset.FinalStatus, out finalStatusCode);
-
-                                    double remainingTATHours;
-
-                                    // Use FinalStatusDt only if status is 60 and FinalStatusDt exists
-                                    if (parseSuccess && finalStatusCode == 60 && asset.FinalStatusDt.HasValue)
-                                    {
-                                        remainingTATHours = (deliveryOn.Value - asset.FinalStatusDt.Value).TotalHours;
-                                    }
-                                    else
-                                    {
-                                        remainingTATHours = (deliveryOn.Value - DateTime.Now).TotalHours;
-                                    }
+                                    // Always 0 if FinalStatus is 60
+                                    formattedTime = "0";
+                                }
+                                else
+                                {
+                                    double remainingTATHours = (deliveryOn.Value - DateTime.Now).TotalHours;
 
                                     int hours = (int)remainingTATHours;
                                     int minutes = (int)Math.Round(Math.Abs((remainingTATHours - hours) * 60));
@@ -320,93 +335,104 @@
                                     }
 
                                     string sign = remainingTATHours < 0 ? "-" : "";
-                                    string formattedTime = $"{sign}{Math.Abs(hours)}.{minutes:D2} Hrs";
-
-                                    @formattedTime
+                                    formattedTime = $"{sign}{Math.Abs(hours)}.{minutes:D2} Hrs";
                                 }
-                                else
-                                {
-                                    @("N/A")
-                                }
+
+                                @formattedTime
                             }
-                        </td>
-
-
-
-
-                        <td style="text-align-last:left">
-                            <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/Statuslog?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Status log details" data-toggle="tooltip" target="_blank"> @asset.FinalStatus</a>
-                        </td>
-                        @*<td>@string.Format("{0:dd-MMM-yyyy hh:mm tt}", asset.FinalStatusDt)</td>*@
-                        <td>@asset.PSEName</td>
-                        <td>@asset.CPEName</td>
-                        <td>
-                            @if ((asset.FinalStatus == "45" || asset.FinalStatus == "46" || asset.FinalStatus == "47") &&
-                                 !string.IsNullOrEmpty(asset.ImageFileName1))
+                            else
                             {
-                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "img1", sourcefile = asset.ImageFileName1 })" target="_blank" title="Click to open Imagefile1" data-toggle="tooltip">@asset.ProjectID</a>
+                                @("N/A")
                             }
-                        </td>
-
-                        <td>
-                            @if ((asset.FinalStatus == "45" || asset.FinalStatus == "46" || asset.FinalStatus == "47") &&
-                                 !string.IsNullOrEmpty(asset.ImageFileName2))
-                            {
-                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "img2", sourcefile = asset.ImageFileName2 })" target="_blank" title="Click to open Imagefile2" data-toggle="tooltip">@asset.ProjectID</a>
-                            }
-                        </td>
-
-                        <td>
-                            @if ((asset.FinalStatus == "45" || asset.FinalStatus == "46" || asset.FinalStatus == "47") &&
-                                 !string.IsNullOrEmpty(asset.ImageFileName3))
-                            {
-                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "img3", sourcefile = asset.ImageFileName3 })" target="_blank" title="Click to open Imagefile3" data-toggle="tooltip">@asset.ProjectID</a>
-                            }
-                        </td>
-                        <td>@String.Format("{0:dd-MMM-yyyy hh:mm tt}", asset.RegdOn)</td>
-
-                        <td>
-
-                            @(deliveryOn.HasValue ? String.Format("{0:dd-MMM-yyyy hh:mm tt}", deliveryOn.Value) : "N/A")
-                        </td>
+                        }
+                    </td>
 
 
 
+                    <td style="text-align-last:left">
+                        <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/Statuslog?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Status log details" data-toggle="tooltip" target="_blank"> @asset.FinalStatus</a>
+                    </td>
+
+                    <td>
+                        @if (asset.FinalStatus == "50" && asset.EmailStatus == "S")
+                        {
+                            <span style="color:red">Yes</span>
+                        }
+                        else if (asset.FinalStatus == "60" && asset.EmailStatus == "S")
+                        {
+                            @:Yes
+                        }
+                        else if (asset.FinalStatus == "60" && string.IsNullOrWhiteSpace(asset.EmailStatus))
+                        {
+                            <span style="color:red">No</span>
+                        }
+                        else
+                        {
+                            @asset.EmailStatus
+                        }
+                    </td>
+                    @*<td>@string.Format("{0:dd-MMM-yyyy hh:mm tt}", asset.FinalStatusDt)</td>*@
+                    <td>@asset.PSEName</td>
+                    <td>@asset.CPEName</td>
+                    <td>
+                        @if ((asset.FinalStatus == "45" || asset.FinalStatus == "46" || asset.FinalStatus == "47") &&
+                             !string.IsNullOrEmpty(asset.ImageFileName1))
+                        {
+                            <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "img1", sourcefile = asset.ImageFileName1 })" target="_blank" title="Click to open Imagefile1" data-toggle="tooltip">@asset.ProjectID</a>
+                        }
+                    </td>
+
+                    <td>
+                        @if ((asset.FinalStatus == "45" || asset.FinalStatus == "46" || asset.FinalStatus == "47") &&
+                             !string.IsNullOrEmpty(asset.ImageFileName2))
+                        {
+                            <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "img2", sourcefile = asset.ImageFileName2 })" target="_blank" title="Click to open Imagefile2" data-toggle="tooltip">@asset.ProjectID</a>
+                        }
+                    </td>
+
+                    <td>
+                        @if ((asset.FinalStatus == "45" || asset.FinalStatus == "46" || asset.FinalStatus == "47") &&
+                             !string.IsNullOrEmpty(asset.ImageFileName3))
+                        {
+                            <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "img3", sourcefile = asset.ImageFileName3 })" target="_blank" title="Click to open Imagefile3" data-toggle="tooltip">@asset.ProjectID</a>
+                        }
+                    </td>
+                    <td>@String.Format("{0:dd-MMM-yyyy hh:mm tt}", asset.RegdOn)</td>
+
+                    <td>
+
+                        @(deliveryOn.HasValue ? String.Format("{0:dd-MMM-yyyy hh:mm tt}", deliveryOn.Value) : "N/A")
+                    </td>
+
+
+
+
+                    @*<td>@asset.EMailValues</td>*@
 
 
 
 
 
+                </tr>
 
 
 
-                        @*<td>@asset.EmailStatus</td>
-        <td>@asset.EMailValues</td>*@
+                }
+            </tbody>
+        </table>
 
-
-
-
-
-                    </tr>
-
-
-
-                    }
-                </tbody>
-            </table>
-
-            <div class="text-center">
-                Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
-                @Html.PagedListPager(Model, page => Url.Action("Index", new { page, Fdate = ViewBag.Fdate, s1 = ViewBag.s1, s2 = ViewBag.s2 }))
-            </div>
-            <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-            <script src="/path/to/datatables.min.js"></script>
-            <link href="/Content/PagedList.css" rel="stylesheet" type="text/css" />
-            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
-            <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
-            <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.2.2/css/buttons.dataTables.min.css" />
-            <link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" />
-            <script>
+        <div class="text-center">
+            @*Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount*@
+            @*@Html.PagedListPager(Model, page => Url.Action("Index", new { page, Fdate = ViewBag.Fdate, s1 = ViewBag.s1, s2 = ViewBag.s2 }))*@
+        </div>
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script src="/path/to/datatables.min.js"></script>
+        <link href="/Content/PagedList.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+        <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.2.2/css/buttons.dataTables.min.css" />
+        <link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" />
+        <script>
 
 
             $(document).ready(function () {
@@ -519,9 +545,9 @@
 
 
 
-             
 
 
-            </script>
-        </div>
+
+        </script>
     </div>
+</div>
