@@ -29,7 +29,9 @@ namespace MyVizCollections.Models
         public int WStatusCount { get; set; }
         public int WStsCount { get; set; }
         public string SIOption { get; set; }
-
+        public decimal ActualTAT { get; set; }
+        public decimal EstimateTAT { get; set; }
+        public decimal ExceededTAT { get; set; }
         public string ImageFileName1 { get; set; }
         public string ImageFileName2 { get; set; }
         public string ImageFileName3 { get; set; }

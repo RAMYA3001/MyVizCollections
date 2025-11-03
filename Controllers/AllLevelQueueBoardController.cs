@@ -29,7 +29,7 @@ namespace MyVizCollections.Controllers
     {
 
 
-        public ActionResult Index( string Fdate, string s1, string s2)
+        public ActionResult Index( string Fdate,string Ldate, string s1, string s2)
         {
             string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
 
@@ -39,33 +39,34 @@ namespace MyVizCollections.Controllers
                 {
                     Fdate = DateTime.Now.ToString("yyyy-MM-dd");
                 }
-
+                if (Ldate == null)
+                {
+                    Ldate = DateTime.Now.ToString("yyyy-MM-dd");
+                }
                 // Retrieve category from session
                 string Username = Session["Username"]?.ToString();
 
 
                 int imode = 1; // Default to 1
-                if (Username == "viewreport") // Check if Username is "view"
-                {
-                    imode = 2; // Use imode 2 for "view"
-                }
-                else if (Username == "ActOn05") // Check if Username is "ActOn05"
+                //if (Username == "viewreport") // Check if Username is "view"
+                //{
+                //    imode = 2; // Use imode 2 for "view"
+                //}
+                if (Username == "ActOn05") // Check if Username is "ActOn05"
                 {
                     imode = 3; // Use imode 3 for "ActOn05"
                 }
-                //else if (Username == "Admin") // Check if Username is "admin"
-                //{
-                //    imode = 4; // Use imode 3 for "ActOn05"
-                //}
+             
 
                 using (MySqlConnection con = new MySqlConnection(constr))
                 {
-                    using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_searchkey_Index", con))
+                    using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_searchkey", con))
                     {
                         cmd.CommandTimeout = 1600;
                         cmd.CommandType = CommandType.StoredProcedure;
 
                         cmd.Parameters.AddWithValue("@From_Date", Fdate);
+                        cmd.Parameters.AddWithValue("@To_Date", Ldate);
                         cmd.Parameters.AddWithValue("@S_ID", s1);
                         cmd.Parameters.AddWithValue("@type1", s2);
                         cmd.Parameters.AddWithValue("@imode", imode); // Pass imode value
@@ -137,8 +138,10 @@ namespace MyVizCollections.Controllers
                         //int pageNumber = (page ?? 1);
 
                         ViewBag.Fdate = Fdate;
+                        ViewBag.Ldate = Ldate;
                         ViewBag.s1 = s1;
                         ViewBag.s2 = s2;
+                        ViewBag.RowCount = projects.Count; // ✅ Total rows displayed
 
                         //return View(projects.ToPagedList(pageNumber, pageSize));
                         return View(projects);
@@ -987,20 +990,6 @@ public JsonResult GetSCAQAData(string projectID)
                     con.Close();
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

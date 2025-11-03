@@ -1,0 +1,963 @@
+﻿@*﻿@model PagedList.IPagedList<MyVizCollections.Models.AllLevelQueueBoard>*@
+@*@using PagedList.Mvc*@
+
+
+@{
+    ViewBag.Title = "QueueBoard - Projects in progress";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string currentFilter = ViewBag.CurrentFilter;
+    string currentSort = ViewBag.CurrentSort;
+    string Cdate = ViewBag.Fdate;
+    string Edate = ViewBag.Ldate;
+    string s1 = ViewBag.s1;
+    string s2 = ViewBag.s2;
+    var currentYear = DateTime.Now.Year;
+   
+    var currentDate = DateTime.Now.ToString("yyyy-MM-dd");
+}
+
+
+<style>
+    .container {
+        padding-right: 5px;
+        /* padding-left: 15px; */
+        margin-right: auto;
+        margin-left: 25px;
+        width: auto;
+    }
+
+    img {
+        border-radius: 8px;
+    }
+
+    #myprogressBar {
+        width: 1%;
+        height: 20px;
+        background-color: #4CAF50;
+        text-align: center;
+        line-height: 32px;
+        color: black;
+    }
+
+    #datepicker {
+        font-size: 14px; /* Adjust as needed */
+        line-height: 1.8; /* Adjust as needed */
+    }
+
+
+
+    #overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        z-index: 999;
+    }
+
+    #qaPopup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: 34%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        z-index: 1000;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+        #qaPopup .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            #qaPopup .popup-header h3 {
+                color: darkblue;
+                text-align: center;
+                flex-grow: 1;
+            }
+
+    #closePopup {
+        background: none;
+        border: none;
+        padding: 10px 20px;
+        color: #000;
+        cursor: pointer;
+    }
+
+    #saveQAResult, #closePopup {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+        #saveQAResult:disabled, #closePopup:disabled {
+            background-color: grey;
+            cursor: not-allowed;
+        }
+
+    #saveQAResult, #closePopup {
+        margin: 10px;
+    }
+
+    #buttons-container {
+        text-align: center;
+    }
+
+    /* Styling for the additional comments section */
+    #additionalComments {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+        resize: vertical;
+    }
+
+        #additionalComments textarea {
+            width: 100%;
+            padding: 10px;
+            resize: vertical;
+        }
+
+
+
+
+    .popup-container {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 480px;
+        background: #fdfdfd;
+        border-radius: 8px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        padding: 20px;
+        z-index: 1000;
+    }
+
+    .popup-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #ccc;
+        margin-bottom: 10px;
+    }
+
+        .popup-header h3 {
+            margin: 0;
+            font-size: 20px;
+            color: #2c3e50;
+        }
+
+    .close-btn {
+        font-size: 22px;
+        color: #999;
+        cursor: pointer;
+    }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+    .instructions {
+        font-size: 13px;
+        margin-bottom: 15px;
+        color: #444;
+    }
+
+    .form-row {
+        margin-bottom: 12px;
+        font-size: 14px;
+        color: #333;
+    }
+
+        .form-row select,
+        .form-row textarea {
+            width: 18%;
+            padding: 6px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-top: 5px;
+        }
+
+    .help-text {
+        font-size: 12px;
+        color: #777;
+        margin-top: 10px;
+    }
+
+    .popup-actions {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+        .popup-actions button {
+            background-color: #337ab7;
+            border: none;
+            color: white;
+            padding: 8px 18px;
+            margin: 0 5px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+            .popup-actions button:hover {
+                background-color: #2e6da4;
+            }
+</style>
+@* Label shown only to non-admin *@
+
+
+<div style="padding: 10px; display: flex; align-items: center; flex-wrap: wrap; width: 100%; gap: 1px; margin-bottom: 20px;margin-left:-111px">
+
+    <!-- ✅ Year Dropdown -->
+    @*<label for="yearDropdown" style="margin-right: 5px;">Year:</label>
+        <select id="yearDropdown" style="margin-right: 10px;width:55px; height: 30px;">
+            @for (int year = 2016; year <= 2035; year++)
+            {
+                <option value="@year" @(year == currentYear ? "selected" : "")>@year</option>
+            }
+        </select>*@
+    <label for="yearDropdown" style="margin-right: 5px;">Year:</label>
+    <select id="yearDropdown" style="margin-right: 10px;width:55px; height:30px;">
+        @for (int year = 2023; year <= currentYear; year++)
+        {
+            <option value="@year" @(year == currentYear ? "selected" : "")>@year</option>
+        }
+    </select>
+
+    <!-- ✅ From Date -->
+    <label for="fromDate" style="margin-right: 1px;">From:</label>
+    <input type="date" id="fromDate" value="@currentDate" max="@currentDate" style="margin-right: 3px;width:103px; height: 30px;" />
+
+    <!-- ✅ To Date -->
+    <label for="toDate" style="margin-right: 5px;">To:</label>
+    <input type="date" id="toDate" value="@currentDate" max="@currentDate" style="margin-right: 10px; width: 103px; height: 30px;" />
+
+    <!-- ✅ Submit Button -->
+    <button type="submit" class="btn btn-primary" id="btnSubmit1" style="height: 30px;">Submit</button>
+
+
+
+
+
+
+
+
+    <select class="form-control" id="dropdownSelect3" style="width: 104px; margin-right: 10px " title="Search Key">
+        <option value="tso.ProjectID" @(ViewBag.s1 == "tso.ProjectID" ? "selected" : "")>ProjectID</option>
+        <option value="tso.Wstatus" @(ViewBag.s1 == "tso.Wstatus" ? "selected" : "")>Status</option>
+
+
+
+    </select>
+
+    <input type="text" name="q" class="search-text form-control" placeholder="Search..." title="Search relevant details in the grid" data-toggle="tooltip" id="searchtxt" style="width: 86px; margin-right: 2px; margin-left: -8px; ">
+
+    <button type="submit" class="btn btn-primary" id="btnSubmit" style="height: 30px;">Search</button>
+    <button type="submit" class="btn btn-primary" id="btnClear" style="height: 30px; margin: 2px;">Clear</button>
+</div>
+</div>
+@* Form shown only to non-admin *@
+
+
+
+
+
+@*<a href="@Url.Action("ResolutionCheck", "AllLevelQueueBoard")" target="_blank">
+        <input type="button" class="btn btn-primary"  value="Resolution" style="margin-left:6px" />
+    </a>*@
+    </div>
+<div class="panel panel-primary list-panel" id="list-panel" style="width:115%;margin-top:12px;margin-left:9px;">
+    <div class="panel-heading list-panel-heading">
+        <h1 class="panel-title list-panel-title">DashBoard(60,90)  <span style="float:right;margin-right:310px;">Total Records: @ViewBag.RowCount</span></h1>
+    </div>
+    <div id="progress" class="modal">
+        <div class="center" style="margin-left: 535px; margin-top: 300px;">
+
+            <img src="~/images/loader4.gif" style="width:80px !important" />
+        </div>
+    </div>
+
+
+    <div class="container body-content" style="width: 1600px;"></div>
+
+    <div class="panel-body" style="width: 100%; overflow: auto;">
+        <table id="assets-data-table" class="table table-striped table-bordered" style="width: 100%; position: relative;">
+            <thead>
+                <tr>
+                    <th>ProjectID</th>
+                    <th>Exceeded TAT (Hrs)</th>
+                    <th>PSE Name</th>
+                    <th>CPE Name</th>
+                    @*<th style="padding: 9px 33px;">ProjectName</th>*@
+
+                    <th style="padding: 9px 25px;">RegdOn</th>
+
+
+                    <th data-toggle="tooltip" title="MyViz insylog details">RegdBy</th>
+
+                    <th data-toggle="tooltip" title="WStatus log details"> St</th>
+
+                    <th data-toggle="tooltip" title="No.of instance WStatuslog">St# </th>
+                    <th style="padding: 9px 28px;"> StDate</th>
+
+                    <th>EmailSent</th>
+                    <th data-toggle="tooltip" title="SelectedImageLink">SILink</th>
+                    <th>PRILink</th>
+                    <th>PRITest</th>
+                    <th data-toggle="tooltip" title="SoftCopy Album 1">SCA1</th>
+                    <th data-toggle="tooltip" title="SoftCopy Album 2">SCA2 </th>
+                    <th data-toggle="tooltip" title="SoftCopy Album 3">SCA3 </th>
+                    <th>Source1</th>
+                    <th>Source2</th>
+                    <th>Source3</th>
+
+                    <th data-toggle="tooltip" title="SelectedImageOption">SIOpt</th>
+                    <th>Preview</th>
+                    <th>Site</th>
+                    <th>Customer</th>
+
+
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var asset in Model)
+                {
+                    <tr>
+                        <td style="text-align-last:left">
+                            <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/myModal?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Project details, to update status" data-toggle="tooltip" target="_blank">@asset.ProjectID</a>
+                        </td>
+                        <td>@asset.ExceededTAT</td>
+                        <td>@asset.PSEName</td>
+                        <td>@asset.CPEName</td>
+
+                        <!-- Other table cells -->
+                        @*<td>@asset.ProjectName</td>*@
+
+                        @*<td>@String.Format("{0:ddd, dd MMM hh:mm tt}", asset.RegdOn)</td>*@
+                        <td>@String.Format("{0:dd-MMM-yyyy hh:mm tt}", asset.RegdOn)</td>
+
+                        @*<td>@(Convert.ToDateTime(asset.RegdOn).ToString("dd/MM/yy"))</td>*@
+                        @*<td>@asset.RegdBy</td>*@
+
+                        <td style="text-align-last:left">
+                            <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/Myvizinsylog?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Myvizinsylog details" data-toggle="tooltip" target="_blank"> @asset.RegdBy</a>
+                        </td>
+
+
+                        <td style="text-align-last:left">
+                            <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/Statuslog?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Status log details" data-toggle="tooltip" target="_blank"> @asset.FinalStatus</a>
+                        </td>
+
+
+
+
+                        <td style="text-align-last:left">
+                            <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/SCAQALog?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view SCAQA details" data-toggle="tooltip" target="_blank"> @asset.WStsCount</a>
+                        </td>
+
+
+
+                        @*<td>@asset.WStsCount</td>*@
+
+                        <td>@string.Format("{0:dd-MMM-yyyy hh:mm tt}", asset.FinalStatusDt)</td>
+                        <td>
+                            @if (asset.FinalStatus == "50" && asset.EmailStatus == "S")
+                            {
+                                <span style="color:red">Yes</span>
+                            }
+                            else if (asset.FinalStatus == "60" && asset.EmailStatus == "S")
+                            {
+                                @:Yes
+                            }
+                            else if (asset.FinalStatus == "60" && string.IsNullOrWhiteSpace(asset.EmailStatus))
+                            {
+                                <span style="color:red">No</span>
+                            }
+                            else
+                            {
+                                @asset.EmailStatus
+                            }
+                        </td>
+                        @*<td>@(Convert.ToDateTime(asset.FinalStatusDt).ToString("dd/MM/yy"))</td>*@
+
+                        <td>
+                            @if (!string.IsNullOrEmpty(asset.SelectedImageLink))
+                            {
+                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "Source", sourcefile = asset.SelectedImageLink })" target="_blank" title="Click to open SelectedImageLink" data-toggle="tooltip">@asset.ProjectID</a>
+                            }
+                            else
+                            {
+
+                            }
+                        </td>
+
+                        <td>
+                            @if (!string.IsNullOrEmpty(asset.PRILink))
+                            {
+                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "PRI" })" target="_blank" title="Click to open PRILink" data-toggle="tooltip">@asset.ProjectID</a>
+                            }
+                            else
+                            {
+
+                            }
+                        </td>
+
+                        <td>
+                            @if (!string.IsNullOrEmpty(asset.PRITest))
+                            {
+                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "PRI_Test" })" target="_blank" title="Click to open PRITest" data-toggle="tooltip">@asset.ProjectID</a>
+                            }
+                            else
+                            {
+
+                            }
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(asset.SCA1))
+                            {
+                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "PDF1" })" target="_blank" title="Click to open SCA1Link" data-toggle="tooltip">@asset.ProjectID</a>
+                            }
+                            else
+                            {
+
+                            }
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(asset.SCA2))
+                            {
+                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "PDF2" })" target="_blank" title="Click to open SCA2Link" data-toggle="tooltip">@asset.ProjectID</a>
+                            }
+                            else
+                            {
+
+                            }
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(asset.SCA3))
+                            {
+                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "PDF3" })" target="_blank" title="Click to open SCA3Link" data-toggle="tooltip">@asset.ProjectID</a>
+                            }
+                            else
+                            {
+
+                            }
+                        </td>
+
+                        <td>
+                            @if (!string.IsNullOrEmpty(asset.ImageFileName1))
+                            {
+                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "img1", sourcefile = asset.ImageFileName1 })" target="_blank" title="Click to open Imagefile1" data-toggle="tooltip">@asset.ProjectID</a>
+                            }
+                            else
+                            {
+
+                            }
+                        </td>
+
+                        <td>
+                            @if (!string.IsNullOrEmpty(asset.ImageFileName2))
+                            {
+                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "img2", sourcefile = asset.ImageFileName2 })" target="_blank" title="Click to open Imagefile2" data-toggle="tooltip">@asset.ProjectID</a>
+                            }
+                            else
+                            {
+
+                            }
+                        </td>
+
+                        <td>
+                            @if (!string.IsNullOrEmpty(asset.ImageFileName3))
+                            {
+                                <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "img3", sourcefile = asset.ImageFileName3 })" target="_blank" title="Click to open Imagefile3" data-toggle="tooltip">@asset.ProjectID</a>
+                            }
+                            else
+                            {
+
+                            }
+                        </td>
+
+                        @*<td>
+            <a href="@Url.Action("Appliedcolour", "AllLevelQueueBoard")" target="_blank" title="Click to open Imagefile3" data-toggle="tooltip">@asset.Appliedcolour</a>
+
+        </td>*@
+
+                        <td>
+                            @asset.SIOption
+                        </td>
+                        <td>
+                            <button id="previewButton" class="btn btn-primary btn-sm" onclick="launchPreview(@asset.ProjectID)">Preview</button>
+                        </td>
+
+
+                        <td>@asset.Site</td>
+                        <td>@asset.Customer</td>
+
+                    </tr>
+
+
+
+                }
+            </tbody>
+        </table>
+
+        <div class="text-center">
+            @*Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount*@
+            @*@Html.PagedListPager(Model, page => Url.Action("Index", new { page, Fdate = ViewBag.Fdate, s1 = ViewBag.s1, s2 = ViewBag.s2 }))*@
+        </div>
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script src="/path/to/datatables.min.js"></script>
+        <link href="/Content/PagedList.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+        <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.2.2/css/buttons.dataTables.min.css" />
+        <link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" />
+        <script>
+
+                //from,to date
+
+
+                document.addEventListener("DOMContentLoaded", function () {
+                    const yearDropdown = document.getElementById("yearDropdown");
+                    const fromDate = document.getElementById("fromDate");
+                    const toDate = document.getElementById("toDate");
+                    const today = new Date();
+
+
+
+                    function updateDateLimits() {
+                        const selectedYear = parseInt(yearDropdown.value);
+
+                        // Limit min and max date to selected year
+                        const minDate = `${selectedYear}-01-01`;
+                        const maxDate = selectedYear === today.getFullYear()
+                            ? today.toISOString().split("T")[0]
+                            : `${selectedYear}-12-31`;
+
+                        fromDate.min = minDate;
+                        fromDate.max = maxDate;
+                        toDate.min = minDate;
+                        toDate.max = maxDate;
+
+                        // Reset values if outside allowed range
+                        if (fromDate.value < minDate || fromDate.value > maxDate) {
+                            fromDate.value = minDate;
+                        }
+                        if (toDate.value < minDate || toDate.value > maxDate) {
+                            toDate.value = maxDate;
+                        }
+                    }
+
+                    // Update when year changes
+                    yearDropdown.addEventListener("change", updateDateLimits);
+
+                    // ✅ Submit button reloads with same selected values
+                    document.getElementById("btnSubmit1").addEventListener("click", function () {
+                        const selectedYear = yearDropdown.value;
+                        const fromVal = fromDate.value;
+                        const toVal = toDate.value;
+
+                        const url = `?Year=${selectedYear}&Fdate=${fromVal}&Ldate=${toVal}`;
+                        window.location.href = url; // reloads same page with query params
+                    });
+
+                    // If page reloaded, restore selected values from query params
+                    const params = new URLSearchParams(window.location.search);
+                    if (params.has("Year")) {
+                        yearDropdown.value = params.get("Year");
+                    }
+                    if (params.has("Fdate")) {
+                        fromDate.value = params.get("Fdate");
+                    }
+                    if (params.has("Ldate")) {
+                        toDate.value = params.get("Ldate");
+                    }
+
+                    updateDateLimits(); // initial setup
+                });
+
+
+
+
+
+                        $(function () {
+
+
+
+
+
+                            function toggleSubmitButton() {
+                                const val = $("#dropdownSelect3").val();
+                                if (val === "tso.Wstatus") {
+                                    $("#btnSubmit1").hide();  // Hide when Status selected
+                                } else {
+                                    $("#btnSubmit1").show();  // Show otherwise
+                                }
+                            }
+
+                            // 🔹 Run every time dropdown changes
+                            $("#dropdownSelect3").change(toggleSubmitButton);
+
+                            // 🔹 Also run once on page load (after Search reload)
+                            toggleSubmitButton();
+
+
+
+
+
+
+//$("#dropdownSelect3").val('@ViewBag.s1');
+             $("#searchtxt").val('@ViewBag.s2');
+             $("#searchtxt1").val('@ViewBag.s2');
+             $("#searchtxt2").val('@ViewBag.s2');
+
+         });
+
+
+
+
+
+            // Replicate the value of #searchtxt to #searchtxt1 and #searchtxt2
+            $("#searchtxt").keyup(function () {
+                // Check if the dropdown value is "ProjectID"
+                if ($("#dropdownSelect3").val() === "tso.ProjectID") {
+                    var searchTextValue = $(this).val();
+                    $("#searchtxt1").val(searchTextValue);
+                    $("#searchtxt2").val(searchTextValue);
+                }
+            });
+
+
+
+$("#btnSubmit").click(function () {
+    $("#progress").show();
+
+    var selectedDropdown = $("#dropdownSelect3").val(); // s1
+    var searchText = $("#searchtxt").val(); // s2
+    var fromDate = $("#fromDate").val(); // Fdate
+    var toDate = $("#toDate").val();   // Tdate
+
+    var url = "@Url.Action("Index", "ViewReport")" + "?s1=" + selectedDropdown + "&s2=" + searchText;
+
+        if (selectedDropdown === "tso.Wstatus") {
+            url += "&Fdate=" + fromDate + "&Ldate=" + toDate;
+
+    }
+
+    // Redirect to the generated URL
+    window.location.href = url;
+
+});
+
+
+
+
+
+
+
+
+            /*Click event for the Clear button*/
+            $("#btnClear").click(function () {
+
+                /* Clear the search input*/
+                $("#searchtxt").val("");
+                $("#searchtxt1").val("");
+                $("#searchtxt2").val("");
+               var url = "@Url.Action("Index", "ViewReport")";
+                window.location.href = url;
+                $('#dropdownSelect3').val('tso.ProjectID'); // Reset to ProjectID
+                // Show Submit again
+                $("#btnSubmit1").show();
+               });
+
+
+
+
+
+
+
+            $("#progress").hide();
+
+            // Enable Save Button when mandatory fields are filled
+
+
+
+
+            // Use event delegation to handle clicks on all SCAQA buttons
+$('#assets-data-table').on('click', '#showPopup', function () {
+    var projectID = $(this).data('id'); // Get the ProjectID from the clicked button
+    var ProjectName = $(this).data('id1');
+    // Set the ProjectID in the popup input field
+    $('#projectID').val(projectID);
+    $('#ProjectName').val(ProjectName);
+
+
+$.ajax({
+    url: '@Url.Action("GetSCAQAData", "AllLevelQueueBoard")',
+    type: 'GET',
+    data: { projectID: projectID },
+    success: function (response) {
+        console.log("QA response:", response); // <--- Check this in browser console
+        if (response.success) {
+            $('#projectID').text(response.data.ProjectID);
+            $('#pseID').text(response.data.WhoistheL6PSE);
+            $('#cpeiID').text(response.data.CPEID);
+            $('#pseRemarks').text(response.data.PSERemarks);
+            $('#cpiRemarks').text(response.data.CPERemarks);
+            $('#projectName').text(response.data.ProjectName);
+
+
+            // Set popup heading based on whether CPEID is null or not
+            if (!response.data.CPEID || response.data.CPEID === "null" || response.data.CPEID.trim() === "") {
+                $('#qaPopup h3').html(
+                    '<div style="text-align: center;">' +
+                    '<div>Image Quality Referral</div>' +
+                    '<div>Act_On_05 - For Source Image from PSE</div>' +
+                    '</div>'
+                );
+
+                // Hide CPI fields
+                $('#cpeiID').closest('div').hide();
+                $('#cpiRemarks').closest('div').hide();
+
+                // Show PSE fields
+                $('#pseID').closest('div').show();
+                $('#pseRemarks').closest('div').show();
+
+
+                $('#qaResult').empty().append(
+                    $('<option>', { value: 'Pass', text: '10' }),
+                    $('<option>', { value: 'Fail', text: '90' })
+                );
+
+
+
+
+            } else {
+
+                $('#qaPopup h3').html(
+                    '<div style="text-align: center;">' +
+                    '<div>Image Quality Referral</div>' +
+                    '<div>Act_On_05 for PRI from CPE</div>' +
+                    '</div>'
+                );
+
+
+
+                // Show CPI fields
+                $('#cpeiID').closest('div').show();
+                $('#cpiRemarks').closest('div').show();
+                // Update PSE label and value
+                $('#pseLabel').text('PSE Name:');
+                $('#pseID').text(response.data.WhoistheL6PSE);
+                $('#pseID').closest('div').show();
+
+
+
+
+
+                // Hide PSE fields
+                $('#pseRemarks').closest('div').hide();
+
+
+
+
+                $('#qaResult').empty().append(
+                    $('<option>', { value: 'Pass', text: '45' }),
+                    $('<option>', { value: 'Fail', text: '15' })
+                );
+
+
+
+            }
+
+
+
+
+
+            $('#overlay').show();
+            $('#qaPopup').show();
+        } else {
+            alert(response.message);
+        }
+
+
+    },
+    error: function () {
+        alert('Error retrieving QA data.');
+    }
+});
+
+
+
+
+    // Show the overlay and the popup form
+    $('#overlay').show();
+    $('#qaPopup').show();
+});
+
+// Close popup and hide overlay
+$('#closePopup').on('click', function () {
+    console.log('Close button clicked');
+    var url = "@Url.Action("Index", "AllLevelQueueBoard")";
+    window.location.href = url; // Redirect to the index page
+    $('#qaPopup').hide();
+    $('#overlay').hide();
+    $('#projectID').val('');  // Clear ProjectID field
+    $('#qaResult').val('Pass');
+    const checkboxes = $('#qaComments input[type="checkbox"]');
+    checkboxes.prop('checked', false);
+    $('#additionalComments').val('');
+    $('#selectedComments').val('');
+    resetPopupFields();
+});
+
+// Populate selected comments when checkboxes are checked
+$('#qaComments input[type="checkbox"]').on('change', function () {
+    const selectedComments = [];
+    $('#qaComments input[type="checkbox"]:checked').each(function () {
+        selectedComments.push($(this).val());
+    });
+
+    // Set the selected comments (even though it's hidden, it's being sent to the server)
+    $('#selectedComments').val(selectedComments.join(', '));
+    checkMandatoryFields();
+});
+
+
+           $(document).ready(function () {
+    $('#closePopup1').click(function () {
+        var url = "@Url.Action("Index", "AllLevelQueueBoard")";
+        window.location.href = url;
+    });
+});
+
+
+
+
+
+
+// Save QA Result
+            $('#saveQAResult').on('click', function () {
+                if (!confirm('Are you sure the details are correct?')) {
+                    return; // If user cancels, don't proceed
+                }
+    $("#progress").show();
+    const projectID = $('#projectID').val().trim();
+    const qaResult = $('#qaResult').val();
+
+    const additionalComments = $('#additionalComments').val().trim();
+
+
+
+    $.ajax({
+        url: '@Url.Action("Qualitycheck", "AllLevelQueueBoard")',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ projectID: projectID, result: qaResult, comments: additionalComments }),
+        success: function (data) {
+            if (data.success) {
+                alert('Act_On_05 Completed!');
+                resetPopupFields();
+                $('#qaPopup').hide();
+                $('#overlay').hide();
+                location.reload();
+            } else {
+                alert(`Error: ${data.message}`);
+                resetPopupFields();
+            }
+        },
+
+        error: function (xhr, status, error) {
+            console.error('Error:', error);
+            alert('An error occurred while saving QC Check.');
+        }
+    });
+});
+
+// Input validation for Save button
+document.getElementById('projectID').addEventListener('input', checkMandatoryFields);
+document.getElementById('qaResult').addEventListener('change', checkMandatoryFields);
+document.getElementById('additionalComments').addEventListener('input', checkMandatoryFields);
+$('#qaComments input[type="checkbox"]').on('change', checkMandatoryFields);
+
+// Reset popup fields
+function resetPopupFields() {
+    $('#projectID').val('');
+    $('#qaResult').val('Pass');
+    $('#selectedComments').val('');
+    $('#additionalComments').val('');
+    $('#qaComments input[type="checkbox"]').prop('checked', false);
+}
+
+// Input validation for Save button
+function checkMandatoryFields() {
+    const projectID = $('#projectID').val().trim();
+    const qaResult = $('#qaResult').val();
+    const selectedComments = $('#selectedComments').val().trim();
+    const additionalComments = $('#additionalComments').val().trim();
+
+    // Enable the Save button only if ProjectID, QA Result, and at least one comment field are filled
+    $('#saveQAResult').prop('disabled', !(projectID && qaResult && (selectedComments || additionalComments)));
+}
+
+
+
+            function checkMandatoryFields() {
+                const projectID = $('#projectID').val().trim();
+                const qaResult = $('#qaResult').val();
+
+                // Enable Save button only if ProjectID and QA Result are selected
+                if (projectID && qaResult) {
+                    $('#saveQAResult').prop('disabled', false); // Enable button
+                } else {
+                    $('#saveQAResult').prop('disabled', true); // Disable button
+                }
+            }
+
+            // Ensure checkMandatoryFields runs on input changes
+            $('#projectID, #qaResult, #additionalComments').on('input change', checkMandatoryFields);
+            $('#qaComments input[type="checkbox"]').on('change', checkMandatoryFields);
+
+            // Run once when popup opens (to check if button should be enabled immediately)
+            $(document).ready(function () {
+                checkMandatoryFields();
+            });
+
+
+
+
+
+
+            function checkMandatoryFields() {
+                const projectID = $('#projectID').val().trim();
+                const qaResult = $('#qaResult').val();
+                const additionalComments = $('#additionalComments').val().trim();
+
+                const isCommentValid = additionalComments.length >= 5;
+
+                if (!isCommentValid) {
+                    $('#commentError').show();
+                } else {
+                    $('#commentError').hide();
+                }
+
+                const enable = projectID && qaResult && isCommentValid;
+                $('#saveQAResult').prop('disabled', !enable);
+            }
+
+
+
+        </script>
+    </div>
+</div>

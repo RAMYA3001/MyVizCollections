@@ -30,7 +30,7 @@ namespace MyVizCollections.Controllers
     {
         // GET: Tat
        
-            public ActionResult Index(string Fdate, string s1, string s2)
+            public ActionResult Index(string Fdate, string Ldate, string s1, string s2)
             {
                 string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
                 List<AllLevelQueueBoard> projects = new List<AllLevelQueueBoard>(); // declare here
@@ -58,13 +58,14 @@ namespace MyVizCollections.Controllers
 
                     using (MySqlConnection con = new MySqlConnection(constr))
                     {
-                        using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_searchkey_Index", con))
+                        using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_searchkey", con))
                         {
                             cmd.CommandTimeout = 1600;
                             cmd.CommandType = CommandType.StoredProcedure;
 
                             cmd.Parameters.AddWithValue("@From_Date", Fdate);
-                            cmd.Parameters.AddWithValue("@S_ID", s1);
+                        cmd.Parameters.AddWithValue("@To_Date", Ldate);
+                        cmd.Parameters.AddWithValue("@S_ID", s1);
                             cmd.Parameters.AddWithValue("@type1", s2);
                             cmd.Parameters.AddWithValue("@imode", imode);
 
@@ -124,25 +125,8 @@ namespace MyVizCollections.Controllers
                         }
                     }
 
-                // Calculate Remaining TAT Hours for each project
-                //foreach (var proj in projects)
-                //{
-                //    if (proj.RegdOn.HasValue)
-                //    {
-                //        proj.DeliveryOn = proj.RegdOn.Value.AddHours(24);
-                //        DateTime refTime = (proj.FinalStatus == "60" && proj.FinalStatusDt.HasValue)
-                //            ? proj.FinalStatusDt.Value
-                //            : DateTime.Now;
-
-                //        proj.RemainingTATHours = (proj.DeliveryOn - refTime).TotalHours;
-                //    }
-                //    else
-                //    {
-                //        proj.RemainingTATHours = double.MaxValue;
-                //    }
-                //}
-
-                // Sort by RemainingTATHours if Admin
+               
+              
                 // Sort by FinalStatus ASC and then by RemainingTATHours ASC if Admin
                 if (Username == "tatreport")
                 {
@@ -156,7 +140,8 @@ namespace MyVizCollections.Controllers
                 //int pageNumber = (page ?? 1);
 
                 ViewBag.Fdate = Fdate;
-                    ViewBag.s1 = s1;
+                ViewBag.Ldate = Ldate;
+                ViewBag.s1 = s1;
                     ViewBag.s2 = s2;
 
                     return View(projects);

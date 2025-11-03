@@ -197,6 +197,8 @@
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AllLevelQueueBoardController.cs" />
+    <Compile Include="Controllers\TatreportController.cs" />
+    <Compile Include="Controllers\ViewReportController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -267,6 +269,7 @@
     <Content Include="images\loader4.gif" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Content\docs\HolidayList2025.pdf" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -305,8 +308,11 @@
     <Content Include="Views\AllLevelQueueBoard\ResolutionModal.cshtml" />
     <Content Include="Views\AllLevelQueueBoard\Statuslog.cshtml" />
     <Content Include="Views\AllLevelQueueBoard\Help.cshtml" />
-    <Content Include="Views\Myvizinsylog.cshtml" />
     <Content Include="Views\AllLevelQueueBoard\Myvizinsylog.cshtml" />
+    <Content Include="Views\SCAQALog.cshtml" />
+    <Content Include="Views\AllLevelQueueBoard\SCAQALog.cshtml" />
+    <Content Include="Views\Tatreport\Index.cshtml" />
+    <Content Include="Views\ViewReport\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

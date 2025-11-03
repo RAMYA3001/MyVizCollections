@@ -8,9 +8,13 @@
     string currentFilter = ViewBag.CurrentFilter;
     string currentSort = ViewBag.CurrentSort;
     string Cdate = ViewBag.Fdate;
+    string Edate = ViewBag.Ldate;
     string s1 = ViewBag.s1;
     string s2 = ViewBag.s2;
+    var currentYear = DateTime.Now.Year;
+    var currentDate = DateTime.Now.ToString("yyyy-MM-dd");
 }
+
 
 <style>
     .container {
@@ -210,69 +214,101 @@
 </style>
 @* Label shown only to non-admin *@
 
-    <label for="pid1" style=" margin-left: 835px;  color: red;margin-bottom: 12px;">
+@if (Session["username"] != null && Session["username"].ToString().ToLower() != "viewreport")
+{
+
+    <label for="pid1" style=" margin-left: 956px;  color: red;margin-bottom: 12px;">
         Compare
     </label>
 
+}
+<div style="padding: 10px; display: flex; align-items: center; flex-wrap: wrap; width: 100%; gap: 1px; margin-bottom: 20px;margin-left:-111px">
 
-<div style=" padding: 10px 10px; display: flex; align-items: center; width: 49%; margin-bottom: 24px;margin-left:-98px;">
-    
-        <label for="example-datepicker" style="margin-right: 3px;">StDate:</label>
-        <input type="date" id="datepicker" value="" style="margin-right: 3px;">
+    <!-- ✅ Year Dropdown -->
+    @*<label for="yearDropdown" style="margin-right: 5px;">Year:</label>
+        <select id="yearDropdown" style="margin-right: 10px;width:55px; height: 30px;">
+            @for (int year = 2016; year <= 2035; year++)
+            {
+                <option value="@year" @(year == currentYear ? "selected" : "")>@year</option>
+            }
+        </select>*@
+    <label for="yearDropdown" style="margin-right: 5px;">Year:</label>
+    <select id="yearDropdown" style="margin-right: 10px;width:55px; height:30px;">
+        @for (int year = 2023; year <= currentYear; year++)
+        {
+            <option value="@year" @(year == currentYear ? "selected" : "")>@year</option>
+        }
+    </select>
 
-        <button type="submit" class="btn btn-primary" id="btnSubmit1" style="height: 30px; margin-right: 15px;">Submit</button>
-    
+    <!-- ✅ From Date -->
+    <label for="fromDate" style="margin-right: 1px;">From:</label>
+    <input type="date" id="fromDate" value="@currentDate" max="@currentDate" style="margin-right: 3px;width:103px; height: 30px;" />
+
+    <!-- ✅ To Date -->
+    <label for="toDate" style="margin-right: 5px;">To:</label>
+    <input type="date" id="toDate" value="@currentDate" max="@currentDate" style="margin-right: 10px; width: 103px; height: 30px;" />
+
+    <!-- ✅ Submit Button -->
+    <button type="submit" class="btn btn-primary" id="btnSubmit1" style="height: 30px;">Submit</button>
+
+
+
+
+
+
+
 
     <select class="form-control" id="dropdownSelect3" style="width: 104px; margin-right: 10px " title="Search Key">
         <option value="tso.ProjectID" @(ViewBag.s1 == "tso.ProjectID" ? "selected" : "")>ProjectID</option>
         <option value="tso.Wstatus" @(ViewBag.s1 == "tso.Wstatus" ? "selected" : "")>Status</option>
-       
-            <option value="tso.UserID" @(ViewBag.s1 == "tso.UserID" ? "selected" : "")>TSO</option>
+
+        @*<option value="tso.UserID" @(ViewBag.s1 == "tso.UserID" ? "selected" : "")>TSO</option>
             <option value="WStatusCount" @(ViewBag.s1 == "WStatusCount" ? "selected" : "")>St# >=</option>
             <option value="pt.IorEorMS" @(ViewBag.s1 == "pt.IorEorMS" ? "selected" : "")>Type</option>
             <option value="pt.ProjectCategory" @(ViewBag.s1 == "pt.ProjectCategory" ? "selected" : "")>Category</option>
             <option value="fb.TSOInput" @(ViewBag.s1 == "fb.TSOInput" ? "selected" : "")>Feedback</option>
             <option value="tso.ColourChoicebyTSO" @(ViewBag.s1 == "tso.ColourChoicebyTSO" ? "selected" : "")>CC</option>
             <option value="tso.Priority" @(ViewBag.s1 == "tso.Priority" ? "selected" : "")>Priority</option>
-            <option value="tso.NexGenDealer" @(ViewBag.s1 == "tso.NexGenDealer" ? "selected" : "")>NxtGen</option>
-        
+            <option value="tso.NexGenDealer" @(ViewBag.s1 == "tso.NexGenDealer" ? "selected" : "")>NxtGen</option>*@
+
     </select>
 
-    <input type="text" name="q" class="search-text form-control" placeholder="Search..." title="Search relevant details in the grid" data-toggle="tooltip" id="searchtxt" style="width: 121px; margin-right: 2px; margin-left: -8px; ">
+    <input type="text" name="q" class="search-text form-control" placeholder="Search..." title="Search relevant details in the grid" data-toggle="tooltip" id="searchtxt" style="width: 86px; margin-right: 2px; margin-left: -8px; ">
 
     <button type="submit" class="btn btn-primary" id="btnSubmit" style="height: 30px;">Search</button>
     <button type="submit" class="btn btn-primary" id="btnClear" style="height: 30px; margin: 2px;">Clear</button>
 </div>
+</div>
+@* Form shown only to non-admin *@
+@if (Session["username"] != null && Session["username"].ToString().ToLower() != "viewreport")
+{
+    <div class="form-group" style="border: 2px solid #337ab7; padding: 41px 14px; display: flex; justify-content: flex-start; margin-bottom: 3px; margin-top: -119px; margin-left:812px; width: 567px; height: 1px;">
+        <label for="pid1" style=" margin-top: 11px;">
+            Project1:
+        </label>
+        <input type="text" name="q" class="search-text form-control" placeholder="ProjectID1" title="Enter ProjectID to Search" data-toggle="tooltip" id="searchtxt1">
+        <select class="form-control" id="dropdownSelect1">
+            <option value="SI">SI</option>
+            <option value="Image1">Source1</option>
+            <option value="Image2">Source2</option>
+            <option value="Image3">Source3</option>
+            <option value="PRI">PRI</option>
+        </select>
+        <label for="pid2" style="margin-left: 9px; margin-top: 11px;">
+            Project2:
+        </label>
+        <input type="text" name="q" class="search-text form-control" placeholder="ProjectID2" title="Enter ProjectID to Search" data-toggle="tooltip" id="searchtxt2">
+        <select class="form-control" id="dropdownSelect2">
+            <option value="PRI">PRI</option>
+            <option value="SI">SI</option>
+            <option value="Image1">Source1</option>
+            <option value="Image2">Source2</option>
+            <option value="Image3">Source3</option>
+        </select>
+        <button type="submit" class="btn btn-primary" title="Compare two different image in one single screen" id="btnCompare" style="height: 30px; margin: 2px;">Match</button>
+    </div>
 
-    @* Form shown only to non-admin *@
-    
-        <div class="form-group" style="border: 2px solid #337ab7; padding: 41px 14px; display: flex; justify-content: flex-start; margin-bottom: 3px; margin-top: -119px; margin-left:558px; width: 708px; height: 1px;">
-            <label for="pid1" style=" margin-top: 11px;">
-                Project1:
-            </label>
-            <input type="text" name="q" class="search-text form-control" placeholder="ProjectID1" title="Enter ProjectID to Search" data-toggle="tooltip" id="searchtxt1">
-            <select class="form-control" id="dropdownSelect1">
-                <option value="SI">SI</option>
-                <option value="Image1">Source1</option>
-                <option value="Image2">Source2</option>
-                <option value="Image3">Source3</option>
-                <option value="PRI">PRI</option>
-            </select>
-            <label for="pid2" style="margin-left: 9px; margin-top: 11px;">
-                Project2:
-            </label>
-            <input type="text" name="q" class="search-text form-control" placeholder="ProjectID2" title="Enter ProjectID to Search" data-toggle="tooltip" id="searchtxt2">
-            <select class="form-control" id="dropdownSelect2">
-                <option value="PRI">PRI</option>
-                <option value="SI">SI</option>
-                <option value="Image1">Source1</option>
-                <option value="Image2">Source2</option>
-                <option value="Image3">Source3</option>
-            </select>
-            <button type="submit" class="btn btn-primary" title="Compare two different image in one single screen" id="btnCompare" style="height: 30px; margin: 2px;">Match</button>
-        </div>
-    
-
+}
     <!-- Background overlay -->
     <div id="overlay" style="display:none;"></div>
 
@@ -351,7 +387,7 @@
     </div>
     <div class="panel panel-primary list-panel" id="list-panel" style="width:115%;margin-top:12px;margin-left:9px;">
         <div class="panel-heading list-panel-heading">
-            <h1 class="panel-title list-panel-title">DashBoard</h1>
+            <h1 class="panel-title list-panel-title">DashBoard  <span style="float:right;margin-right:310px;">Total Records: @ViewBag.RowCount</span></h1>
         </div>
         <div id="progress" class="modal">
             <div class="center" style="margin-left: 535px; margin-top: 300px;">
@@ -368,8 +404,9 @@
                 <thead>
                     <tr>
                         <th>ProjectID</th>
-
-                        <th style="padding: 9px 33px;">ProjectName</th>
+                        <th>PSE Name</th>
+                        <th>CPE Name</th>
+                        @*<th style="padding: 9px 33px;">ProjectName</th>*@
 
                         <th style="padding: 9px 25px;">RegdOn</th>
 
@@ -380,22 +417,24 @@
 
                         <th data-toggle="tooltip" title="No.of instance WStatuslog">St# </th>
                         <th style="padding: 9px 28px;"> StDate</th>
-                           
-                            <th >EmailSent</th>
-                            <th data-toggle="tooltip" title="SelectedImageLink">SILink</th>
-                            <th>PRILink</th>
-                            <th>PRITest</th>
-                            <th data-toggle="tooltip" title="SoftCopy Album 1">SCA1</th>
-                            <th data-toggle="tooltip" title="SoftCopy Album 2">SCA2 </th>
-                            <th data-toggle="tooltip" title="SoftCopy Album 3">SCA3 </th>
-                            <th>Source1</th>
-                            <th>Source2</th>
-                            <th>Source3</th>
 
-                            <th data-toggle="tooltip" title="SelectedImageOption">SIOpt</th>
-                            <th>Preview</th>
-                            <th>Site</th>
-                            <th>Customer</th>
+                        <th>EmailSent</th>
+                        <th data-toggle="tooltip" title="SelectedImageLink">SILink</th>
+                        <th>PRILink</th>
+                        <th>PRITest</th>
+                        <th data-toggle="tooltip" title="SoftCopy Album 1">SCA1</th>
+                        <th data-toggle="tooltip" title="SoftCopy Album 2">SCA2 </th>
+                        <th data-toggle="tooltip" title="SoftCopy Album 3">SCA3 </th>
+                        <th>Source1</th>
+                        <th>Source2</th>
+                        <th>Source3</th>
+
+                        <th data-toggle="tooltip" title="SelectedImageOption">SIOpt</th>
+                        <th>Preview</th>
+                        <th>Site</th>
+                        <th>Customer</th>
+                        @if (Session["username"] != null && Session["username"].ToString() != "viewreport")
+                        {
                             <th>FeedBack</th>
                             <th data-toggle="tooltip" title="ColourChoicebyTSO">CC</th>
                             <th>DuplicateOf</th>
@@ -403,15 +442,15 @@
                             <th data-toggle="tooltip" title="NxtGen">NG</th>
                             <th>Type</th>
                             <th>Category</th>
+                        }
+                        <th>
+                            @if (Session["username"] != null && Session["username"].ToString() == "ActOn05")
+                            {
+                                @:ActOn05
+                            }
+                        </th>
 
-                            <th>
-                                @if (Session["username"] != null && Session["username"].ToString() == "ActOn05")
-                                {
-                                    @:ActOn05
-                                }
-                            </th>
-
-</tr>
+                    </tr>
                 </thead>
 
                 <tbody>
@@ -421,10 +460,11 @@
                             <td style="text-align-last:left">
                                 <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/myModal?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Project details, to update status" data-toggle="tooltip" target="_blank">@asset.ProjectID</a>
                             </td>
-
+                            <td>@asset.PSEName</td>
+                            <td>@asset.CPEName</td>
 
                             <!-- Other table cells -->
-                            <td>@asset.ProjectName</td>
+                            @*<td>@asset.ProjectName</td>*@
 
                             @*<td>@String.Format("{0:ddd, dd MMM hh:mm tt}", asset.RegdOn)</td>*@
                             <td>@String.Format("{0:dd-MMM-yyyy hh:mm tt}", asset.RegdOn)</td>
@@ -590,14 +630,16 @@
 
                             <td>@asset.Site</td>
                             <td>@asset.Customer</td>
-                            <td>@asset.FeedBack</td>
-                            <td>@asset.CC</td>
-                            <td>@asset.DuplicateOf</td>
-                            <td>@asset.Priority</td>
-                            <td>@asset.NexGenDealer</td>
-                            <td>@asset.Type</td>
-                            <td>@asset.Category</td>
-
+                            @if (Session["username"] != null && Session["username"].ToString() != "viewreport")
+                            {
+                                <td>@asset.FeedBack</td>
+                                <td>@asset.CC</td>
+                                <td>@asset.DuplicateOf</td>
+                                <td>@asset.Priority</td>
+                                <td>@asset.NexGenDealer</td>
+                                <td>@asset.Type</td>
+                                <td>@asset.Category</td>
+                            }
                             <td>
                                 @if (Session["username"] != null && Session["username"].ToString() == "ActOn05")
                                 {
@@ -625,49 +667,105 @@
             <link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" />
             <script>
 
-
-            $(document).ready(function () {
-                // Assuming you have a date in ViewBag named Fdate
-                debugger;
-                var fDateFromViewBag = '@ViewBag.Fdate';
-                var date = @Cdate;
-                var parsedDate = new Date(fDateFromViewBag);
-                @*document.getElementById("datepicker").value = @Cdate;*@
-               /*var selectedDate = "((DateTime)ViewBag.Fdate).ToString("yyyy-MM-dd")";*/
-                document.getElementById("datepicker").valueAsDate = parsedDate;
-            });
-
-            $(function () {
+                //from,to date
 
 
-                //$('#dropdownSelect3').change(function () {
-                //    const selectedValue1 = $(this).val(); // Get the selected value
-                //    console.log("Selected value1:", selectedValue1);
+                document.addEventListener("DOMContentLoaded", function () {
+                    const yearDropdown = document.getElementById("yearDropdown");
+                    const fromDate = document.getElementById("fromDate");
+                    const toDate = document.getElementById("toDate");
+                    const today = new Date();
 
 
-                //});
-                $('#dropdownSelect3').change(function () {
-                    const selectedValue1 = $(this).val(); // Get the selected value
-                    console.log("Selected value1:", selectedValue1);
 
-                    // Check if the selected value is "WStatusCount"
-                    if (selectedValue1 === "WStatusCount") {
-                        $("#btnSubmit1").hide(); // Hide the button
-                    } else {
-                        $("#btnSubmit1").show(); // Show the button for other values
+                    function updateDateLimits() {
+                        const selectedYear = parseInt(yearDropdown.value);
+
+                        // Limit min and max date to selected year
+                        const minDate = `${selectedYear}-01-01`;
+                        const maxDate = selectedYear === today.getFullYear()
+                            ? today.toISOString().split("T")[0]
+                            : `${selectedYear}-12-31`;
+
+                        fromDate.min = minDate;
+                        fromDate.max = maxDate;
+                        toDate.min = minDate;
+                        toDate.max = maxDate;
+
+                        // Reset values if outside allowed range
+                        if (fromDate.value < minDate || fromDate.value > maxDate) {
+                            fromDate.value = minDate;
+                        }
+                        if (toDate.value < minDate || toDate.value > maxDate) {
+                            toDate.value = maxDate;
+                        }
                     }
+
+                    // Update when year changes
+                    yearDropdown.addEventListener("change", updateDateLimits);
+
+                    // ✅ Submit button reloads with same selected values
+                    document.getElementById("btnSubmit1").addEventListener("click", function () {
+                        const selectedYear = yearDropdown.value;
+                        const fromVal = fromDate.value;
+                        const toVal = toDate.value;
+
+                        const url = `?Year=${selectedYear}&Fdate=${fromVal}&Ldate=${toVal}`;
+                        window.location.href = url; // reloads same page with query params
+                    });
+
+                    // If page reloaded, restore selected values from query params
+                    const params = new URLSearchParams(window.location.search);
+                    if (params.has("Year")) {
+                        yearDropdown.value = params.get("Year");
+                    }
+                    if (params.has("Fdate")) {
+                        fromDate.value = params.get("Fdate");
+                    }
+                    if (params.has("Ldate")) {
+                        toDate.value = params.get("Ldate");
+                    }
+
+                    updateDateLimits(); // initial setup
                 });
 
 
 
-               // $("#dropdownSelect3").val('tso.ProjectID');
-                //$('#dropdownSelect3').trigger('change');    //
-                //$("#dropdownSelect3").val('@ViewBag.s1');
-                 $("#searchtxt").val('@ViewBag.s2');
-                 $("#searchtxt1").val('@ViewBag.s2');
-                 $("#searchtxt2").val('@ViewBag.s2');
 
-             });
+
+                        $(function () {
+
+
+
+             
+
+                            function toggleSubmitButton() {
+                                const val = $("#dropdownSelect3").val();
+                                if (val === "tso.Wstatus") {
+                                    $("#btnSubmit1").hide();  // Hide when Status selected
+                                } else {
+                                    $("#btnSubmit1").show();  // Show otherwise
+                                }
+                            }
+
+                            // 🔹 Run every time dropdown changes
+                            $("#dropdownSelect3").change(toggleSubmitButton);
+
+                            // 🔹 Also run once on page load (after Search reload)
+                            toggleSubmitButton();
+
+
+
+
+
+
+//$("#dropdownSelect3").val('@ViewBag.s1');
+             $("#searchtxt").val('@ViewBag.s2');
+             $("#searchtxt1").val('@ViewBag.s2');
+             $("#searchtxt2").val('@ViewBag.s2');
+
+         });
+
 
 
 
@@ -684,40 +782,26 @@
 
 
 
-
-
-              $("#btnSubmit").click(function () {
+$("#btnSubmit").click(function () {
     $("#progress").show();
-
+    
     var selectedDropdown = $("#dropdownSelect3").val(); // s1
     var searchText = $("#searchtxt").val(); // s2
-    var selectedDate = $("#datepicker").val(); // Fdate
+    var fromDate = $("#fromDate").val(); // Fdate
+    var toDate = $("#toDate").val();   // Tdate
 
     var url = "@Url.Action("Index", "AllLevelQueueBoard")" + "?s1=" + selectedDropdown + "&s2=" + searchText;
-
-    if (selectedDropdown === "WStatusCount") {
-        url += "&Fdate=" + selectedDate; // Only add Fdate if dropdown is WStatusCount
-    //    $("#btnSubmit1").hide(); // Hide the button when the condition is met
-    //} else {
-    //    $("#btnSubmit1").show(); // Show the button if the condition is not met
+    
+        if (selectedDropdown === "tso.Wstatus") {
+            url += "&Fdate=" + fromDate + "&Ldate=" + toDate;
+     
     }
 
+    // Redirect to the generated URL
     window.location.href = url;
+    
 });
 
-
-
-
-
-
-
-   $("#btnSubmit1").click(function () {
-       var curdate1 = $("#datepicker").val();
-       /*window.location.href = '/AllLevelQueueBoard/Index/?page=null&Fdate=' + curdate1;*/
-       var url = "@Url.Action("Index", "AllLevelQueueBoard")" + "?Fdate=" + curdate1;
-       window.location.href = url;
-
-   });
 
 
 
@@ -731,6 +815,8 @@
                var url = "@Url.Action("Index", "AllLevelQueueBoard")";
                 window.location.href = url;
                 $('#dropdownSelect3').val('tso.ProjectID'); // Reset to ProjectID
+                // Show Submit again
+                $("#btnSubmit1").show();
                });
 
 
