@@ -30,7 +30,7 @@ namespace MyVizCollections.Controllers
     {
         // GET: Tat
        
-            public ActionResult Index(string Fdate, string Ldate, string s1, string s2)
+            public ActionResult Index(string Fdate, string s1, string s2)
             {
                 string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
                 List<AllLevelQueueBoard> projects = new List<AllLevelQueueBoard>(); // declare here
@@ -58,13 +58,13 @@ namespace MyVizCollections.Controllers
 
                     using (MySqlConnection con = new MySqlConnection(constr))
                     {
-                        using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_searchkey", con))
+                        using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_searchkey_Index", con))
                         {
                             cmd.CommandTimeout = 1600;
                             cmd.CommandType = CommandType.StoredProcedure;
 
                             cmd.Parameters.AddWithValue("@From_Date", Fdate);
-                        cmd.Parameters.AddWithValue("@To_Date", Ldate);
+                      
                         cmd.Parameters.AddWithValue("@S_ID", s1);
                             cmd.Parameters.AddWithValue("@type1", s2);
                             cmd.Parameters.AddWithValue("@imode", imode);
@@ -140,7 +140,7 @@ namespace MyVizCollections.Controllers
                 //int pageNumber = (page ?? 1);
 
                 ViewBag.Fdate = Fdate;
-                ViewBag.Ldate = Ldate;
+             
                 ViewBag.s1 = s1;
                     ViewBag.s2 = s2;
 

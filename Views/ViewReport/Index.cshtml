@@ -1,5 +1,5 @@
-﻿@*﻿@model PagedList.IPagedList<MyVizCollections.Models.AllLevelQueueBoard>*@
-@*@using PagedList.Mvc*@
+﻿﻿@*@model PagedList.IPagedList<MyVizCollections.Models.AllLevelQueueBoard>
+@using PagedList.Mvc*@
 
 
 @{
@@ -8,7 +8,7 @@
     string currentFilter = ViewBag.CurrentFilter;
     string currentSort = ViewBag.CurrentSort;
     string Cdate = ViewBag.Fdate;
-    string Edate = ViewBag.Ldate;
+   
     string s1 = ViewBag.s1;
     string s2 = ViewBag.s2;
     var currentYear = DateTime.Now.Year;
@@ -218,35 +218,11 @@
 
 <div style="padding: 10px; display: flex; align-items: center; flex-wrap: wrap; width: 100%; gap: 1px; margin-bottom: 20px;margin-left:-111px">
 
-    <!-- ✅ Year Dropdown -->
-    @*<label for="yearDropdown" style="margin-right: 5px;">Year:</label>
-        <select id="yearDropdown" style="margin-right: 10px;width:55px; height: 30px;">
-            @for (int year = 2016; year <= 2035; year++)
-            {
-                <option value="@year" @(year == currentYear ? "selected" : "")>@year</option>
-            }
-        </select>*@
-    <label for="yearDropdown" style="margin-right: 5px;">Year:</label>
-    <select id="yearDropdown" style="margin-right: 10px;width:55px; height:30px;">
-        @for (int year = 2023; year <= currentYear; year++)
-        {
-            <option value="@year" @(year == currentYear ? "selected" : "")>@year</option>
-        }
-    </select>
 
-    <!-- ✅ From Date -->
-    <label for="fromDate" style="margin-right: 1px;">From:</label>
-    <input type="date" id="fromDate" value="@currentDate" max="@currentDate" style="margin-right: 3px;width:103px; height: 30px;" />
-
-    <!-- ✅ To Date -->
-    <label for="toDate" style="margin-right: 5px;">To:</label>
-    <input type="date" id="toDate" value="@currentDate" max="@currentDate" style="margin-right: 10px; width: 103px; height: 30px;" />
-
-    <!-- ✅ Submit Button -->
-    <button type="submit" class="btn btn-primary" id="btnSubmit1" style="height: 30px;">Submit</button>
-
-
-
+    <label for="example-datepicker" style="margin-right: 3px;">StDate:</label>
+   
+    <input type="date" id="datepicker" name="Fdate" style="margin-right: 3px;">
+    <button type="submit" class="btn btn-primary" id="btnSubmit1" style="height: 30px; margin-right: 15px;">Submit</button>
 
 
 
@@ -255,7 +231,6 @@
     <select class="form-control" id="dropdownSelect3" style="width: 104px; margin-right: 10px " title="Search Key">
         <option value="tso.ProjectID" @(ViewBag.s1 == "tso.ProjectID" ? "selected" : "")>ProjectID</option>
         <option value="tso.Wstatus" @(ViewBag.s1 == "tso.Wstatus" ? "selected" : "")>Status</option>
-
 
 
     </select>
@@ -278,7 +253,7 @@
     </div>
 <div class="panel panel-primary list-panel" id="list-panel" style="width:115%;margin-top:12px;margin-left:9px;">
     <div class="panel-heading list-panel-heading">
-        <h1 class="panel-title list-panel-title">DashBoard(60,90)  <span style="float:right;margin-right:310px;">Total Records: @ViewBag.RowCount</span></h1>
+        <h1 class="panel-title list-panel-title">DashBoard (60,90)  <span style="float:right;margin-right:310px;">Total Records: @ViewBag.RowCount</span></h1>
     </div>
     <div id="progress" class="modal">
         <div class="center" style="margin-left: 535px; margin-top: 300px;">
@@ -512,8 +487,8 @@
         </table>
 
         <div class="text-center">
-            @*Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount*@
-            @*@Html.PagedListPager(Model, page => Url.Action("Index", new { page, Fdate = ViewBag.Fdate, s1 = ViewBag.s1, s2 = ViewBag.s2 }))*@
+            @*Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+            @Html.PagedListPager(Model, page => Url.Action("Index", new { page, Fdate = ViewBag.Fdate, s1 = ViewBag.s1, s2 = ViewBag.s2,Ldate=ViewBag.Ldate }))*@
         </div>
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <script src="/path/to/datatables.min.js"></script>
@@ -524,68 +499,25 @@
         <link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" />
         <script>
 
-                //from,to date
+         $(document).ready(function () {
 
+    // ✅ Set today's date as max
+    var today = new Date().toISOString().split("T")[0];
+    $("#datepicker").attr("max", today);
 
-                document.addEventListener("DOMContentLoaded", function () {
-                    const yearDropdown = document.getElementById("yearDropdown");
-                    const fromDate = document.getElementById("fromDate");
-                    const toDate = document.getElementById("toDate");
-                    const today = new Date();
+    // ✅ Load ViewBag date if needed
+    $("#datepicker").val('@ViewBag.Fdate');
+});
 
+// ✅ Submit button
+$("#btnSubmit1").click(function () {
 
+    var curdate1 = $("#datepicker").val();
 
-                    function updateDateLimits() {
-                        const selectedYear = parseInt(yearDropdown.value);
+    var url = "@Url.Action("Index", "ViewReport")" + "?Fdate=" + curdate1;
 
-                        // Limit min and max date to selected year
-                        const minDate = `${selectedYear}-01-01`;
-                        const maxDate = selectedYear === today.getFullYear()
-                            ? today.toISOString().split("T")[0]
-                            : `${selectedYear}-12-31`;
-
-                        fromDate.min = minDate;
-                        fromDate.max = maxDate;
-                        toDate.min = minDate;
-                        toDate.max = maxDate;
-
-                        // Reset values if outside allowed range
-                        if (fromDate.value < minDate || fromDate.value > maxDate) {
-                            fromDate.value = minDate;
-                        }
-                        if (toDate.value < minDate || toDate.value > maxDate) {
-                            toDate.value = maxDate;
-                        }
-                    }
-
-                    // Update when year changes
-                    yearDropdown.addEventListener("change", updateDateLimits);
-
-                    // ✅ Submit button reloads with same selected values
-                    document.getElementById("btnSubmit1").addEventListener("click", function () {
-                        const selectedYear = yearDropdown.value;
-                        const fromVal = fromDate.value;
-                        const toVal = toDate.value;
-
-                        const url = `?Year=${selectedYear}&Fdate=${fromVal}&Ldate=${toVal}`;
-                        window.location.href = url; // reloads same page with query params
-                    });
-
-                    // If page reloaded, restore selected values from query params
-                    const params = new URLSearchParams(window.location.search);
-                    if (params.has("Year")) {
-                        yearDropdown.value = params.get("Year");
-                    }
-                    if (params.has("Fdate")) {
-                        fromDate.value = params.get("Fdate");
-                    }
-                    if (params.has("Ldate")) {
-                        toDate.value = params.get("Ldate");
-                    }
-
-                    updateDateLimits(); // initial setup
-                });
-
+    window.location.href = url;
+});
 
 
 
@@ -638,26 +570,42 @@
             });
 
 
+$(document).ready(function () {
 
+    // ✅ Block future dates
+    var today = new Date().toISOString().split("T")[0];
+    $("#fromDate").attr("max", today);
+
+    // ✅ Load ViewBag values back into screen
+    $("#fromDate").val('@ViewBag.Fdate');
+    $("#dropdownSelect3").val('@ViewBag.s1');
+    $("#searchtxt").val('@ViewBag.s2');
+    // ✅ If no value set from ViewBag, default to tso.ProjectID
+    if (!$("#dropdownSelect3").val()) {
+        $("#dropdownSelect3").val("tso.ProjectID");
+    }
+});
+
+
+// ✅ Submit button (Main search)
 $("#btnSubmit").click(function () {
+
     $("#progress").show();
+    var curdate1 = $("#datepicker").val();
+    var s1 = $("#dropdownSelect3").val();   // dropdown value
+    var s2 = $("#searchtxt").val();         // user text
+    
 
-    var selectedDropdown = $("#dropdownSelect3").val(); // s1
-    var searchText = $("#searchtxt").val(); // s2
-    var fromDate = $("#fromDate").val(); // Fdate
-    var toDate = $("#toDate").val();   // Tdate
+    var url = "@Url.Action("Index", "ViewReport")" + "?s1=" + s1 + "&s2=" + s2;
 
-    var url = "@Url.Action("Index", "ViewReport")" + "?s1=" + selectedDropdown + "&s2=" + searchText;
-
-        if (selectedDropdown === "tso.Wstatus") {
-            url += "&Fdate=" + fromDate + "&Ldate=" + toDate;
-
+    // ✅ When selecting Wstatus → also send date
+    if (s1 === "tso.Wstatus") {
+        url += "&Fdate=" + curdate1;
     }
 
-    // Redirect to the generated URL
     window.location.href = url;
-
 });
+
 
 
 
