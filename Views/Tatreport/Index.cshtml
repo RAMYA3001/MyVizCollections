@@ -375,7 +375,7 @@
                     <td>@asset.PSEName</td>
                     <td>@asset.CPEName</td>
                     <td>
-                        @if ((asset.FinalStatus == "45" || asset.FinalStatus == "46" || asset.FinalStatus == "47") &&
+                        @if ((asset.FinalStatus == "20" ||asset.FinalStatus == "45" || asset.FinalStatus == "46" || asset.FinalStatus == "47") &&
                              !string.IsNullOrEmpty(asset.ImageFileName1))
                         {
                             <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "img1", sourcefile = asset.ImageFileName1 })" target="_blank" title="Click to open Imagefile1" data-toggle="tooltip">@asset.ProjectID</a>
@@ -383,7 +383,7 @@
                     </td>
 
                     <td>
-                        @if ((asset.FinalStatus == "45" || asset.FinalStatus == "46" || asset.FinalStatus == "47") &&
+                        @if ((asset.FinalStatus == "20" ||asset.FinalStatus == "45" || asset.FinalStatus == "46" || asset.FinalStatus == "47") &&
                              !string.IsNullOrEmpty(asset.ImageFileName2))
                         {
                             <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "img2", sourcefile = asset.ImageFileName2 })" target="_blank" title="Click to open Imagefile2" data-toggle="tooltip">@asset.ProjectID</a>
@@ -391,7 +391,7 @@
                     </td>
 
                     <td>
-                        @if ((asset.FinalStatus == "45" || asset.FinalStatus == "46" || asset.FinalStatus == "47") &&
+                        @if ((asset.FinalStatus == "20" || asset.FinalStatus == "45" || asset.FinalStatus == "46" || asset.FinalStatus == "47") &&
                              !string.IsNullOrEmpty(asset.ImageFileName3))
                         {
                             <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "img3", sourcefile = asset.ImageFileName3 })" target="_blank" title="Click to open Imagefile3" data-toggle="tooltip">@asset.ProjectID</a>
