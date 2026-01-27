@@ -226,13 +226,21 @@
     <select class="form-control" id="dropdownSelect3" style="width: 104px; margin-right: 10px " title="Search Key">
         <option value="tso.ProjectID" @(ViewBag.s1 == "tso.ProjectID" ? "selected" : "")>ProjectID</option>
         <option value="tso.Wstatus" @(ViewBag.s1 == "tso.Wstatus" ? "selected" : "")>Status</option>
-       
+        <option value="ld.depotname" @(ViewBag.s1 == "ld.depotname" ? "selected" : "")>Depot</option>
+
 
 
     </select>
 
-    <input type="text" name="q" class="search-text form-control" placeholder="Search..." title="Search relevant details in the grid" data-toggle="tooltip" id="searchtxt" style="width: 86px; margin-right: 2px; margin-left: -8px; ">
+    @*<input type="text" name="q" class="search-text form-control" placeholder="Search..." title="Search relevant details in the grid" data-toggle="tooltip" id="searchtxt" style="width: 86px; margin-right: 2px; margin-left: -8px; ">*@
+    <input type="text"
+           id="searchtxt"
+           list="depotList"
+           class="form-control"
+           placeholder="Search..."
+           style="width: 86px; margin-right: 2px; margin-left: -8px; ">
 
+    <datalist id="depotList"></datalist>
     <button type="submit" class="btn btn-primary" id="btnSubmit" style="height: 30px;">Search</button>
     <button type="submit" class="btn btn-primary" id="btnClear" style="height: 30px; margin: 2px;">Clear</button>
 </div>
@@ -394,6 +402,7 @@
                     <th style="padding: 9px 28px;"> StDate</th>
 
                     <th>EmailSent</th>
+                    <th>Depot</th>
                     <th data-toggle="tooltip" title="SelectedImageLink">SILink</th>
                     <th>PRILink</th>
                     <th>PRITest</th>
@@ -406,6 +415,7 @@
 
                     <th data-toggle="tooltip" title="SelectedImageOption">SIOpt</th>
                     <th>Preview</th>
+                    <th>Depot</th>
                     <th>Site</th>
                     <th>Customer</th>
                     @if (Session["username"] != null && Session["username"].ToString() != "viewreport")
@@ -485,6 +495,9 @@
                             {
                                 @asset.EmailStatus
                             }
+                        </td>
+                        <td>
+                            @asset.depotname
                         </td>
                         @*<td>@(Convert.ToDateTime(asset.FinalStatusDt).ToString("dd/MM/yy"))</td>*@
 
@@ -585,9 +598,9 @@
                         </td>
 
                         @*<td>
-                                <a href="@Url.Action("Appliedcolour", "AllLevelQueueBoard")" target="_blank" title="Click to open Imagefile3" data-toggle="tooltip">@asset.Appliedcolour</a>
+            <a href="@Url.Action("Appliedcolour", "AllLevelQueueBoard")" target="_blank" title="Click to open Imagefile3" data-toggle="tooltip">@asset.Appliedcolour</a>
 
-                            </td>*@
+        </td>*@
 
                         <td>
                             @asset.SIOption
@@ -596,9 +609,10 @@
                             <button id="previewButton" class="btn btn-primary btn-sm" onclick="launchPreview(@asset.ProjectID)">Preview</button>
                         </td>
 
+                        <td>@asset.depotname</td>
 
                         @*<td>@asset.EmailStatus</td>
-                            <td>@asset.EMailValues</td>*@
+        <td>@asset.EMailValues</td>*@
 
 
 
@@ -654,7 +668,7 @@
 });
 
 // ✅ Submit button
-$("#btnSubmit1").click(function () {
+@*$("#btnSubmit1").click(function () {
     var fromDate = document.getElementById("fromDate").value;
     var curdate1 = $("#datepicker").val();
 
@@ -741,6 +755,142 @@ $("#btnSubmit").click(function () {
     }
 
     // ✅ Redirect
+    window.location.href = url;
+});*@
+
+
+
+
+
+$("#btnSubmit1").on("click", function (e) {
+    e.preventDefault(); // 🔴 stop form submit
+
+    var curdate1 = $("#datepicker").val();
+    if (!curdate1) {
+        alert("Please select date");
+        return;
+    }
+
+    var url = '@Url.Action("Index", "AllLevelQueueBoard")' + '?Fdate=' + curdate1;
+    window.location.href = url;
+});
+
+
+
+
+$(document).ready(function () {
+
+    /* ✅ FIRST: Restore dropdown from ViewBag */
+    var selectedVal = '@ViewBag.s1';
+
+    if (selectedVal && selectedVal !== '') {
+        $("#dropdownSelect3").val(selectedVal);
+    } else {
+        // default only when no ViewBag value
+        $("#dropdownSelect3").val("tso.ProjectID");
+    }
+
+    /* ✅ Toggle submit button logic */
+    function toggleSubmitButton() {
+        const val = $("#dropdownSelect3").val();
+
+        if (val.toLowerCase() === "tso.wstatus" || val.toLowerCase() === "ld.depotname") {
+            $("#btnSubmit1").hide();
+        } else {
+            $("#btnSubmit1").show();
+        }
+    }
+
+    /* 🔹 Run on change */
+    $("#dropdownSelect3").change(toggleSubmitButton);
+
+    /* 🔹 Run once after setting dropdown */
+    toggleSubmitButton();
+
+    /* ✅ Restore search text */
+    $("#searchtxt").val('@ViewBag.s2');
+    $("#searchtxt1").val('@ViewBag.s2');
+    $("#searchtxt2").val('@ViewBag.s2');
+
+});
+
+
+
+
+
+
+
+
+
+            // Replicate the value of #searchtxt to #searchtxt1 and #searchtxt2
+            $("#searchtxt").keyup(function () {
+                // Check if the dropdown value is "ProjectID"
+                if ($("#dropdownSelect3").val() === "tso.ProjectID") {
+                    var searchTextValue = $(this).val();
+                    $("#searchtxt1").val(searchTextValue);
+                    $("#searchtxt2").val(searchTextValue);
+                }
+            });
+
+
+$("#dropdownSelect3").change(function () {
+
+    if ($(this).val() === "ld.depotname") {
+
+        $("#searchtxt").val("");
+
+        $.ajax({
+            url: "@Url.Action("GetDepotList", "AllLevelQueueBoard")",
+            type: "GET",
+            success: function (data) {
+
+                var options = "";
+                $.each(data, function (i, v) {
+                    options += "<option value='" + v + "' />";
+                });
+
+                $("#depotList").html(options);
+            }
+        });
+    }
+});
+$("#btnSubmit").click(function () {
+
+    var s1 = $("#dropdownSelect3").val();
+    var s2 = $("#searchtxt").val();
+    var curdate1 = $("#datepicker").val();
+
+    /* ✅ Depot validation */
+    if (s1 === "ld.depotname") {
+        var found = false;
+        $("#depotList option").each(function () {
+            if ($(this).val() === s2) {
+                found = true;
+                return false;
+            }
+        });
+
+        if (!found) {
+            alert("Please select Depot from list only");
+            return false;
+        }
+    }
+
+    /* ✅ Base URL */
+    var url = "@Url.Action("Index", "AllLevelQueueBoard")"
+        + "?s1=" + s1
+        + "&s2=" + s2;
+
+    /* ✅ ELSE condition for Status */
+    if (s1 === "ld.depotname") {
+        url += "&Fdate=" + curdate1;
+    }
+    else if (s1 === "tso.Wstatus") {
+        url += "&Fdate=" + curdate1;
+    }
+
+    // else → no date added
+
     window.location.href = url;
 });
 

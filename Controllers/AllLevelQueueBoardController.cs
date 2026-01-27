@@ -55,7 +55,7 @@ namespace MyVizCollections.Controllers
 
                 using (MySqlConnection con = new MySqlConnection(constr))
                 {
-                    using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_searchkey_Index", con))
+                    using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_searchkey", con))
                     {
                         cmd.CommandTimeout = 1600;
                         cmd.CommandType = CommandType.StoredProcedure;
@@ -105,6 +105,7 @@ namespace MyVizCollections.Controllers
                                     EMailValues = rdr["EMailValues"].ToString(),
                                     PSEName = rdr["PSE Name"].ToString(),
                                     CPEName = rdr["CPE Name"].ToString(),
+                                    depotname = rdr["depotname"].ToString()
 
                                     //WStatusCount = rdr["WStatusCount"] != DBNull.Value ? Convert.ToInt32(rdr["WStatusCount"]) : 0
 
@@ -148,6 +149,34 @@ namespace MyVizCollections.Controllers
                 // Handle the exception
                 throw;
             }
+        }
+
+        public JsonResult GetDepotList(string term)
+        {
+            string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
+            List<string> depots = new List<string>();
+
+            using (MySqlConnection con = new MySqlConnection(constr))
+            {
+                string q = @"SELECT DISTINCT depotname
+                     FROM lkupdepot
+                     WHERE depotname LIKE @term 
+                     ORDER BY depotname";
+
+                using (MySqlCommand cmd = new MySqlCommand(q, con))
+                {
+                    cmd.Parameters.AddWithValue("@term", "%" + term + "%");
+                    con.Open();
+                    using (var rdr = cmd.ExecuteReader())
+                    {
+                        while (rdr.Read())
+                        {
+                            depots.Add(rdr["depotname"].ToString());
+                        }
+                    }
+                }
+            }
+            return Json(depots, JsonRequestBehavior.AllowGet);
         }
 
         //public ActionResult Help()

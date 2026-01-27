@@ -36,6 +36,7 @@ namespace MyVizCollections.Models
         public string ImageFileName2 { get; set; }
         public string ImageFileName3 { get; set; }
         public string Site { get; set; }
+        public string depotname { get; set; }
         public string Customer { get; set; }
         public string PSEName { get; set; }
         public string CPEName { get; set; }
