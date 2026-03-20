@@ -228,24 +228,37 @@
     <button type="submit" class="btn btn-primary" id="btnSubmit1" style="height: 30px; margin-right: 15px;">Submit</button>
 
 
-    <select class="form-control" id="dropdownSelect3" style="width: 104px; margin-right: 10px " title="Search Key">
+    <select class="form-control" id="dropdownSelect3" style="width: 112px; margin-right: 10px " title="Search Key">
         <option value="tso.ProjectID" @(ViewBag.s1 == "tso.ProjectID" ? "selected" : "")>ProjectID</option>
         <option value="tso.Wstatus" @(ViewBag.s1 == "tso.Wstatus" ? "selected" : "")>Status</option>
         <option value="ld.depotname" @(ViewBag.s1 == "ld.depotname" ? "selected" : "")>Depot</option>
-
+        <option value="tso.WhoistheL6PSE" @(ViewBag.s1 == "tso.WhoistheL6PSE" ? "selected" : "")>PSEName</option>
+        <option value="tso.WhoistheL7QACPI" @(ViewBag.s1 == "tso.WhoistheL7QACPI" ? "selected" : "")>CPEName</option>
 
 
     </select>
 
     @*<input type="text" name="q" class="search-text form-control" placeholder="Search..." title="Search relevant details in the grid" data-toggle="tooltip" id="searchtxt" style="width: 86px; margin-right: 2px; margin-left: -8px; ">*@
+    @*<input type="text"
+               id="searchtxt"
+               list="depotList"
+               class="form-control"
+               placeholder="Search..."
+               style="width: 86px; margin-right: 2px; margin-left: -8px; ">
+
+        <datalist id="depotList"></datalist>*@
+
     <input type="text"
            id="searchtxt"
-           list="depotList"
            class="form-control"
            placeholder="Search..."
-           style="width: 86px; margin-right: 2px; margin-left: -8px; ">
+           style="width: 93px; margin-right: 2px; margin-left: -8px; ">
 
     <datalist id="depotList"></datalist>
+    <datalist id="PSEList"></datalist>
+    <datalist id="CPEList"></datalist>
+
+
     <button type="submit" class="btn btn-primary" id="btnSubmit" style="height: 30px;">Search</button>
     <button type="submit" class="btn btn-primary" id="btnClear" style="height: 30px; margin: 2px;">Clear</button>
 </div>
@@ -287,13 +300,6 @@
 
     </div>
 }
-
-
-
-
-
-
-
 
 
 
@@ -672,96 +678,6 @@
     $("#datepicker").val('@ViewBag.Fdate');
 });
 
-// ✅ Submit button
-@*$("#btnSubmit1").click(function () {
-    var fromDate = document.getElementById("fromDate").value;
-    var curdate1 = $("#datepicker").val();
-
-    var url = "@Url.Action("Index", "AllLevelQueueBoard")" + "?Fdate=" + curdate1;
-
-    window.location.href = url;
-});
-
-
-
-
-
-
-                        $(function () {
-
-
-
-                            $("#dropdownSelect3").val("tso.ProjectID");
-
-                            function toggleSubmitButton() {
-                                const val = $("#dropdownSelect3").val();
-                                if (val === "tso.Wstatus") {
-                                    $("#btnSubmit1").hide();  // Hide when Status selected
-                                } else {
-                                    $("#btnSubmit1").show();  // Show otherwise
-                                }
-                            }
-
-                            // 🔹 Run every time dropdown changes
-                            $("#dropdownSelect3").change(toggleSubmitButton);
-
-                            // 🔹 Also run once on page load (after Search reload)
-                            toggleSubmitButton();
-
-
-
-
-
-
-//$("#dropdownSelect3").val('@ViewBag.s1');
-             $("#searchtxt").val('@ViewBag.s2');
-             $("#searchtxt1").val('@ViewBag.s2');
-             $("#searchtxt2").val('@ViewBag.s2');
-
-         });
-
-
-
-
-
-
-
-
-
-            // Replicate the value of #searchtxt to #searchtxt1 and #searchtxt2
-            $("#searchtxt").keyup(function () {
-                // Check if the dropdown value is "ProjectID"
-                if ($("#dropdownSelect3").val() === "tso.ProjectID") {
-                    var searchTextValue = $(this).val();
-                    $("#searchtxt1").val(searchTextValue);
-                    $("#searchtxt2").val(searchTextValue);
-                }
-            });
-
-
-
-
-
-// Main submit button logic
-$("#btnSubmit").click(function () {
-
-    $("#progress").show();
-
-    var s1 = $("#dropdownSelect3").val(); // dropdown value
-    var s2 = $("#searchtxt").val();       // text box value
-
-    var curdate1 = $("#datepicker").val();
-    // ✅ Base URL
-    var url = "@Url.Action("Index", "AllLevelQueueBoard")" + "?s1=" + s1 + "&s2=" + s2;
-
-    // ✅ If dropdown = tso.Wstatus → add Fdate also
-    if (s1 === "tso.Wstatus") {
-        url += "&Fdate=" + curdate1;
-    }
-
-    // ✅ Redirect
-    window.location.href = url;
-});*@
 
 
 
@@ -840,7 +756,7 @@ $(document).ready(function () {
 
 $("#dropdownSelect3").change(function () {
 
-    if ($(this).val() === "ld.depotname") {
+    @*if ($(this).val() === "ld.depotname") {
 
         $("#searchtxt").val("");
 
@@ -858,28 +774,127 @@ $("#dropdownSelect3").change(function () {
             }
         });
     }
-});
-$("#btnSubmit").click(function () {
+});*@
 
-    var s1 = $("#dropdownSelect3").val();
-    var s2 = $("#searchtxt").val();
-    var curdate1 = $("#datepicker").val();
+    /* DEPOT */
+            if ($(this).val() === "ld.depotname") {
 
-    /* ✅ Depot validation */
-    if (s1 === "ld.depotname") {
-        var found = false;
-        $("#depotList option").each(function () {
-            if ($(this).val() === s2) {
-                found = true;
-                return false;
+        $("#searchtxt").attr("list", "depotList");
+
+        $.ajax({
+            url: "@Url.Action("GetDepotList", "AllLevelQueueBoard")",
+            type: "GET",
+            success: function (data) {
+
+                var options = "";
+                $.each(data, function (i, v) {
+                    options += "<option value='" + v + "'>";
+                });
+
+                $("#depotList").html(options);
             }
         });
-
-        if (!found) {
-            alert("Please select Depot from list only");
-            return false;
-        }
     }
+
+    /* PSE */
+    if ($(this).val() === "tso.WhoistheL6PSE") {
+
+        $("#searchtxt").attr("list", "PSEList");
+
+        $.ajax({
+            url: "@Url.Action("GetPSEList","AllLevelQueueBoard")",
+            type: "GET",
+            success: function (data) {
+
+                var options = "";
+                $.each(data, function (i, v) {
+                    options += "<option value='" + v + "'>";
+                });
+
+                $("#PSEList").html(options);
+            }
+        });
+    }
+
+    /* CPE */
+    if ($(this).val() === "tso.WhoistheL7QACPI") {
+
+        $("#searchtxt").attr("list", "CPEList");
+
+        $.ajax({
+            url: "@Url.Action("GetCPEList", "AllLevelQueueBoard")",
+            type: "GET",
+            success: function (data) {
+
+                var options = "";
+                $.each(data, function (i, v) {
+                    options += "<option value='" + v + "'>";
+                });
+
+                $("#CPEList").html(options);
+            }
+        });
+    }
+
+});
+
+
+
+            $("#btnSubmit").click(function () {
+
+                var s1 = $("#dropdownSelect3").val();
+                var s2 = $("#searchtxt").val();
+                var curdate1 = $("#datepicker").val();
+
+                /* ✅ Depot validation */
+                if (s1 === "ld.depotname") {
+                    var found = false;
+                    $("#depotList option").each(function () {
+                        if ($(this).val() === s2) {
+                            found = true;
+                            return false;
+                        }
+                    });
+
+                    if (!found) {
+                        alert("Please select Depot from list only");
+                        return false;
+                    }
+                }
+
+
+                if (s1 === "tso.WhoistheL6PSE") {
+                    var found = false;
+                    $("#PSEList option").each(function () {
+                        if ($(this).val() === s2) {
+                            found = true;
+                            return false;
+                        }
+                    });
+
+                    if (!found) {
+                        alert("Please select PSE from list only");
+                        return false;
+                    }
+                }
+                if (s1 === "tso.WhoistheL7QACPI") {
+                    var found = false;
+                    $("#CPEList option").each(function () {
+                        if ($(this).val() === s2) {
+                            found = true;
+                            return false;
+                        }
+                    });
+
+                    if (!found) {
+                        alert("Please select CPE from list only");
+                        return false;
+                    }
+                }
+
+
+
+
 
     /* ✅ Base URL */
     var url = "@Url.Action("Index", "AllLevelQueueBoard")"

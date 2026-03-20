@@ -150,6 +150,63 @@ namespace MyVizCollections.Controllers
                 throw;
             }
         }
+        public JsonResult GetPSEList()
+        {
+            string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
+            List<string> pse = new List<string>();
+
+            using (MySqlConnection con = new MySqlConnection(constr))
+            {
+                string q = @"SELECT DISTINCT PSECode
+                     FROM lkuppsename
+                     WHERE PSELevel='6'
+                     AND PSEAvailability='Yes'
+                     ORDER BY PSECode";
+
+                using (MySqlCommand cmd = new MySqlCommand(q, con))
+                {
+                    con.Open();
+                    using (MySqlDataReader rdr = cmd.ExecuteReader())
+                    {
+                        while (rdr.Read())
+                        {
+                            pse.Add(rdr["PSECode"].ToString());
+                        }
+                    }
+                }
+            }
+
+            return Json(pse, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetCPEList()
+        {
+            string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
+            List<string> pse = new List<string>();
+
+            using (MySqlConnection con = new MySqlConnection(constr))
+            {
+                string q = @"SELECT DISTINCT PSECode
+                     FROM lkuppsename
+                     WHERE PSELevel='7'
+                     AND PSEAvailability='Yes'
+                     ORDER BY PSECode";
+
+                using (MySqlCommand cmd = new MySqlCommand(q, con))
+                {
+                    con.Open();
+                    using (MySqlDataReader rdr = cmd.ExecuteReader())
+                    {
+                        while (rdr.Read())
+                        {
+                            pse.Add(rdr["PSECode"].ToString());
+                        }
+                    }
+                }
+            }
+
+            return Json(pse, JsonRequestBehavior.AllowGet);
+        }
 
         public JsonResult GetDepotList(string term)
         {
