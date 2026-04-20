@@ -146,12 +146,13 @@ namespace MyVizCollections.Controllers
 
                     return View(projects);
                 }
-                catch (Exception ex)
-                {
-                    // Log or handle error
-                    throw;
-                }
+            catch (Exception ex)
+            {
+                ExceptionLogging.SendErrorToText(ex);  // ✅ LOG HERE
+
+                return View("Error"); // or RedirectToAction("Error")
             }
+        }
 
      
         public static string GetImgLCount(string SType)

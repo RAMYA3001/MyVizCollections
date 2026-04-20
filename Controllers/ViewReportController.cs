@@ -154,8 +154,9 @@ namespace MyVizCollections.Controllers
             }
             catch (Exception ex)
             {
-                // Handle the exception
-                throw;
+                ExceptionLogging.SendErrorToText(ex);  // ✅ LOG HERE
+
+                return View("Error"); // or RedirectToAction("Error")
             }
         }
 

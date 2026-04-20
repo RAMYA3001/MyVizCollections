@@ -146,107 +146,121 @@ namespace MyVizCollections.Controllers
             }
             catch (Exception ex)
             {
-                // Handle the exception
-                throw;
+                ExceptionLogging.SendErrorToText(ex);  // ✅ LOG HERE
+
+                return View("Error"); // or RedirectToAction("Error")
             }
         }
         public JsonResult GetPSEList()
         {
-            string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
-            List<string> pse = new List<string>();
-
-            using (MySqlConnection con = new MySqlConnection(constr))
+            try
             {
-                string q = @"SELECT DISTINCT PSECode
+                string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
+                List<string> pse = new List<string>();
+
+                using (MySqlConnection con = new MySqlConnection(constr))
+                {
+                    string q = @"SELECT DISTINCT PSECode
                      FROM lkuppsename
                      WHERE PSELevel='6'
                      AND PSEAvailability='Yes'
                      ORDER BY PSECode";
 
-                using (MySqlCommand cmd = new MySqlCommand(q, con))
-                {
-                    con.Open();
-                    using (MySqlDataReader rdr = cmd.ExecuteReader())
+                    using (MySqlCommand cmd = new MySqlCommand(q, con))
                     {
-                        while (rdr.Read())
+                        con.Open();
+                        using (MySqlDataReader rdr = cmd.ExecuteReader())
                         {
-                            pse.Add(rdr["PSECode"].ToString());
+                            while (rdr.Read())
+                            {
+                                pse.Add(rdr["PSECode"].ToString());
+                            }
                         }
                     }
                 }
+
+                return Json(pse, JsonRequestBehavior.AllowGet);
             }
 
-            return Json(pse, JsonRequestBehavior.AllowGet);
+            catch (Exception ex)
+            {
+                // Handle the exception appropriately, for example, log it.
+                return null;
+            }
         }
-
         public JsonResult GetCPEList()
         {
-            string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
-            List<string> pse = new List<string>();
-
-            using (MySqlConnection con = new MySqlConnection(constr))
+            try
             {
-                string q = @"SELECT DISTINCT PSECode
+                string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
+                List<string> pse = new List<string>();
+
+                using (MySqlConnection con = new MySqlConnection(constr))
+                {
+                    string q = @"SELECT DISTINCT PSECode
                      FROM lkuppsename
                      WHERE PSELevel='7'
                      AND PSEAvailability='Yes'
                      ORDER BY PSECode";
 
-                using (MySqlCommand cmd = new MySqlCommand(q, con))
-                {
-                    con.Open();
-                    using (MySqlDataReader rdr = cmd.ExecuteReader())
+                    using (MySqlCommand cmd = new MySqlCommand(q, con))
                     {
-                        while (rdr.Read())
+                        con.Open();
+                        using (MySqlDataReader rdr = cmd.ExecuteReader())
                         {
-                            pse.Add(rdr["PSECode"].ToString());
+                            while (rdr.Read())
+                            {
+                                pse.Add(rdr["PSECode"].ToString());
+                            }
                         }
                     }
                 }
+
+                return Json(pse, JsonRequestBehavior.AllowGet);
             }
-
-            return Json(pse, JsonRequestBehavior.AllowGet);
+            catch (Exception ex)
+            {
+                // Handle the exception appropriately, for example, log it.
+                return null;
+            }
         }
-
         public JsonResult GetDepotList(string term)
         {
-            string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
-            List<string> depots = new List<string>();
-
-            using (MySqlConnection con = new MySqlConnection(constr))
+            try
             {
-                string q = @"SELECT DISTINCT depotname
+                string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
+                List<string> depots = new List<string>();
+
+                using (MySqlConnection con = new MySqlConnection(constr))
+                {
+                    string q = @"SELECT DISTINCT depotname
                      FROM lkupdepot
                      WHERE depotname LIKE @term 
                      ORDER BY depotname";
 
-                using (MySqlCommand cmd = new MySqlCommand(q, con))
-                {
-                    cmd.Parameters.AddWithValue("@term", "%" + term + "%");
-                    con.Open();
-                    using (var rdr = cmd.ExecuteReader())
+                    using (MySqlCommand cmd = new MySqlCommand(q, con))
                     {
-                        while (rdr.Read())
+                        cmd.Parameters.AddWithValue("@term", "%" + term + "%");
+                        con.Open();
+                        using (var rdr = cmd.ExecuteReader())
                         {
-                            depots.Add(rdr["depotname"].ToString());
+                            while (rdr.Read())
+                            {
+                                depots.Add(rdr["depotname"].ToString());
+                            }
                         }
                     }
                 }
+                return Json(depots, JsonRequestBehavior.AllowGet);
             }
-            return Json(depots, JsonRequestBehavior.AllowGet);
+            catch (Exception ex)
+            {
+                // Handle the exception appropriately, for example, log it.
+                return null;
+            }
         }
 
-        //public ActionResult Help()
-        //{
-        //    ViewBag.SISubmittedPath = @"D:\ColourMySpace\MyViz\SISubmitted";
-        //    ViewBag.PRIPath = @"D:\ColourMySpace\MyViz\PRI";
-        //    ViewBag.PRITestPath = @"D:\ColourMySpace\MyViz\PRITest";
-        //    ViewBag.PDFPath = @"D:\ColourMySpace\MyViz\PDF";          
-        //    ViewBag.Json= @"D:\ColourMySpace\MyViz\JSON_Files";
-
-        //    return View();
-        //}
-
+      
 
         public ActionResult Help()
         {
@@ -355,6 +369,8 @@ namespace MyVizCollections.Controllers
                 return null;
             }
         }
+
+
         public ActionResult Getsourceid(string ProjectID1, string ProjectID2, string Type1, string Type2)
         {
             try
@@ -405,7 +421,9 @@ namespace MyVizCollections.Controllers
             }
             catch (Exception ex)
             {
-                return null;
+                ExceptionLogging.SendErrorToText(ex);  // ✅ LOG HERE
+
+                return View("Error"); // or RedirectToAction("Error")
             }
 
 
@@ -727,39 +745,6 @@ namespace MyVizCollections.Controllers
 
 
 
-        //public JsonResult Qualitycheck(string projectID, string result, string comments)
-        //{
-        //    string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
-
-        //    try
-        //    {
-        //        using (MySqlConnection con = new MySqlConnection(constr))
-        //        {
-
-
-        //            // If no feedback exists, save the new feedback
-        //            using (MySqlCommand cmd = new MySqlCommand("SP_SCAQA", con))
-        //            {
-        //                cmd.CommandType = CommandType.StoredProcedure;
-
-        //                // Add parameters
-        //                cmd.Parameters.AddWithValue("@ProjectID_P", projectID);
-        //                cmd.Parameters.AddWithValue("@QCResult", result);
-        //                cmd.Parameters.AddWithValue("@QCComments", comments);
-
-        //                con.Open();
-        //                cmd.ExecuteNonQuery();
-        //                con.Close();
-        //            }
-        //        }
-
-        //        return Json(new { success = true, message = "Quality Check updated successfully!" });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Json(new { success = false, message = $"Error: {ex.Message}" });
-        //    }
-        //}
 
 
 

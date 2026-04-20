@@ -31,6 +31,7 @@ namespace MyVizCollections.Controllers
                 using (var cmd = new MySqlCommand("SP_BannerMessage", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandTimeout = 1600;
 
                     var result = cmd.ExecuteScalar();
                     if (result != null && !string.IsNullOrEmpty(result.ToString()))
@@ -42,38 +43,52 @@ namespace MyVizCollections.Controllers
 
             return bannerMessage;
         }
+
+
+      
+
+
         [HttpPost]
         public ActionResult Index(User user)
         {
-
-            if ((user.Username == "Insyadmin" && user.Password == "!n&dia@12$") || (user.Username == "ActOn05" && user.Password == "@Act#$05&"))
+            try
             {
-                Session["Username"] = user.Username;
-                Session["Password"] = user.Password;
-                return RedirectToAction("Index", "AllLevelQueueBoard");
+                if ((user.Username == "Insyadmin" && user.Password == "!n&dia@12$") || (user.Username == "ActOn05" && user.Password == "@Act#$05&"))
+                {
+                    Session["Username"] = user.Username;
+                    Session["Password"] = user.Password;
+                    return RedirectToAction("Index", "AllLevelQueueBoard");
+                }
+                else if (user.Username == "viewreport" && user.Password == "viewreport")
+
+
+                {
+                    Session["Username"] = user.Username;
+                    Session["Password"] = user.Password;
+                    return RedirectToAction("Index", "ViewReport");
+                }
+                else if (user.Username == "tatreport" && user.Password == "tatreport")
+
+                {
+                    Session["Username"] = user.Username;
+                    Session["Password"] = user.Password;
+                    return RedirectToAction("Index", "Tatreport");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt");
+                    return View();
+                }
+
             }
-            else if (user.Username == "viewreport" && user.Password == "viewreport") 
-
-
+            catch (Exception ex)
             {
-                Session["Username"] = user.Username;
-                Session["Password"] = user.Password;
-                return RedirectToAction("Index", "ViewReport");
-            }
-            else if (user.Username == "tatreport" && user.Password == "tatreport")
+                ExceptionLogging.SendErrorToText(ex);  // ✅ LOG HERE
 
-            {
-                Session["Username"] = user.Username;
-                Session["Password"] = user.Password;
-                return RedirectToAction("Index", "Tatreport");
-            }
-            else
-            {
-                ModelState.AddModelError(string.Empty, "Invalid login attempt");
-                return View();
+                return View("Error"); // or RedirectToAction("Error")
             }
         }
-
+        
 
         public ActionResult Logout()
         {
@@ -86,8 +101,9 @@ namespace MyVizCollections.Controllers
             }
             catch (Exception ex)
             {
-                // Handle the exception appropriately, for example, log it.
-                return null;
+                ExceptionLogging.SendErrorToText(ex);  // ✅ LOG HERE
+
+                return View("Error"); // or RedirectToAction("Error")
             }
         }
 
