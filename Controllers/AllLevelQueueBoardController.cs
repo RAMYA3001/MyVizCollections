@@ -51,24 +51,21 @@ namespace MyVizCollections.Controllers
                 {
                     imode = 3; // Use imode 3 for "ActOn05"
                 }
-             
+                List<AllLevelQueueBoard> projects = new List<AllLevelQueueBoard>();
 
                 using (MySqlConnection con = new MySqlConnection(constr))
                 {
+                    con.Open();
+
                     using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_searchkey", con))
                     {
-                        cmd.CommandTimeout = 1600;
                         cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.CommandTimeout = 120; // ✅ reduced timeout
 
                         cmd.Parameters.AddWithValue("@From_Date", Fdate);
-                       
                         cmd.Parameters.AddWithValue("@S_ID", s1);
                         cmd.Parameters.AddWithValue("@type1", s2);
-                        cmd.Parameters.AddWithValue("@imode", imode); // Pass imode value
-
-                        con.Open();
-
-                        List<AllLevelQueueBoard> projects = new List<AllLevelQueueBoard>();
+                        cmd.Parameters.AddWithValue("@imode", imode);
 
                         using (MySqlDataReader rdr = cmd.ExecuteReader())
                         {
@@ -76,6 +73,30 @@ namespace MyVizCollections.Controllers
                             {
                                 AllLevelQueueBoard project = new AllLevelQueueBoard
                                 {
+
+                                    //using (MySqlConnection con = new MySqlConnection(constr))
+                                    //{
+                                    //    using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_searchkey", con))
+                                    //    {
+                                    //        cmd.CommandTimeout = 1600;
+                                    //        cmd.CommandType = CommandType.StoredProcedure;
+
+                                    //        cmd.Parameters.AddWithValue("@From_Date", Fdate);
+
+                                    //        cmd.Parameters.AddWithValue("@S_ID", s1);
+                                    //        cmd.Parameters.AddWithValue("@type1", s2);
+                                    //        cmd.Parameters.AddWithValue("@imode", imode); // Pass imode value
+
+                                    //        con.Open();
+
+                                    //        List<AllLevelQueueBoard> projects = new List<AllLevelQueueBoard>();
+
+                                    //        using (MySqlDataReader rdr = cmd.ExecuteReader())
+                                    //        {
+                                    //            while (rdr.Read())
+                                    //            {
+                                    //                AllLevelQueueBoard project = new AllLevelQueueBoard
+                                    //                {
                                     ProjectID = rdr["ProjectID"] != DBNull.Value ? Convert.ToInt32(rdr["ProjectID"]) : 0,
                                     ProjectName = rdr["ProjectName"].ToString(),
                                     RegdOn = Convert.ToDateTime(rdr["RegdOn"]),
@@ -105,52 +126,101 @@ namespace MyVizCollections.Controllers
                                     EMailValues = rdr["EMailValues"].ToString(),
                                     PSEName = rdr["PSE Name"].ToString(),
                                     CPEName = rdr["CPE Name"].ToString(),
-                                    depotname = rdr["depotname"].ToString()
-
-                                    //WStatusCount = rdr["WStatusCount"] != DBNull.Value ? Convert.ToInt32(rdr["WStatusCount"]) : 0
-
+                                    depotname = rdr["depotname"].ToString(),
+                                     // ❌ TEMP FIX (no extra DB call)
+                                    WStsCount = 0
                                 };
-
-                                // After adding project to the list
-                                using (MySqlConnection countCon = new MySqlConnection(constr))
-                                {
-                                    countCon.Open();
-                                    using (MySqlCommand countCmd = new MySqlCommand("SELECT COUNT(*) FROM wstatuslog WHERE ProjectID = @pid AND Workstatus NOT IN (85, 86)", countCon))
-                                    {
-                                        countCmd.Parameters.AddWithValue("@pid", project.ProjectID);
-                                        int count = Convert.ToInt32(countCmd.ExecuteScalar());
-                                        project.WStsCount = count; // Assuming you have a property in your model for this
-                                    }
-                                }
-
 
                                 projects.Add(project);
                             }
                         }
+                    }
 
-                        con.Close();
+                    // ✅ OPTIONAL: Get all counts in ONE query
+                    var projectIds = projects.Select(p => p.ProjectID).ToList();
 
-                        //int pageSize = 10; // Adjust the page size as needed
-                        //int pageNumber = (page ?? 1);
+                    if (projectIds.Count > 0)
+                    {
+                        string idList = string.Join(",", projectIds);
 
-                        ViewBag.Fdate = Fdate;
-                        
-                        ViewBag.s1 = s1;
-                        ViewBag.s2 = s2;
-                        ViewBag.RowCount = projects.Count; // ✅ Total rows displayed
+                        using (MySqlCommand countCmd = new MySqlCommand(
+                            $"SELECT ProjectID, COUNT(*) AS Cnt FROM wstatuslog WHERE ProjectID IN ({idList}) AND Workstatus NOT IN (85,86) GROUP BY ProjectID", con))
+                        {
+                            using (var reader = countCmd.ExecuteReader())
+                            {
+                                var dict = new Dictionary<int, int>();
 
-                        //return View(projects.ToPagedList(pageNumber, pageSize));
-                        return View(projects);
+                                while (reader.Read())
+                                {
+                                    dict[Convert.ToInt32(reader["ProjectID"])] = Convert.ToInt32(reader["Cnt"]);
+                                }
+
+                                foreach (var p in projects)
+                                {
+                                    if (dict.ContainsKey(p.ProjectID))
+                                        p.WStsCount = dict[p.ProjectID];
+                                }
+                            }
+                        }
                     }
                 }
+
+                ViewBag.Fdate = Fdate;
+                ViewBag.s1 = s1;
+                ViewBag.s2 = s2;
+
+                return View(projects);
             }
             catch (Exception ex)
             {
-                ExceptionLogging.SendErrorToText(ex);  // ✅ LOG HERE
-
-                return View("Error"); // or RedirectToAction("Error")
+                ExceptionLogging.SendErrorToText(ex);
+                return View("Error");
             }
         }
+        //                            //WStatusCount = rdr["WStatusCount"] != DBNull.Value ? Convert.ToInt32(rdr["WStatusCount"]) : 0
+
+        //                        };
+
+        //                        // After adding project to the list
+        //                        using (MySqlConnection countCon = new MySqlConnection(constr))
+        //                        {
+        //                            countCon.Open();
+        //                            using (MySqlCommand countCmd = new MySqlCommand("SELECT COUNT(*) FROM wstatuslog WHERE ProjectID = @pid AND Workstatus NOT IN (85, 86)", countCon))
+        //                            {
+        //                                countCmd.Parameters.AddWithValue("@pid", project.ProjectID);
+        //                                int count = Convert.ToInt32(countCmd.ExecuteScalar());
+        //                                project.WStsCount = count; // Assuming you have a property in your model for this
+        //                            }
+        //                        }
+
+
+        //                        projects.Add(project);
+        //                    }
+        //                }
+
+        //                con.Close();
+
+        //                //int pageSize = 10; // Adjust the page size as needed
+        //                //int pageNumber = (page ?? 1);
+
+        //                ViewBag.Fdate = Fdate;
+
+        //                ViewBag.s1 = s1;
+        //                ViewBag.s2 = s2;
+        //                ViewBag.RowCount = projects.Count; // ✅ Total rows displayed
+
+        //                //return View(projects.ToPagedList(pageNumber, pageSize));
+        //                return View(projects);
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ExceptionLogging.SendErrorToText(ex);  // ✅ LOG HERE
+
+        //        return View("Error"); // or RedirectToAction("Error")
+        //    }
+        //}
         public JsonResult GetPSEList()
         {
             try

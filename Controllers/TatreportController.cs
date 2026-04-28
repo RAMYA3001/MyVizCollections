@@ -49,35 +49,56 @@ namespace MyVizCollections.Controllers
                     string Username = Session["Username"]?.ToString();
 
                     int imode = 4;
-                    //if (Username == "view")
-                    //    imode = 2;
-                    //else if (Username == "ActOn05")
-                    //    imode = 3;
-                    //else if (Username == "Admin")
-                    //    imode = 4;
+                //if (Username == "view")
+                //    imode = 2;
+                //else if (Username == "ActOn05")
+                //    imode = 3;
+                //else if (Username == "Admin")
+                //    imode = 4;
 
-                    using (MySqlConnection con = new MySqlConnection(constr))
+                //using (MySqlConnection con = new MySqlConnection(constr))
+                //{
+                //    using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_searchkey", con))
+                //    {
+                //        cmd.CommandTimeout = 1600;
+                //        cmd.CommandType = CommandType.StoredProcedure;
+
+                //        cmd.Parameters.AddWithValue("@From_Date", Fdate);
+
+                //    cmd.Parameters.AddWithValue("@S_ID", s1);
+                //        cmd.Parameters.AddWithValue("@type1", s2);
+                //        cmd.Parameters.AddWithValue("@imode", imode);
+
+                //        con.Open();
+
+                //        using (MySqlDataReader rdr = cmd.ExecuteReader())
+                //        {
+                //            while (rdr.Read())
+                //            {
+                //                AllLevelQueueBoard project = new AllLevelQueueBoard
+                //                {
+                using (MySqlConnection con = new MySqlConnection(constr))
+                {
+                    con.Open();
+
+                    // 🔹 MAIN DATA QUERY
+                    using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_searchkey", con))
                     {
-                        using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_searchkey", con))
-                        {
-                            cmd.CommandTimeout = 1600;
-                            cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.CommandTimeout = 120; // ✅ reduced
 
-                            cmd.Parameters.AddWithValue("@From_Date", Fdate);
-                      
+                        cmd.Parameters.AddWithValue("@From_Date", Fdate);
                         cmd.Parameters.AddWithValue("@S_ID", s1);
-                            cmd.Parameters.AddWithValue("@type1", s2);
-                            cmd.Parameters.AddWithValue("@imode", imode);
+                        cmd.Parameters.AddWithValue("@type1", s2);
+                        cmd.Parameters.AddWithValue("@imode", imode);
 
-                            con.Open();
-
-                            using (MySqlDataReader rdr = cmd.ExecuteReader())
+                        using (MySqlDataReader rdr = cmd.ExecuteReader())
+                        {
+                            while (rdr.Read())
                             {
-                                while (rdr.Read())
+                                AllLevelQueueBoard project = new AllLevelQueueBoard
                                 {
-                                    AllLevelQueueBoard project = new AllLevelQueueBoard
-                                    {
-                                        ProjectID = rdr["ProjectID"] != DBNull.Value ? Convert.ToInt32(rdr["ProjectID"]) : 0,
+                                    ProjectID = rdr["ProjectID"] != DBNull.Value ? Convert.ToInt32(rdr["ProjectID"]) : 0,
                                         ProjectName = rdr["ProjectName"].ToString(),
                                         RegdOn = rdr["RegdOn"] != DBNull.Value ? Convert.ToDateTime(rdr["RegdOn"]) : (DateTime?)null,
                                         RegdBy = rdr["RegdBy"].ToString(),
@@ -105,56 +126,116 @@ namespace MyVizCollections.Controllers
                                         EmailStatus = rdr["EmailStatus"].ToString(),
                                         EMailValues = rdr["EMailValues"].ToString(),
                                         PSEName = rdr["PSE Name"].ToString(),
-                                        CPEName = rdr["CPE Name"].ToString()
-                                    };
+                                        CPEName = rdr["CPE Name"].ToString(),
+                                    WStsCount = 0 // temp
+                                };
 
-                                    // Get WStsCount
-                                    using (MySqlConnection countCon = new MySqlConnection(constr))
-                                    {
-                                        countCon.Open();
-                                        using (MySqlCommand countCmd = new MySqlCommand("SELECT COUNT(*) FROM wstatuslog WHERE ProjectID = @pid AND Workstatus NOT IN (85, 86)", countCon))
-                                        {
-                                            countCmd.Parameters.AddWithValue("@pid", project.ProjectID);
-                                            project.WStsCount = Convert.ToInt32(countCmd.ExecuteScalar());
-                                        }
-                                    }
-
-                                    projects.Add(project);
-                                }
+                                projects.Add(project);
                             }
                         }
                     }
 
-               
-              
-                // Sort by FinalStatus ASC and then by RemainingTATHours ASC if Admin
+                    // 🔹 SINGLE QUERY FOR ALL COUNTS (FIXED)
+                    var ids = projects.Select(p => p.ProjectID).ToList();
+
+                    if (ids.Count > 0)
+                    {
+                        string idList = string.Join(",", ids);
+
+                        using (MySqlCommand countCmd = new MySqlCommand(
+                            $"SELECT ProjectID, COUNT(*) AS Cnt FROM wstatuslog WHERE ProjectID IN ({idList}) AND Workstatus NOT IN (85,86) GROUP BY ProjectID",
+                            con))
+                        {
+                            using (var reader = countCmd.ExecuteReader())
+                            {
+                                Dictionary<int, int> dict = new Dictionary<int, int>();
+
+                                while (reader.Read())
+                                {
+                                    dict[Convert.ToInt32(reader["ProjectID"])] =
+                                        Convert.ToInt32(reader["Cnt"]);
+                                }
+
+                                foreach (var p in projects)
+                                {
+                                    if (dict.ContainsKey(p.ProjectID))
+                                        p.WStsCount = dict[p.ProjectID];
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // 🔹 SORTING
                 if (Username == "tatreport")
                 {
                     projects = projects
-                        .OrderBy(p => p.FinalStatus)                // first priority
-                        .ThenBy(p => p.RemainingTATHours)           // second priority
+                        .OrderBy(p => p.FinalStatus)
+                        .ThenBy(p => p.RemainingTATHours)
                         .ToList();
                 }
 
-                //int pageSize = 10;
-                //int pageNumber = (page ?? 1);
-
                 ViewBag.Fdate = Fdate;
-             
                 ViewBag.s1 = s1;
-                    ViewBag.s2 = s2;
+                ViewBag.s2 = s2;
 
-                    return View(projects);
-                }
+                return View(projects);
+            }
             catch (Exception ex)
             {
-                ExceptionLogging.SendErrorToText(ex);  // ✅ LOG HERE
-
-                return View("Error"); // or RedirectToAction("Error")
+                ExceptionLogging.SendErrorToText(ex);
+                return View("Error");
             }
         }
+        //                            };
 
-     
+        //                            // Get WStsCount
+        //                            using (MySqlConnection countCon = new MySqlConnection(constr))
+        //                            {
+        //                                countCon.Open();
+        //                                using (MySqlCommand countCmd = new MySqlCommand("SELECT COUNT(*) FROM wstatuslog WHERE ProjectID = @pid AND Workstatus NOT IN (85, 86)", countCon))
+        //                                {
+        //                                    countCmd.Parameters.AddWithValue("@pid", project.ProjectID);
+        //                                    project.WStsCount = Convert.ToInt32(countCmd.ExecuteScalar());
+        //                                }
+        //                            }
+
+        //                            projects.Add(project);
+        //                        }
+        //                    }
+        //                }
+        //            }
+
+
+
+        //        // Sort by FinalStatus ASC and then by RemainingTATHours ASC if Admin
+        //        if (Username == "tatreport")
+        //        {
+        //            projects = projects
+        //                .OrderBy(p => p.FinalStatus)                // first priority
+        //                .ThenBy(p => p.RemainingTATHours)           // second priority
+        //                .ToList();
+        //        }
+
+        //        //int pageSize = 10;
+        //        //int pageNumber = (page ?? 1);
+
+        //        ViewBag.Fdate = Fdate;
+
+        //        ViewBag.s1 = s1;
+        //            ViewBag.s2 = s2;
+
+        //            return View(projects);
+        //        }
+        //    catch (Exception ex)
+        //    {
+        //        ExceptionLogging.SendErrorToText(ex);  // ✅ LOG HERE
+
+        //        return View("Error"); // or RedirectToAction("Error")
+        //    }
+        //}
+
+
         public static string GetImgLCount(string SType)
         {
             string query;

@@ -521,6 +521,13 @@ $("#btnSubmit1").click(function () {
 
 
 
+                function launchPreview(projectId) {
+             // Construct the URL for the LaunchPreview action
+             var url = "@Url.Action("LaunchPreview", "AllLevelQueueBoard")" + "?Id=" + projectId;
+
+             // Open the URL in a new tab
+             window.open(url, '_blank');
+            }
 
                         $(function () {
 
@@ -594,7 +601,7 @@ $("#btnSubmit").click(function () {
     var curdate1 = $("#datepicker").val();
     var s1 = $("#dropdownSelect3").val();   // dropdown value
     var s2 = $("#searchtxt").val();         // user text
-    
+
 
     var url = "@Url.Action("Index", "ViewReport")" + "?s1=" + s1 + "&s2=" + s2;
 
