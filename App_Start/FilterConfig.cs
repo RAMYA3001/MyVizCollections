@@ -8,6 +8,8 @@ namespace MyVizCollections
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
+            // MUST ADD THIS
+            filters.Add(new SessionExpireAttribute());
         }
     }
 }

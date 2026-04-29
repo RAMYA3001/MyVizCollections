@@ -211,6 +211,7 @@
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\WStatusLog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SessionExpireAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -317,6 +318,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="ExceptionDetailsFile\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
