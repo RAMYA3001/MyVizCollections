@@ -28,34 +28,40 @@ namespace MyVizCollections.Controllers
     public class ViewReportController : Controller
     {
         // GET: ViewReport
-        public ActionResult Index( string Fdate,  string s1, string s2)
+        public ActionResult Index(string Fdate, string Ldate, string s1, string s2)
         {
             string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
 
             try
             {
-                if (Fdate == null)
+                if (string.IsNullOrEmpty(Fdate))
                 {
-                    Fdate = DateTime.Now.ToString("yyyy-MM-dd");
+                    Fdate = DateTime.Today.ToString("yyyy-MM-dd");
                 }
-            
+
+                if (string.IsNullOrEmpty(Ldate))
+                {
+                    Ldate = DateTime.Today.ToString("yyyy-MM-dd");
+                }
+
                 // Retrieve category from session
                 string Username = Session["Username"]?.ToString();
 
 
-                int imode = 2; // Default to 1
+                int imode = 1; // Default to 1
                 List<AllLevelQueueBoard> projects = new List<AllLevelQueueBoard>();
 
                 using (MySqlConnection con = new MySqlConnection(constr))
                 {
                     con.Open();
 
-                    using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_searchkey", con))
+                    using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_viewreport", con))
                     {
                         cmd.CommandTimeout = 1600; // ✅ reduced
                         cmd.CommandType = CommandType.StoredProcedure;
 
                         cmd.Parameters.AddWithValue("@From_Date", Fdate);
+                        cmd.Parameters.AddWithValue("@To_Date", Ldate);
                         cmd.Parameters.AddWithValue("@S_ID", s1);
                         cmd.Parameters.AddWithValue("@type1", s2);
                         cmd.Parameters.AddWithValue("@imode", imode);
@@ -71,34 +77,7 @@ namespace MyVizCollections.Controllers
                                 AllLevelQueueBoard project = new AllLevelQueueBoard
                                 {
 
-                                    //using (MySqlConnection con = new MySqlConnection(constr))
-                                    //{
-                                    //    using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_searchkey", con))
-                                    //    {
-                                    //        cmd.CommandTimeout = 1600;
-                                    //        cmd.CommandType = CommandType.StoredProcedure;
-
-                                    //        cmd.Parameters.AddWithValue("@From_Date", Fdate);
-
-                                    //        cmd.Parameters.AddWithValue("@S_ID", s1);
-                                    //        cmd.Parameters.AddWithValue("@type1", s2);
-                                    //        cmd.Parameters.AddWithValue("@imode", imode); // Pass imode value
-
-                                    //        con.Open();
-
-                                    //        List<AllLevelQueueBoard> projects = new List<AllLevelQueueBoard>();
-
-                                    //        using (MySqlDataReader rdr = cmd.ExecuteReader())
-                                    //        {
-
-                                    //            // ✅ Build a list of returned column names to check existence
-                                    //            List<string> columnNames = new List<string>();
-                                    //            for (int i = 0; i < rdr.FieldCount; i++)
-                                    //                columnNames.Add(rdr.GetName(i));
-                                    //            while (rdr.Read())
-                                    //            {
-                                    //                AllLevelQueueBoard project = new AllLevelQueueBoard
-                                    //                {
+                                
                                     ProjectID = rdr["ProjectID"] != DBNull.Value ? Convert.ToInt32(rdr["ProjectID"]) : 0,
                                     ProjectName = rdr["ProjectName"].ToString(),
                                     RegdOn = Convert.ToDateTime(rdr["RegdOn"]),
@@ -177,6 +156,7 @@ namespace MyVizCollections.Controllers
                 }
 
                 ViewBag.Fdate = Fdate;
+                ViewBag.Ldate = Ldate;
                 ViewBag.s1 = s1;
                 ViewBag.s2 = s2;
                 ViewBag.RowCount = projects.Count;
@@ -191,60 +171,128 @@ namespace MyVizCollections.Controllers
         
     }
 
+        public ActionResult LaunchPreview(int Id)
+        {
+            string userid = Convert.ToString(Session["UserID"]);
+            //string NexGenDealer = Convert.ToString(Session["LoginUser"]);
+            string Shades = "";
+
+            string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
+            using (MySqlConnection con = new MySqlConnection(constr))
+            {
+                DataSet ds = new DataSet();
+                MySqlCommand com = new MySqlCommand("Sp_InsertWstatusLog", con);
+                com.CommandType = CommandType.StoredProcedure;
+                com.CommandTimeout = 1600;
+                com.Parameters.AddWithValue("@ProjectID", Id);
+                com.Parameters.AddWithValue("@TSOID", userid);
+                con.Open();
+                //com.ExecuteNonQuery();
+                MySqlDataAdapter ad = new MySqlDataAdapter(com);
+                ad.Fill(ds);
+
+                // String UrlToRedirect = String.Format(String.Concat("https://colourmyspace.co.in", "/MyVizKN/CROSOLanding.aspx?caseId={0}&previewCenter={1}&source=0"), "P521F12S3833", "PVC05");
+                String PreviewCentreCode = String.Empty;
+                String CaseIDfromKN = String.Empty;
+                String UrlToRedirect = "https://colourmyspace.co.in/MyViz/Login/Index";
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                {
+
+
+                    if (ds.Tables.Count > 1 && ds.Tables[1].Rows.Count > 0)
+                    {
+                        string DLR = ds.Tables[1].Rows[0]["DLR"].ToString();
+                        if (DLR == "Nexgen Dealer")
+                        {
+                            Shades = "KN Shades;KN Combos;KN Combinations;NG Shades";
+                        }
+                        else
+                        {
+                            Shades = "KN Shades;KN Combos;KN Combinations";
+                        }
+                    }
+                    else
+                    {
+                        Shades = "KN Shades;KN Combos;KN Combinations";
+                    }
+                    //}
+
+                    PreviewCentreCode = !String.IsNullOrEmpty(ds.Tables[0].Rows[0]["PreviewCentreCode"].ToString()) ? (Convert.ToString(ds.Tables[0].Rows[0]["PreviewCentreCode"])) : "NA";
+                    CaseIDfromKN = !String.IsNullOrEmpty(ds.Tables[0].Rows[0]["CaseIDfromKN"].ToString()) ? (Convert.ToString(ds.Tables[0].Rows[0]["CaseIDfromKN"])) : "NA";
+                    string returnURL = ("https://colourmyspace.co.in/MyViz/TSODashboard?UserID=" + userid);
+                    UrlToRedirect = String.Format(String.Concat("https://colourmyspace.co.in", "/MyVizKN/CROSOLanding.aspx?caseId={0}&previewCenter={1}&returnURL={2}&source=0&PL={3}"), CaseIDfromKN, PreviewCentreCode, returnURL, Shades);
+                    //UrlToRedirect = String.Format(String.Concat("https://colourmyspace.co.in", "/MyVizKN/CROSOLanding.aspx?caseId={0}&previewCenter={1}&source=0"), CaseIDfromKN, PreviewCentreCode, returnURL);
+                }
+                //else
+                //{
+                //    UrlToRedirect = String.Format(String.Concat("https://colourmyspace.co.in", "/MyVizKN/CROSOLanding.aspx?caseId={0}&previewCenter={1}&source=0"), "P521F12S3833", "PVC05");
+
+                //}
+                return Redirect(UrlToRedirect);
+            }
+        }
+
+
+        public JsonResult GetPSEList()
+        {
+            string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
+            List<string> pse = new List<string>();
+
+            using (MySqlConnection con = new MySqlConnection(constr))
+            {
+                string q = @"SELECT DISTINCT PSECode
+                     FROM lkuppsename
+                     WHERE PSELevel='6'
+                     AND PSEAvailability='Yes'
+                     ORDER BY PSECode";
+
+                using (MySqlCommand cmd = new MySqlCommand(q, con))
+                {
+                    con.Open();
+                    using (MySqlDataReader rdr = cmd.ExecuteReader())
+                    {
+                        while (rdr.Read())
+                        {
+                            pse.Add(rdr["PSECode"].ToString());
+                        }
+                    }
+                }
+            }
+
+            return Json(pse, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetCPEList()
+        {
+            string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
+            List<string> pse = new List<string>();
+
+            using (MySqlConnection con = new MySqlConnection(constr))
+            {
+                string q = @"SELECT DISTINCT PSECode
+                     FROM lkuppsename
+                     WHERE PSELevel='7'
+                     AND PSEAvailability='Yes'
+                     ORDER BY PSECode";
+
+                using (MySqlCommand cmd = new MySqlCommand(q, con))
+                {
+                    con.Open();
+                    using (MySqlDataReader rdr = cmd.ExecuteReader())
+                    {
+                        while (rdr.Read())
+                        {
+                            pse.Add(rdr["PSECode"].ToString());
+                        }
+                    }
+                }
+            }
+
+            return Json(pse, JsonRequestBehavior.AllowGet);
+        }
+    }
 }
-}
-
-        //                        //WStatusCount = rdr["WStatusCount"] != DBNull.Value ? Convert.ToInt32(rdr["WStatusCount"]) : 0
-
-        //                    };
 
 
-        //                    // ✅ Only add TAT columns if they exist in the result
-        //                    if (columnNames.Contains("ActualTAT"))
-        //                        project.ActualTAT = rdr["ActualTAT"] != DBNull.Value ? Convert.ToDecimal(rdr["ActualTAT"]) : 0;
 
-        //                    if (columnNames.Contains("EstimateTAT"))
-        //                        project.EstimateTAT = rdr["EstimateTAT"] != DBNull.Value ? Convert.ToDecimal(rdr["EstimateTAT"]) : 0;
-
-        //                    if (columnNames.Contains("ExceededTAT"))
-        //                        project.ExceededTAT = rdr["ExceededTAT"] != DBNull.Value ? Convert.ToDecimal(rdr["ExceededTAT"]) : 0;
-        //                    // After adding project to the list
-        //                    using (MySqlConnection countCon = new MySqlConnection(constr))
-        //                    {
-        //                        countCon.Open();
-        //                        using (MySqlCommand countCmd = new MySqlCommand("SELECT COUNT(*) FROM wstatuslog WHERE ProjectID = @pid AND Workstatus NOT IN (85, 86)", countCon))
-        //                        {
-        //                            countCmd.Parameters.AddWithValue("@pid", project.ProjectID);
-        //                            int count = Convert.ToInt32(countCmd.ExecuteScalar());
-        //                            project.WStsCount = count; // Assuming you have a property in your model for this
-        //                        }
-        //                    }
-
-
-        //                    projects.Add(project);
-        //                }
-        //            }
-
-        //            con.Close();
-
-        //           //int pageSize = 10; // Adjust the page size as needed
-        //           //int pageNumber = (page ?? 1);
-
-        //            ViewBag.Fdate = Fdate;
-
-        //            ViewBag.s1 = s1;
-        //            ViewBag.s2 = s2;
-        //            ViewBag.RowCount = projects.Count; // ✅ Total rows displayed
-
-        //            //return View(projects.ToPagedList(pageNumber, pageSize));
-        //            return View(projects);
-        //        }
-        //    }
-        //}
-        //catch (Exception ex)
-        //{
-        //    ExceptionLogging.SendErrorToText(ex);  // ✅ LOG HERE
-
-        //    return View("Error"); // or RedirectToAction("Error")
-        //}
    

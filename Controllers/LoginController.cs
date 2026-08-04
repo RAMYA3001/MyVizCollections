@@ -43,7 +43,7 @@ namespace MyVizCollections.Controllers
 
             return bannerMessage;
         }
-
+        
 
       
 
@@ -53,13 +53,24 @@ namespace MyVizCollections.Controllers
         {
             try
             {
-                if ((user.Username == "Insyadmin" && user.Password == "!n&dia@12$") || (user.Username == "ActOn05" && user.Password == "@Act#$05&"))
+                if (user.Username == "Insyadmin" && user.Password == "!n&dia@12$")
                 {
                     Session["Username"] = user.Username;
                     //Session["Password"] = user.Password;
                     Session["LoginTime"] = DateTime.Now;
                     return RedirectToAction("Index", "AllLevelQueueBoard");
                 }
+
+
+                else if (user.Username == "ActOn05" && user.Password == "@Act#$05&")
+                {
+
+                    Session["Username"] = user.Username;
+                    //Session["Password"] = user.Password;
+                    Session["LoginTime"] = DateTime.Now;
+                    return RedirectToAction("Index", "Acton05");
+                }
+
                 else if (user.Username == "viewreport" && user.Password == "viewreport")
 
 

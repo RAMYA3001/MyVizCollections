@@ -220,7 +220,19 @@
 
     </select>
 
-    <input type="text" name="q" class="search-text form-control" placeholder="Search..." title="Search relevant details in the grid" data-toggle="tooltip" id="searchtxt" style="width: 121px; margin-right: 2px; margin-left: -8px; ">
+    @*<input type="text" name="q" class="search-text form-control" placeholder="Search..." title="Search relevant details in the grid" data-toggle="tooltip" id="searchtxt" style="width: 121px; margin-right: 2px; margin-left: -8px; ">*@
+    <input type="text"
+           id="searchtxt"
+           name="Search_@Guid.NewGuid().ToString("N")"
+           class="search-text form-control"
+           title="Search relevant details in the grid"
+           placeholder="Search..."
+           autocomplete="new-password"
+           autocorrect="off"
+           autocapitalize="off"
+           spellcheck="false"
+           style="width: 106px; margin-right: 2px; margin-left: -8px; ">
+
 
     <button type="submit" class="btn btn-primary" id="btnSubmit" style="height: 30px;">Search</button>
     <button type="submit" class="btn btn-primary" id="btnClear" style="height: 30px; margin: 2px;">Refresh</button>
@@ -233,7 +245,7 @@
         || 20 : @Session["TWCount"].ToString()
         || 45 : @Session["FFCount"].ToString()
     </p>
-   
+
 
     <div>
         <a href="~/Content/docs/HolidaysandWorkingDays2026.pdf" target="_blank" class="btn btn-primary" style="height: 30px;margin-left:448px;">

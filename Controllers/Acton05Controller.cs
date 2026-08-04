@@ -25,47 +25,40 @@ using System.Data.SqlClient;
 
 namespace MyVizCollections.Controllers
 {
-    public class AllLevelQueueBoardController : Controller
+    public class Acton05Controller : Controller
     {
 
 
-        public ActionResult Index( string Fdate, string Ldate, string s1, string s2)
+        public ActionResult Index(string Fdate,  string s1, string s2)
         {
             string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
 
             try
             {
-                if (string.IsNullOrEmpty(Fdate))
+
+                if (Fdate == null)
                 {
-                    Fdate = DateTime.Today.ToString("yyyy-MM-dd");
+                    Fdate = DateTime.Now.ToString("yyyy-MM-dd");
                 }
 
-                if (string.IsNullOrEmpty(Ldate))
-                {
-                    Ldate = DateTime.Today.ToString("yyyy-MM-dd");
-                }
 
                 // Retrieve category from session
                 string Username = Session["Username"]?.ToString();
                 int imode = 1; // Default to 1
-                
-                //if (Username == "ActOn05") // Check if Username is "ActOn05"
-                //{
-                //    imode = 3; // Use imode 3 for "ActOn05"
-                //}
+
                 List<AllLevelQueueBoard> projects = new List<AllLevelQueueBoard>();
 
                 using (MySqlConnection con = new MySqlConnection(constr))
                 {
                     con.Open();
 
-                    using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_searchkey_Index", con))
+                    using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_acton05", con))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.CommandTimeout = 120; // ✅ reduced timeout
+                        cmd.CommandTimeout = 1600; // ✅ reduced timeout
 
                         cmd.Parameters.AddWithValue("@From_Date", Fdate);
-                        cmd.Parameters.AddWithValue("@To_Date", Ldate);
+                    
                         cmd.Parameters.AddWithValue("@S_ID", s1);
                         cmd.Parameters.AddWithValue("@type1", s2);
                         cmd.Parameters.AddWithValue("@imode", imode);
@@ -107,7 +100,7 @@ namespace MyVizCollections.Controllers
                                     PSEName = rdr["PSE Name"].ToString(),
                                     CPEName = rdr["CPE Name"].ToString(),
                                     depotname = rdr["depotname"].ToString(),
-                                     // ❌ TEMP FIX (no extra DB call)
+                                    // ❌ TEMP FIX (no extra DB call)
                                     WStsCount = 0
                                 };
 
@@ -146,10 +139,9 @@ namespace MyVizCollections.Controllers
                 }
 
                 ViewBag.Fdate = Fdate;
-                ViewBag.Ldate = Ldate;
+               
                 ViewBag.s1 = s1;
                 ViewBag.s2 = s2;
-                ViewBag.RowCount = projects.Count;
 
                 return View(projects);
             }
@@ -159,7 +151,7 @@ namespace MyVizCollections.Controllers
                 return View("Error");
             }
         }
-       
+
         public JsonResult GetPSEList()
         {
             try
@@ -269,7 +261,7 @@ namespace MyVizCollections.Controllers
             }
         }
 
-      
+
 
         public ActionResult Help()
         {
@@ -622,14 +614,14 @@ namespace MyVizCollections.Controllers
             // If the file does not exist, you might want to handle this case differently
             return HttpNotFound();
         }
-       
+
         private string GetImagePathByProjectID(int ProjectID, string linkType, string sourcefile)
         {
 
             string basePath = string.Empty;
             string filename = string.Empty;
-            
-           
+
+
             string image1 = string.Empty;
             string image2 = string.Empty;
             string image3 = string.Empty;
@@ -669,11 +661,11 @@ namespace MyVizCollections.Controllers
                     PRI = "PRI_" + $"{ProjectID}.jpg";
                     break;
 
-                 case "PRI_Test":
+                case "PRI_Test":
                     basePath = "D:\\ColourMySpace\\MyViz\\PRITest\\" + ProjectID + "\\";
                     PRITest = "PRITest_" + $"{ProjectID}.jpg";
                     break;
-                  
+
                 case "PDF1":
                     basePath = "D:\\ColourMySpace\\MyViz\\PDF\\" + ProjectID + "\\";
                     string checkfilename1 = basePath + "1_D" + $"{ProjectID}.pdf";
@@ -704,7 +696,7 @@ namespace MyVizCollections.Controllers
                     break;
 
 
-                   
+
                 case "PDF3":
                     basePath = "D:\\ColourMySpace\\MyViz\\PDF\\" + ProjectID + "\\";
                     string checkfilename3 = basePath + "3_D" + $"{ProjectID}.pdf";
@@ -716,7 +708,7 @@ namespace MyVizCollections.Controllers
                     {
                         D1 = "3_D" + $"{ProjectID}.jpg";
                     }
-                  
+
                     break;
 
 
@@ -726,14 +718,14 @@ namespace MyVizCollections.Controllers
                     return null; // Return null for invalid linkType
             }
 
-        
 
-        string imagePath = Path.Combine(basePath, filename,  image1, image2, image3, PRI, PRITest, D1, D2, D3);
+
+            string imagePath = Path.Combine(basePath, filename, image1, image2, image3, PRI, PRITest, D1, D2, D3);
             return imagePath;
         }
 
 
-    private string GetContentType(string fileExtension)
+        private string GetContentType(string fileExtension)
         {
             switch (fileExtension.ToLower())
             {
@@ -790,16 +782,16 @@ namespace MyVizCollections.Controllers
         }
 
 
-      [HttpGet]
-public JsonResult GetSCAQAData(string projectID)
-{
-    AllLevelQueueBoard data = null;
+        [HttpGet]
+        public JsonResult GetSCAQAData(string projectID)
+        {
+            AllLevelQueueBoard data = null;
 
-    // Fetch the connection string for MySQL
-    string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
-    
-    // Create MySQL connection
-    MySqlConnection con = new MySqlConnection(constr);
+            // Fetch the connection string for MySQL
+            string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
+
+            // Create MySQL connection
+            MySqlConnection con = new MySqlConnection(constr);
 
             // Prepare the query
             //string query = "SELECT PSEID, CPEID, PSERemarks, CPERemarks FROM scaqa WHERE ProjectID = @ProjectID";
@@ -808,60 +800,60 @@ public JsonResult GetSCAQAData(string projectID)
                          JOIN fromtso ON scaqa.ProjectID = fromtso.ProjectID 
                          WHERE scaqa.ProjectID = @ProjectID";
             try
-    {
-        // Use MySqlCommand for MySQL queries
-        using (MySqlCommand cmd = new MySqlCommand(query, con))
-        {
-            // Add the parameter for ProjectID
-            cmd.Parameters.AddWithValue("@ProjectID", projectID);
-            
-            // Open the connection
-            con.Open();
-
-            // Execute the query and read the results
-            using (MySqlDataReader reader = cmd.ExecuteReader())
             {
-                if (reader.Read())
+                // Use MySqlCommand for MySQL queries
+                using (MySqlCommand cmd = new MySqlCommand(query, con))
                 {
-                    // Populate the data model
-                    data = new AllLevelQueueBoard
-                    {
+                    // Add the parameter for ProjectID
+                    cmd.Parameters.AddWithValue("@ProjectID", projectID);
 
-                        WhoistheL6PSE = reader["WhoistheL6PSE"].ToString(),
-                        CPEID = reader["CPEID"].ToString(),
-                        PSERemarks = reader["PSERemarks"].ToString(),
-                        CPERemarks = reader["CPERemarks"].ToString(),
-                        ProjectName = reader["ProjectName"].ToString()
-                    };
+                    // Open the connection
+                    con.Open();
+
+                    // Execute the query and read the results
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            // Populate the data model
+                            data = new AllLevelQueueBoard
+                            {
+
+                                WhoistheL6PSE = reader["WhoistheL6PSE"].ToString(),
+                                CPEID = reader["CPEID"].ToString(),
+                                PSERemarks = reader["PSERemarks"].ToString(),
+                                CPERemarks = reader["CPERemarks"].ToString(),
+                                ProjectName = reader["ProjectName"].ToString()
+                            };
+                        }
+                    }
                 }
             }
-        }
-    }
-    catch (Exception ex)
-    {
-        // Log the exception (Optional, for debugging)
-        Console.WriteLine(ex.Message);
-        return Json(new { success = false, message = "An error occurred while retrieving data." }, JsonRequestBehavior.AllowGet);
-    }
-    finally
-    {
-        // Close the connection (if it's open)
-        if (con.State == System.Data.ConnectionState.Open)
-        {
-            con.Close();
-        }
-    }
+            catch (Exception ex)
+            {
+                // Log the exception (Optional, for debugging)
+                Console.WriteLine(ex.Message);
+                return Json(new { success = false, message = "An error occurred while retrieving data." }, JsonRequestBehavior.AllowGet);
+            }
+            finally
+            {
+                // Close the connection (if it's open)
+                if (con.State == System.Data.ConnectionState.Open)
+                {
+                    con.Close();
+                }
+            }
 
-    // Return JSON response
-    if (data != null)
-    {
-        return Json(new { success = true, data = data }, JsonRequestBehavior.AllowGet);
-    }
-    else
-    {
-        return Json(new { success = false, message = "No data found." }, JsonRequestBehavior.AllowGet);
-    }
-}
+            // Return JSON response
+            if (data != null)
+            {
+                return Json(new { success = true, data = data }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(new { success = false, message = "No data found." }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
 
 
@@ -975,9 +967,9 @@ public JsonResult GetSCAQAData(string projectID)
                             Remarks = Convert.ToString(row["Remarks"]),
                             Count = row["Count"] != DBNull.Value ? Convert.ToInt32(row["Count"]) : 0,
                             M_date = row["C_date"] != DBNull.Value ? Convert.ToDateTime(row["C_date"]) : (DateTime?)null
-                        
+
                         };
-                   
+
 
                         model.M_dateFormatted = model.M_date?.ToString("dd/MM/yyyy hh:mm:ss tt");
 
@@ -988,7 +980,7 @@ public JsonResult GetSCAQAData(string projectID)
                 return View("Myvizinsylog", MyVizinsyLogs);
             }
             catch (Exception ex)
-             {
+            {
                 // Optionally log the error
                 return Content("Error: " + ex.Message);
             }

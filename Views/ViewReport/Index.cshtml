@@ -1,5 +1,5 @@
 ﻿﻿@*@model PagedList.IPagedList<MyVizCollections.Models.AllLevelQueueBoard>
-@using PagedList.Mvc*@
+    @using PagedList.Mvc*@
 
 
 @{
@@ -8,11 +8,11 @@
     string currentFilter = ViewBag.CurrentFilter;
     string currentSort = ViewBag.CurrentSort;
     string Cdate = ViewBag.Fdate;
-   
+    string Edate = ViewBag.Ldate;
     string s1 = ViewBag.s1;
     string s2 = ViewBag.s2;
     var currentYear = DateTime.Now.Year;
-   
+
     var currentDate = DateTime.Now.ToString("yyyy-MM-dd");
 }
 
@@ -219,23 +219,41 @@
 <div style="padding: 10px; display: flex; align-items: center; flex-wrap: wrap; width: 100%; gap: 1px; margin-bottom: 20px;margin-left:-111px">
 
 
+    @*<label for="example-datepicker" style="margin-right: 3px;">StDate:</label>
+        <input type="date" id="datepicker" value="" style="margin-right: 3px;">
+        <button type="submit" class="btn btn-primary" id="btnSubmit1" style="height: 30px; margin-right: 15px;">Submit</button>*@
     <label for="example-datepicker" style="margin-right: 3px;">StDate:</label>
-   
-    <input type="date" id="datepicker" name="Fdate" style="margin-right: 3px;">
+    <input type="date" id="datepicker" value="" style="margin-right: 3px;">
     <button type="submit" class="btn btn-primary" id="btnSubmit1" style="height: 30px; margin-right: 15px;">Submit</button>
 
-
-
-
-
-    <select class="form-control" id="dropdownSelect3" style="width: 104px; margin-right: 10px " title="Search Key">
+    <select class="form-control" id="dropdownSelect3" style="width: 100px; margin-right: 10px " title="Search Key">
         <option value="tso.ProjectID" @(ViewBag.s1 == "tso.ProjectID" ? "selected" : "")>ProjectID</option>
-        <option value="tso.Wstatus" @(ViewBag.s1 == "tso.Wstatus" ? "selected" : "")>Status</option>
+
+        <option value="tso.WhoistheL6PSE" @(ViewBag.s1 == "tso.WhoistheL6PSE" ? "selected" : "")>PSEName</option>
+        <option value="tso.WhoistheL7QACPI" @(ViewBag.s1 == "tso.WhoistheL7QACPI" ? "selected" : "")>CPEName</option>
 
 
     </select>
 
-    <input type="text" name="q" class="search-text form-control" placeholder="Search..." title="Search relevant details in the grid" data-toggle="tooltip" id="searchtxt" style="width: 86px; margin-right: 2px; margin-left: -8px; ">
+
+
+
+    <input type="search"
+           id="searchtxt"
+           name="Search_@Guid.NewGuid().ToString("N")"
+           class="form-control"
+           placeholder="Search..."
+           autocomplete="new-password"
+           autocorrect="off"
+           autocapitalize="off"
+           spellcheck="false"
+           style="width:106px; margin-right:2px; margin-left:-8px;">
+
+
+
+    <datalist id="depotList"></datalist>
+    <datalist id="PSEList"></datalist>
+    <datalist id="CPEList"></datalist>
 
     <button type="submit" class="btn btn-primary" id="btnSubmit" style="height: 30px;">Search</button>
     <button type="submit" class="btn btn-primary" id="btnClear" style="height: 30px; margin: 2px;">Clear</button>
@@ -250,10 +268,10 @@
 @*<a href="@Url.Action("ResolutionCheck", "AllLevelQueueBoard")" target="_blank">
         <input type="button" class="btn btn-primary"  value="Resolution" style="margin-left:6px" />
     </a>*@
-    
+
 <div class="panel panel-primary list-panel" id="list-panel" style="width:115%;margin-top:12px;margin-left:9px;">
     <div class="panel-heading list-panel-heading">
-        <h1 class="panel-title list-panel-title">DashBoard (60,90)  <span style="float:right;margin-right:310px;">Total Records: @ViewBag.RowCount</span></h1>
+        <h1 class="panel-title list-panel-title">DashBoard (60)  <span style="float:right;margin-right:310px;">Total Records: @ViewBag.RowCount</span></h1>
     </div>
     <div id="progress" class="modal">
         <div class="center" style="margin-left: 535px; margin-top: 300px;">
@@ -463,9 +481,9 @@
                         </td>
 
                         @*<td>
-            <a href="@Url.Action("Appliedcolour", "AllLevelQueueBoard")" target="_blank" title="Click to open Imagefile3" data-toggle="tooltip">@asset.Appliedcolour</a>
+                                <a href="@Url.Action("Appliedcolour", "AllLevelQueueBoard")" target="_blank" title="Click to open Imagefile3" data-toggle="tooltip">@asset.Appliedcolour</a>
 
-        </td>*@
+                            </td>*@
 
                         <td>
                             @asset.SIOption
@@ -488,7 +506,7 @@
 
         <div class="text-center">
             @*Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
-            @Html.PagedListPager(Model, page => Url.Action("Index", new { page, Fdate = ViewBag.Fdate, s1 = ViewBag.s1, s2 = ViewBag.s2,Ldate=ViewBag.Ldate }))*@
+                @Html.PagedListPager(Model, page => Url.Action("Index", new { page, Fdate = ViewBag.Fdate, s1 = ViewBag.s1, s2 = ViewBag.s2,Ldate=ViewBag.Ldate }))*@
         </div>
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <script src="/path/to/datatables.min.js"></script>
@@ -499,68 +517,117 @@
         <link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" />
         <script>
 
-         $(document).ready(function () {
+       
 
-    // ✅ Set today's date as max
-    var today = new Date().toISOString().split("T")[0];
-    $("#datepicker").attr("max", today);
+    $("#btnSubmit1").click(function (e) {
 
-    // ✅ Load ViewBag date if needed
-    $("#datepicker").val('@ViewBag.Fdate');
-});
+    e.preventDefault();
 
-// ✅ Submit button
-$("#btnSubmit1").click(function () {
+    var fromDate = $("#fromDate").val();
+    var toDate = $("#toDate").val();
 
-    var curdate1 = $("#datepicker").val();
+    if (fromDate === "" || toDate === "") {
+        alert("Please select both From Date and To Date.");
+        return;
+    }
 
-    var url = "@Url.Action("Index", "ViewReport")" + "?Fdate=" + curdate1;
+    var from = new Date(fromDate);
+    var to = new Date(toDate);
+    var today = new Date();
 
-    window.location.href = url;
-});
+    // Future date validation
+    if (from > today || to > today) {
+        alert("Future dates are not allowed.");
+        return;
+    }
+
+    // From > To
+    if (from > to) {
+        alert("From Date cannot be greater than To Date.");
+        return;
+    }
+
+    // Maximum 2 months
+    var maxTo = new Date(from);
+    maxTo.setMonth(maxTo.getMonth() + 2);
+
+    if (to > maxTo) {
+        alert("You can search only up to 2 months.");
+        return;
+    }
+
+    window.location.href = '@Url.Action("Index","ViewReport")'
+        + '?Fdate=' + fromDate
+        + '&Ldate=' + toDate;
+  });
 
 
+    $("#fromDate").change(function () {
 
-                function launchPreview(projectId) {
-             // Construct the URL for the LaunchPreview action
-             var url = "@Url.Action("LaunchPreview", "AllLevelQueueBoard")" + "?Id=" + projectId;
+        var from = new Date($(this).val());
 
-             // Open the URL in a new tab
-             window.open(url, '_blank');
+        var maxTo = new Date(from);
+        maxTo.setMonth(maxTo.getMonth() + 2);
+
+        var today = new Date();
+        if (maxTo > today) {
+            maxTo = today;
+        }
+
+        $("#toDate").attr("min", $(this).val());
+        $("#toDate").attr("max", maxTo.toISOString().split('T')[0]);
+    });
+
+            function toggleSubmitButton() {
+
+                var val = $("#dropdownSelect3").val();
+
+                if (
+                    val === "tso.Wstatus" ||
+                    val === "bd.Depot" ||
+                    val === "tso.WhoistheL6PSE" ||
+                    val === "tso.WhoistheL7QACPI"
+                ) {
+                    $("#btnSubmit1").hide();
+                }
+                else {
+                    $("#btnSubmit1").show();
+                }
             }
 
-                        $(function () {
+
+$(document).ready(function () {
+
+    /* ✅ FIRST: Restore dropdown from ViewBag */
+    var selectedVal = '@ViewBag.s1';
+
+    if (selectedVal && selectedVal !== '') {
+        $("#dropdownSelect3").val(selectedVal);
+    } else {
+        // default only when no ViewBag value
+        $("#dropdownSelect3").val("tso.ProjectID");
+    }
 
 
 
 
 
-                            function toggleSubmitButton() {
-                                const val = $("#dropdownSelect3").val();
-                                if (val === "tso.Wstatus") {
-                                    $("#btnSubmit1").hide();  // Hide when Status selected
-                                } else {
-                                    $("#btnSubmit1").show();  // Show otherwise
-                                }
-                            }
+    /* 🔹 Run on change */
+    $("#dropdownSelect3").change(toggleSubmitButton);
 
-                            // 🔹 Run every time dropdown changes
-                            $("#dropdownSelect3").change(toggleSubmitButton);
+    /* 🔹 Run once after setting dropdown */
+    toggleSubmitButton();
 
-                            // 🔹 Also run once on page load (after Search reload)
-                            toggleSubmitButton();
+    /* ✅ Restore search text */
+    $("#searchtxt").val('@ViewBag.s2');
+    $("#searchtxt1").val('@ViewBag.s2');
+    $("#searchtxt2").val('@ViewBag.s2');
+
+});
 
 
 
 
-
-
-//$("#dropdownSelect3").val('@ViewBag.s1');
-             $("#searchtxt").val('@ViewBag.s2');
-             $("#searchtxt1").val('@ViewBag.s2');
-             $("#searchtxt2").val('@ViewBag.s2');
-
-         });
 
 
 
@@ -577,47 +644,264 @@ $("#btnSubmit1").click(function () {
             });
 
 
+
+
+
 $(document).ready(function () {
 
-    // ✅ Block future dates
-    var today = new Date().toISOString().split("T")[0];
-    $("#fromDate").attr("max", today);
+    // -----------------------------
+    // TODAY DATE
+    // -----------------------------
+    var today = new Date();
+    var todayStr = today.toISOString().split("T")[0];
 
-    // ✅ Load ViewBag values back into screen
+    $("#fromDate").attr("max", todayStr);
+    $("#toDate").attr("max", todayStr);
+
     $("#fromDate").val('@ViewBag.Fdate');
-    $("#dropdownSelect3").val('@ViewBag.s1');
-    $("#searchtxt").val('@ViewBag.s2');
-    // ✅ If no value set from ViewBag, default to tso.ProjectID
-    if (!$("#dropdownSelect3").val()) {
+    $("#toDate").val('@ViewBag.Ldate');
+
+    // Restore dropdown
+    var selectedVal = '@ViewBag.s1';
+
+    if (selectedVal != "")
+        $("#dropdownSelect3").val(selectedVal);
+    else
         $("#dropdownSelect3").val("tso.ProjectID");
-    }
+
+    // Restore search text
+    $("#searchtxt").val('@ViewBag.s2');
+    $("#searchtxt1").val('@ViewBag.s2');
+    $("#searchtxt2").val('@ViewBag.s2');
+
+    // Initial button status
+    toggleSubmitButton();
+
+    // -----------------------------
+    // FROM DATE CHANGE
+    // -----------------------------
+    $("#fromDate").change(function () {
+
+        var from = new Date($(this).val());
+
+        var maxTo = new Date(from);
+        maxTo.setMonth(maxTo.getMonth() + 2);
+
+        if (maxTo > today)
+            maxTo = today;
+
+        $("#toDate").attr("min", $(this).val());
+        $("#toDate").attr("max", maxTo.toISOString().split("T")[0]);
+
+    });
+
+    // -----------------------------
+    // DROPDOWN CHANGE
+    // -----------------------------
+    $("#dropdownSelect3").change(function () {
+
+        toggleSubmitButton();
+
+        $("#searchtxt").val("");
+        $("#searchtxt").removeAttr("list");
+
+        var val = $(this).val();
+
+    
+
+        // PSE
+      if (val == "tso.WhoistheL6PSE") {
+
+            $("#searchtxt").attr("list", "PSEList");
+
+            $.get("@Url.Action("GetPSEList", "ViewReport")", function (data) {
+
+                var options = "";
+
+                $.each(data, function (i, v) {
+                    options += "<option value='" + v + "'></option>";
+                });
+
+                $("#PSEList").html(options);
+
+            });
+
+        }
+
+        // CPE
+        else if (val == "tso.WhoistheL7QACPI") {
+
+            $("#searchtxt").attr("list", "CPEList");
+
+            $.get("@Url.Action("GetCPEList", "ViewReport")", function (data) {
+
+                var options = "";
+
+                $.each(data, function (i, v) {
+                    options += "<option value='" + v + "'></option>";
+                });
+
+                $("#CPEList").html(options);
+
+            });
+
+        }
+
+    });
+
+    // -----------------------------
+    // COPY PROJECT ID
+    // -----------------------------
+    $("#searchtxt").keyup(function () {
+
+        if ($("#dropdownSelect3").val() == "tso.ProjectID") {
+
+            $("#searchtxt1").val($(this).val());
+            $("#searchtxt2").val($(this).val());
+
+        }
+
+    });
+
 });
 
 
-// ✅ Submit button (Main search)
-$("#btnSubmit").click(function () {
+// ======================================
+// SHOW / HIDE SUBMIT BUTTON
+// ======================================
+function toggleSubmitButton() {
 
-    $("#progress").show();
-    var curdate1 = $("#datepicker").val();
-    var s1 = $("#dropdownSelect3").val();   // dropdown value
-    var s2 = $("#searchtxt").val();         // user text
+    var val = $("#dropdownSelect3").val();
+
+    if (
+      
+        val == "tso.WhoistheL6PSE" ||
+        val == "tso.WhoistheL7QACPI"
+    ) {
+
+        $("#btnSubmit1").hide();
+
+    }
+    else {
+
+        $("#btnSubmit1").show();
+
+    }
+
+}
 
 
-    var url = "@Url.Action("Index", "ViewReport")" + "?s1=" + s1 + "&s2=" + s2;
 
-    // ✅ When selecting Wstatus → also send date
-    if (s1 === "tso.Wstatus") {
-        url += "&Fdate=" + curdate1;
+$("#btnSubmit").click(function (e) {
+
+    e.preventDefault();
+
+    var s1 = $("#dropdownSelect3").val();
+    var s2 = $("#searchtxt").val();
+
+    var fromDate = $("#fromDate").val();
+    var toDate = $("#toDate").val();
+
+    // =========================
+    // DATE VALIDATION
+    // =========================
+
+    // Only validate for these search types
+    if (
+      
+        s1 === "tso.WhoistheL6PSE" ||
+        s1 === "tso.WhoistheL7QACPI"
+    ) {
+
+        if (fromDate === "" || toDate === "") {
+            alert("Please select both From Date and To Date.");
+            return false;
+        }
+
+        var from = new Date(fromDate);
+        var to = new Date(toDate);
+        var today = new Date();
+
+        // Future dates not allowed
+        if (from > today || to > today) {
+            alert("Future dates are not allowed.");
+            return false;
+        }
+
+        // From Date > To Date
+        if (from > to) {
+            alert("From Date cannot be greater than To Date.");
+            return false;
+        }
+
+        // Maximum 2 months
+        var maxTo = new Date(from);
+        maxTo.setMonth(maxTo.getMonth() + 2);
+
+        if (to > maxTo) {
+            alert("You can search only up to 2 months.");
+            return false;
+        }
+    }
+
+  
+
+    // =========================
+    // PSE VALIDATION
+    // =========================
+    if (s1 === "tso.WhoistheL6PSE") {
+        var found = false;
+
+        $("#PSEList option").each(function () {
+            if ($(this).val() === s2) {
+                found = true;
+                return false;
+            }
+        });
+
+        if (!found) {
+            alert("Please select PSE from list only");
+            return false;
+        }
+    }
+
+    // =========================
+    // CPE VALIDATION
+    // =========================
+    if (s1 === "tso.WhoistheL7QACPI") {
+        var found = false;
+
+        $("#CPEList option").each(function () {
+            if ($(this).val() === s2) {
+                found = true;
+                return false;
+            }
+        });
+
+        if (!found) {
+            alert("Please select CPE from list only");
+            return false;
+        }
+    }
+
+    // =========================
+    // BUILD URL
+    // =========================
+    var url = "@Url.Action("Index", "ViewReport")"
+        + "?s1=" + s1
+        + "&s2=" + encodeURIComponent(s2);
+
+    // Add dates only for these search types
+    if (
+      
+        s1 === "tso.WhoistheL6PSE" ||
+        s1 === "tso.WhoistheL7QACPI"
+    ) {
+        url += "&Fdate=" + fromDate + "&Ldate=" + toDate;
     }
 
     window.location.href = url;
 });
-
-
-
-
-
-
 
 
 

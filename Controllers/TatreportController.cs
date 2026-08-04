@@ -48,41 +48,14 @@ namespace MyVizCollections.Controllers
 
                     string Username = Session["Username"]?.ToString();
 
-                    int imode = 4;
-                //if (Username == "view")
-                //    imode = 2;
-                //else if (Username == "ActOn05")
-                //    imode = 3;
-                //else if (Username == "Admin")
-                //    imode = 4;
-
-                //using (MySqlConnection con = new MySqlConnection(constr))
-                //{
-                //    using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_searchkey", con))
-                //    {
-                //        cmd.CommandTimeout = 1600;
-                //        cmd.CommandType = CommandType.StoredProcedure;
-
-                //        cmd.Parameters.AddWithValue("@From_Date", Fdate);
-
-                //    cmd.Parameters.AddWithValue("@S_ID", s1);
-                //        cmd.Parameters.AddWithValue("@type1", s2);
-                //        cmd.Parameters.AddWithValue("@imode", imode);
-
-                //        con.Open();
-
-                //        using (MySqlDataReader rdr = cmd.ExecuteReader())
-                //        {
-                //            while (rdr.Read())
-                //            {
-                //                AllLevelQueueBoard project = new AllLevelQueueBoard
-                //                {
+                    int imode = 1;
+               
                 using (MySqlConnection con = new MySqlConnection(constr))
                 {
                     con.Open();
 
                     // 🔹 MAIN DATA QUERY
-                    using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_searchkey", con))
+                    using (MySqlCommand cmd = new MySqlCommand("SP_MyVizcollections_tatreport", con))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.CommandTimeout = 120; // ✅ reduced
@@ -187,53 +160,7 @@ namespace MyVizCollections.Controllers
                 return View("Error");
             }
         }
-        //                            };
-
-        //                            // Get WStsCount
-        //                            using (MySqlConnection countCon = new MySqlConnection(constr))
-        //                            {
-        //                                countCon.Open();
-        //                                using (MySqlCommand countCmd = new MySqlCommand("SELECT COUNT(*) FROM wstatuslog WHERE ProjectID = @pid AND Workstatus NOT IN (85, 86)", countCon))
-        //                                {
-        //                                    countCmd.Parameters.AddWithValue("@pid", project.ProjectID);
-        //                                    project.WStsCount = Convert.ToInt32(countCmd.ExecuteScalar());
-        //                                }
-        //                            }
-
-        //                            projects.Add(project);
-        //                        }
-        //                    }
-        //                }
-        //            }
-
-
-
-        //        // Sort by FinalStatus ASC and then by RemainingTATHours ASC if Admin
-        //        if (Username == "tatreport")
-        //        {
-        //            projects = projects
-        //                .OrderBy(p => p.FinalStatus)                // first priority
-        //                .ThenBy(p => p.RemainingTATHours)           // second priority
-        //                .ToList();
-        //        }
-
-        //        //int pageSize = 10;
-        //        //int pageNumber = (page ?? 1);
-
-        //        ViewBag.Fdate = Fdate;
-
-        //        ViewBag.s1 = s1;
-        //            ViewBag.s2 = s2;
-
-        //            return View(projects);
-        //        }
-        //    catch (Exception ex)
-        //    {
-        //        ExceptionLogging.SendErrorToText(ex);  // ✅ LOG HERE
-
-        //        return View("Error"); // or RedirectToAction("Error")
-        //    }
-        //}
+      
 
 
         public static string GetImgLCount(string SType)

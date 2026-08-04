@@ -1,4 +1,4 @@
-﻿@*﻿@model PagedList.IPagedList<MyVizCollections.Models.AllLevelQueueBoard>*@
+﻿﻿@*﻿@model PagedList.IPagedList<MyVizCollections.Models.AllLevelQueueBoard>*@
 @*@using PagedList.Mvc*@
 
 
@@ -8,7 +8,7 @@
     string currentFilter = ViewBag.CurrentFilter;
     string currentSort = ViewBag.CurrentSort;
     string Cdate = ViewBag.Fdate;
-    string Ldate = ViewBag.Ldate;
+    string Edate = ViewBag.Ldate;
     string s1 = ViewBag.s1;
     string s2 = ViewBag.s2;
     var currentYear = DateTime.Now.Year;
@@ -223,37 +223,17 @@
 
 <div style="padding: 10px; display: flex; align-items: center; flex-wrap: wrap; width: 100%; gap: 1px; margin-bottom: 20px;margin-left:-111px">
 
+    <label for="example-datepicker" style="margin-right: 3px;">StDate:</label>
+    <input type="date" id="datepicker" value="" style="margin-right: 3px;">
+    <button type="submit" class="btn btn-primary" id="btnSubmit1" style="height: 30px; margin-right: 15px;">Submit</button>
 
-    @*<label for="example-datepicker" style="margin-right: 3px;">StDate:</label>
-        <input type="date" id="datepicker" value="" style="margin-right: 3px;">
-        <button type="submit" class="btn btn-primary" id="btnSubmit1" style="height: 30px; margin-right: 15px;">Submit</button>*@
-    <label for="fromDate" style="margin-right:1px;">From Date:</label>
-    <input type="date"
-           id="fromDate"
-           name="Fdate"
-           value="@ViewBag.Fdate"
-           style="margin-right: 2px;max-width: 99px;">
 
-    <label for="toDate" style="margin-right:1px;">To Date:</label>
-    <input type="date"
-           id="toDate"
-           name="Ldate"
-           value="@ViewBag.Ldate"
-           style="margin-right: 2px;max-width: 99px;">
-
-    <button type="button"
-            class="btn btn-primary"
-            id="btnSubmit1"
-            style="height:30px; margin-right:1px;">
-        Submit
-    </button>
-
-    <select class="form-control" id="dropdownSelect3" style="width: 94px; margin-right: 10px " title="Search Key">
+    <select class="form-control" id="dropdownSelect3" style="width: 112px; margin-right: 10px " title="Search Key">
         <option value="tso.ProjectID" @(ViewBag.s1 == "tso.ProjectID" ? "selected" : "")>ProjectID</option>
-        <option value="tso.Wstatus" @(ViewBag.s1 == "tso.Wstatus" ? "selected" : "")>Status</option>
+        @*<option value="tso.Wstatus" @(ViewBag.s1 == "tso.Wstatus" ? "selected" : "")>Status</option>
         <option value="ld.depotname" @(ViewBag.s1 == "ld.depotname" ? "selected" : "")>Depot</option>
         <option value="tso.WhoistheL6PSE" @(ViewBag.s1 == "tso.WhoistheL6PSE" ? "selected" : "")>PSEName</option>
-        <option value="tso.WhoistheL7QACPI" @(ViewBag.s1 == "tso.WhoistheL7QACPI" ? "selected" : "")>CPEName</option>
+        <option value="tso.WhoistheL7QACPI" @(ViewBag.s1 == "tso.WhoistheL7QACPI" ? "selected" : "")>CPEName</option>*@
 
 
     </select>
@@ -268,34 +248,26 @@
 
         <datalist id="depotList"></datalist>*@
 
-
-    <input type="search"
+    <input type="text"
            id="searchtxt"
-           name="Search_@Guid.NewGuid().ToString("N")"
            class="form-control"
            placeholder="Search..."
-           autocomplete="new-password"
-           autocorrect="off"
-           autocapitalize="off"
-           spellcheck="false"
-           style="width:96px; margin-right:2px; margin-left:-8px;">
-
-
+           autocomplete="off"
+           style="width: 116px; margin-right: 2px; margin-left: -8px;">
 
     <datalist id="depotList"></datalist>
     <datalist id="PSEList"></datalist>
     <datalist id="CPEList"></datalist>
 
+
     <button type="submit" class="btn btn-primary" id="btnSubmit" style="height: 30px;">Search</button>
     <button type="submit" class="btn btn-primary" id="btnClear" style="height: 30px; margin: 2px;">Clear</button>
 </div>
 </div>
-
-
 @* Form shown only to non-admin *@
-@if (Session["username"] != null && Session["username"].ToString().ToLower() != "viewreport")
+@*@if (Session["username"] != null && Session["username"].ToString().ToLower() != "viewreport")
 {
-    <div style="border: 2px solid #337ab7; padding: 10px 14px; width: fit-content; max-width: 100%; margin-left: auto; margin-top: -87px; margin-bottom: 5px; ">
+    <div style="border: 2px solid #337ab7; padding: 10px 14px; width: fit-content; max-width: 100%; margin-left: auto; margin-top: -91px; margin-bottom: 5px; ">
 
         <div style="text-align:center; width:100%; margin-bottom:5px;">
             <label style="color:red; font-weight:bold;">Compare</label>
@@ -303,9 +275,9 @@
 
         <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
             <label>Project1:</label>
-            <input type="text" class="form-control" id="searchtxt1" placeholder="ProjectID1" style="width:90px;">
+            <input type="text" class="form-control" id="searchtxt1" placeholder="ProjectID1" style="width:120px;">
 
-            <select class="form-control" id="dropdownSelect1" style="width:81px;">
+            <select class="form-control" id="dropdownSelect1" style="width:90px;">
                 <option value="SI">SI</option>
                 <option value="Image1">Source1</option>
                 <option value="Image2">Source2</option>
@@ -314,9 +286,9 @@
             </select>
 
             <label>Project2:</label>
-            <input type="text" class="form-control" id="searchtxt2" placeholder="ProjectID2" style="width:90px;">
+            <input type="text" class="form-control" id="searchtxt2" placeholder="ProjectID2" style="width:120px;">
 
-            <select class="form-control" id="dropdownSelect2" style="width:81px;">
+            <select class="form-control" id="dropdownSelect2" style="width:90px;">
                 <option value="PRI">PRI</option>
                 <option value="SI">SI</option>
                 <option value="Image1">Source1</option>
@@ -328,7 +300,7 @@
         </div>
 
     </div>
-}
+}*@
 
 
 
@@ -410,9 +382,7 @@
     </div>
 <div class="panel panel-primary list-panel" id="list-panel" style="width:115%;margin-top:12px;margin-left:9px;">
     <div class="panel-heading list-panel-heading">
-  
-
-        <h1 class="panel-title list-panel-title">DashBoard<span style="float:right;margin-right:310px;">Total Records: @ViewBag.RowCount</span></h1>
+        <h1 class="panel-title list-panel-title">DashBoard</h1>
     </div>
     <div id="progress" class="modal">
         <div class="center" style="margin-left: 535px; margin-top: 300px;">
@@ -698,81 +668,36 @@
         <link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" />
         <script>
 
-  $("#btnSubmit1").click(function (e) {
 
-    e.preventDefault();
+         $(document).ready(function () {
 
-    var fromDate = $("#fromDate").val();
-    var toDate = $("#toDate").val();
+    // ✅ Set today's date as max
+    var today = new Date().toISOString().split("T")[0];
+    $("#datepicker").attr("max", today);
 
-    if (fromDate === "" || toDate === "") {
-        alert("Please select both From Date and To Date.");
+    // ✅ Load ViewBag date if needed
+    $("#datepicker").val('@ViewBag.Fdate');
+});
+
+
+
+
+
+
+$("#btnSubmit1").on("click", function (e) {
+    e.preventDefault(); // 🔴 stop form submit
+
+    var curdate1 = $("#datepicker").val();
+    if (!curdate1) {
+        alert("Please select date");
         return;
     }
 
-    var from = new Date(fromDate);
-    var to = new Date(toDate);
-    var today = new Date();
-
-    // Future date validation
-    if (from > today || to > today) {
-        alert("Future dates are not allowed.");
-        return;
-    }
-
-    // From > To
-    if (from > to) {
-        alert("From Date cannot be greater than To Date.");
-        return;
-    }
-
-    // Maximum 2 months
-    var maxTo = new Date(from);
-    maxTo.setMonth(maxTo.getMonth() + 2);
-
-    if (to > maxTo) {
-        alert("You can search only up to 2 months.");
-        return;
-    }
-
-    window.location.href = '@Url.Action("Index","AllLevelQueueBoard")'
-        + '?Fdate=' + fromDate
-        + '&Ldate=' + toDate;
-  });
+    var url = '@Url.Action("Index", "Acton05")' + '?Fdate=' + curdate1;
+    window.location.href = url;
+});
 
 
-    $("#fromDate").change(function () {
-
-        var from = new Date($(this).val());
-
-        var maxTo = new Date(from);
-        maxTo.setMonth(maxTo.getMonth() + 2);
-
-        var today = new Date();
-        if (maxTo > today) {
-            maxTo = today;
-        }
-
-        $("#toDate").attr("min", $(this).val());
-        $("#toDate").attr("max", maxTo.toISOString().split('T')[0]);
-    });
-
-            function toggleSubmitButton() {
-
-                var val = $("#dropdownSelect3").val();
-
-                if (
-                    val === "tso.Wstatus" ||
-                    val === "bd.Depot" ||
-                    val === "tso.WhoistheL6PSE" ||
-                    val === "tso.WhoistheL7QACPI"
-                ) {
-                    $("#btnSubmit1").hide();
-                }
-                else {
-                    $("#btnSubmit1").show();
-                }
-            }
 
 
 $(document).ready(function () {
@@ -787,9 +712,16 @@ $(document).ready(function () {
         $("#dropdownSelect3").val("tso.ProjectID");
     }
 
+    /* ✅ Toggle submit button logic */
+    function toggleSubmitButton() {
+        const val = $("#dropdownSelect3").val();
 
-
-
+        if (val.toLowerCase() === "tso.wstatus" || val.toLowerCase() === "ld.depotname") {
+            $("#btnSubmit1").hide();
+        } else {
+            $("#btnSubmit1").show();
+        }
+    }
 
     /* 🔹 Run on change */
     $("#dropdownSelect3").change(toggleSubmitButton);
@@ -823,300 +755,166 @@ $(document).ready(function () {
             });
 
 
+$("#dropdownSelect3").change(function () {
 
-
-
-$(document).ready(function () {
-
-    // -----------------------------
-    // TODAY DATE
-    // -----------------------------
-    var today = new Date();
-    var todayStr = today.toISOString().split("T")[0];
-
-    $("#fromDate").attr("max", todayStr);
-    $("#toDate").attr("max", todayStr);
-
-    $("#fromDate").val('@ViewBag.Fdate');
-    $("#toDate").val('@ViewBag.Ldate');
-
-    // Restore dropdown
-    var selectedVal = '@ViewBag.s1';
-
-    if (selectedVal != "")
-        $("#dropdownSelect3").val(selectedVal);
-    else
-        $("#dropdownSelect3").val("tso.ProjectID");
-
-    // Restore search text
-    $("#searchtxt").val('@ViewBag.s2');
-    $("#searchtxt1").val('@ViewBag.s2');
-    $("#searchtxt2").val('@ViewBag.s2');
-
-    // Initial button status
-    toggleSubmitButton();
-
-    // -----------------------------
-    // FROM DATE CHANGE
-    // -----------------------------
-    $("#fromDate").change(function () {
-
-        var from = new Date($(this).val());
-
-        var maxTo = new Date(from);
-        maxTo.setMonth(maxTo.getMonth() + 2);
-
-        if (maxTo > today)
-            maxTo = today;
-
-        $("#toDate").attr("min", $(this).val());
-        $("#toDate").attr("max", maxTo.toISOString().split("T")[0]);
-
-    });
-
-    // -----------------------------
-    // DROPDOWN CHANGE
-    // -----------------------------
-    $("#dropdownSelect3").change(function () {
-
-        toggleSubmitButton();
+    @*if ($(this).val() === "ld.depotname") {
 
         $("#searchtxt").val("");
-        $("#searchtxt").removeAttr("list");
 
-        var val = $(this).val();
-
-        // Depot
-        if (val == "ld.depotname") {
-
-            $("#searchtxt").attr("list", "depotList");
-
-            $.get("@Url.Action("GetDepotList","AllLevelQueueBoard")", function (data) {
+        $.ajax({
+            url: "@Url.Action("GetDepotList", "AllLevelQueueBoard")",
+            type: "GET",
+            success: function (data) {
 
                 var options = "";
-
                 $.each(data, function (i, v) {
-                    options += "<option value='" + v + "'></option>";
+                    options += "<option value='" + v + "' />";
                 });
 
                 $("#depotList").html(options);
+            }
+        });
+    }
+});*@
 
-            });
-        }
+    /* DEPOT */
+            if ($(this).val() === "ld.depotname") {
 
-        // PSE
-        else if (val == "tso.WhoistheL6PSE") {
+        $("#searchtxt").attr("list", "depotList");
 
-            $("#searchtxt").attr("list", "PSEList");
-
-            $.get("@Url.Action("GetPSEList","AllLevelQueueBoard")", function (data) {
+        $.ajax({
+            url: "@Url.Action("GetDepotList", "Acton05")",
+            type: "GET",
+            success: function (data) {
 
                 var options = "";
-
                 $.each(data, function (i, v) {
-                    options += "<option value='" + v + "'></option>";
+                    options += "<option value='" + v + "'>";
+                });
+
+                $("#depotList").html(options);
+            }
+        });
+    }
+
+    /* PSE */
+    if ($(this).val() === "tso.WhoistheL6PSE") {
+
+        $("#searchtxt").attr("list", "PSEList");
+
+        $.ajax({
+            url: "@Url.Action("GetPSEList", "Acton05")",
+            type: "GET",
+            success: function (data) {
+
+                var options = "";
+                $.each(data, function (i, v) {
+                    options += "<option value='" + v + "'>";
                 });
 
                 $("#PSEList").html(options);
+            }
+        });
+    }
 
-            });
+    /* CPE */
+    if ($(this).val() === "tso.WhoistheL7QACPI") {
 
-        }
+        $("#searchtxt").attr("list", "CPEList");
 
-        // CPE
-        else if (val == "tso.WhoistheL7QACPI") {
-
-            $("#searchtxt").attr("list", "CPEList");
-
-            $.get("@Url.Action("GetCPEList","AllLevelQueueBoard")", function (data) {
+        $.ajax({
+            url: "@Url.Action("GetCPEList", "Acton05")",
+            type: "GET",
+            success: function (data) {
 
                 var options = "";
-
                 $.each(data, function (i, v) {
-                    options += "<option value='" + v + "'></option>";
+                    options += "<option value='" + v + "'>";
                 });
 
                 $("#CPEList").html(options);
-
-            });
-
-        }
-
-    });
-
-    // -----------------------------
-    // COPY PROJECT ID
-    // -----------------------------
-    $("#searchtxt").keyup(function () {
-
-        if ($("#dropdownSelect3").val() == "tso.ProjectID") {
-
-            $("#searchtxt1").val($(this).val());
-            $("#searchtxt2").val($(this).val());
-
-        }
-
-    });
+            }
+        });
+    }
 
 });
 
 
-// ======================================
-// SHOW / HIDE SUBMIT BUTTON
-// ======================================
-function toggleSubmitButton() {
 
-    var val = $("#dropdownSelect3").val();
+            $("#btnSubmit").click(function () {
 
-    if (
-        val == "tso.Wstatus" ||
-        val == "bd.Depot" ||
-        val == "tso.WhoistheL6PSE" ||
-        val == "tso.WhoistheL7QACPI"
-    ) {
+                var s1 = $("#dropdownSelect3").val();
+                var s2 = $("#searchtxt").val();
+                var curdate1 = $("#datepicker").val();
 
-        $("#btnSubmit1").hide();
+                /* ✅ Depot validation */
+                if (s1 === "ld.depotname") {
+                    var found = false;
+                    $("#depotList option").each(function () {
+                        if ($(this).val() === s2) {
+                            found = true;
+                            return false;
+                        }
+                    });
 
-    }
-    else {
-
-        $("#btnSubmit1").show();
-
-    }
-
-}
+                    if (!found) {
+                        alert("Please select Depot from list only");
+                        return false;
+                    }
+                }
 
 
+                if (s1 === "tso.WhoistheL6PSE") {
+                    var found = false;
+                    $("#PSEList option").each(function () {
+                        if ($(this).val() === s2) {
+                            found = true;
+                            return false;
+                        }
+                    });
 
-$("#btnSubmit").click(function (e) {
+                    if (!found) {
+                        alert("Please select PSE from list only");
+                        return false;
+                    }
+                }
+                if (s1 === "tso.WhoistheL7QACPI") {
+                    var found = false;
+                    $("#CPEList option").each(function () {
+                        if ($(this).val() === s2) {
+                            found = true;
+                            return false;
+                        }
+                    });
 
-    e.preventDefault();
+                    if (!found) {
+                        alert("Please select CPE from list only");
+                        return false;
+                    }
+                }
 
-    var s1 = $("#dropdownSelect3").val();
-    var s2 = $("#searchtxt").val();
 
-    var fromDate = $("#fromDate").val();
-    var toDate = $("#toDate").val();
 
-    // =========================
-    // DATE VALIDATION
-    // =========================
 
-    // Only validate for these search types
-    if (
-        s1 === "bd.Depot" ||
-        s1 === "tso.Wstatus" ||
-        s1 === "tso.WhoistheL6PSE" ||
-        s1 === "tso.WhoistheL7QACPI"
-    ) {
 
-        if (fromDate === "" || toDate === "") {
-            alert("Please select both From Date and To Date.");
-            return false;
-        }
-
-        var from = new Date(fromDate);
-        var to = new Date(toDate);
-        var today = new Date();
-
-        // Future dates not allowed
-        if (from > today || to > today) {
-            alert("Future dates are not allowed.");
-            return false;
-        }
-
-        // From Date > To Date
-        if (from > to) {
-            alert("From Date cannot be greater than To Date.");
-            return false;
-        }
-
-        // Maximum 2 months
-        var maxTo = new Date(from);
-        maxTo.setMonth(maxTo.getMonth() + 2);
-
-        if (to > maxTo) {
-            alert("You can search only up to 2 months.");
-            return false;
-        }
-    }
-
-    // =========================
-    // DEPOT VALIDATION
-    // =========================
-    if (s1 === "bd.Depot") {
-        var found = false;
-
-        $("#depotList option").each(function () {
-            if ($(this).val() === s2) {
-                found = true;
-                return false;
-            }
-        });
-
-        if (!found) {
-            alert("Please select Depot from list only");
-            return false;
-        }
-    }
-
-    // =========================
-    // PSE VALIDATION
-    // =========================
-    if (s1 === "tso.WhoistheL6PSE") {
-        var found = false;
-
-        $("#PSEList option").each(function () {
-            if ($(this).val() === s2) {
-                found = true;
-                return false;
-            }
-        });
-
-        if (!found) {
-            alert("Please select PSE from list only");
-            return false;
-        }
-    }
-
-    // =========================
-    // CPE VALIDATION
-    // =========================
-    if (s1 === "tso.WhoistheL7QACPI") {
-        var found = false;
-
-        $("#CPEList option").each(function () {
-            if ($(this).val() === s2) {
-                found = true;
-                return false;
-            }
-        });
-
-        if (!found) {
-            alert("Please select CPE from list only");
-            return false;
-        }
-    }
-
-    // =========================
-    // BUILD URL
-    // =========================
-    var url = "@Url.Action("Index", "AllLevelQueueBoard")"
+    /* ✅ Base URL */
+    var url = "@Url.Action("Index", "Acton05")"
         + "?s1=" + s1
-        + "&s2=" + encodeURIComponent(s2);
+        + "&s2=" + s2;
 
-    // Add dates only for these search types
-    if (
-        s1 === "bd.Depot" ||
-        s1 === "tso.Wstatus" ||
-        s1 === "tso.WhoistheL6PSE" ||
-        s1 === "tso.WhoistheL7QACPI"
-    ) {
-        url += "&Fdate=" + fromDate + "&Ldate=" + toDate;
+    /* ✅ ELSE condition for Status */
+    if (s1 === "ld.depotname") {
+        url += "&Fdate=" + curdate1;
     }
+    else if (s1 === "tso.Wstatus") {
+        url += "&Fdate=" + curdate1;
+    }
+
+    // else → no date added
 
     window.location.href = url;
 });
+
 
 
 
@@ -1127,16 +925,12 @@ $("#btnSubmit").click(function (e) {
                 $("#searchtxt").val("");
                 $("#searchtxt1").val("");
                 $("#searchtxt2").val("");
-               var url = "@Url.Action("Index", "AllLevelQueueBoard")";
+               var url = "@Url.Action("Index", "Acton05")";
                 window.location.href = url;
                 $('#dropdownSelect3').val('tso.ProjectID'); // Reset to ProjectID
                 // Show Submit again
                 $("#btnSubmit1").show();
                });
-
-
-
-
 
 
 
@@ -1243,7 +1037,7 @@ $('#assets-data-table').on('click', '#showPopup', function () {
 
 
 $.ajax({
-    url: '@Url.Action("GetSCAQAData", "AllLevelQueueBoard")',
+    url: '@Url.Action("GetSCAQAData", "Acton05")',
     type: 'GET',
     data: { projectID: projectID },
     success: function (response) {
@@ -1349,7 +1143,7 @@ $.ajax({
 // Close popup and hide overlay
 $('#closePopup').on('click', function () {
     console.log('Close button clicked');
-    var url = "@Url.Action("Index", "AllLevelQueueBoard")";
+    var url = "@Url.Action("Index", "Acton05")";
     window.location.href = url; // Redirect to the index page
     $('#qaPopup').hide();
     $('#overlay').hide();
@@ -1377,7 +1171,7 @@ $('#qaComments input[type="checkbox"]').on('change', function () {
 
            $(document).ready(function () {
     $('#closePopup1').click(function () {
-        var url = "@Url.Action("Index", "AllLevelQueueBoard")";
+        var url = "@Url.Action("Index", "Acton05")";
         window.location.href = url;
     });
 });
@@ -1401,7 +1195,7 @@ $('#qaComments input[type="checkbox"]').on('change', function () {
 
 
     $.ajax({
-        url: '@Url.Action("Qualitycheck", "AllLevelQueueBoard")',
+        url: '@Url.Action("Qualitycheck", "Acton05")',
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({ projectID: projectID, result: qaResult, comments: additionalComments }),
