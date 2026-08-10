@@ -222,20 +222,45 @@
     @*<label for="example-datepicker" style="margin-right: 3px;">StDate:</label>
         <input type="date" id="datepicker" value="" style="margin-right: 3px;">
         <button type="submit" class="btn btn-primary" id="btnSubmit1" style="height: 30px; margin-right: 15px;">Submit</button>*@
-    <label for="example-datepicker" style="margin-right: 3px;">StDate:</label>
-    <input type="date" id="datepicker" value="" style="margin-right: 3px;">
-    <button type="submit" class="btn btn-primary" id="btnSubmit1" style="height: 30px; margin-right: 15px;">Submit</button>
+    <label for="fromDate" style="margin-right:1px;">From Date:</label>
+    <input type="date"
+           id="fromDate"
+           name="Fdate"
+           value="@ViewBag.Fdate"
+           style="margin-right: 2px;max-width: 99px;">
 
-    <select class="form-control" id="dropdownSelect3" style="width: 100px; margin-right: 10px " title="Search Key">
+    <label for="toDate" style="margin-right:1px;">To Date:</label>
+    <input type="date"
+           id="toDate"
+           name="Ldate"
+           value="@ViewBag.Ldate"
+           style="margin-right: 2px;max-width: 99px;">
+
+    <button type="button"
+            class="btn btn-primary"
+            id="btnSubmit1"
+            style="height:30px; margin-right:1px;">
+        Submit
+    </button>
+
+    <select class="form-control" id="dropdownSelect3" style="width: 112px; margin-right: 10px " title="Search Key">
         <option value="tso.ProjectID" @(ViewBag.s1 == "tso.ProjectID" ? "selected" : "")>ProjectID</option>
-
+       
         <option value="tso.WhoistheL6PSE" @(ViewBag.s1 == "tso.WhoistheL6PSE" ? "selected" : "")>PSEName</option>
         <option value="tso.WhoistheL7QACPI" @(ViewBag.s1 == "tso.WhoistheL7QACPI" ? "selected" : "")>CPEName</option>
 
 
     </select>
 
+    @*<input type="text" name="q" class="search-text form-control" placeholder="Search..." title="Search relevant details in the grid" data-toggle="tooltip" id="searchtxt" style="width: 86px; margin-right: 2px; margin-left: -8px; ">*@
+    @*<input type="text"
+               id="searchtxt"
+               list="depotList"
+               class="form-control"
+               placeholder="Search..."
+               style="width: 86px; margin-right: 2px; margin-left: -8px; ">
 
+        <datalist id="depotList"></datalist>*@
 
 
     <input type="search"
@@ -247,7 +272,7 @@
            autocorrect="off"
            autocapitalize="off"
            spellcheck="false"
-           style="width:106px; margin-right:2px; margin-left:-8px;">
+           style="width:108px; margin-right:2px; margin-left:-8px;">
 
 
 
@@ -259,15 +284,7 @@
     <button type="submit" class="btn btn-primary" id="btnClear" style="height: 30px; margin: 2px;">Clear</button>
 </div>
 </div>
-@* Form shown only to non-admin *@
 
-
-
-
-
-@*<a href="@Url.Action("ResolutionCheck", "AllLevelQueueBoard")" target="_blank">
-        <input type="button" class="btn btn-primary"  value="Resolution" style="margin-left:6px" />
-    </a>*@
 
 <div class="panel panel-primary list-panel" id="list-panel" style="width:115%;margin-top:12px;margin-left:9px;">
     <div class="panel-heading list-panel-heading">
@@ -517,7 +534,7 @@
         <link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" />
         <script>
 
-       
+
 
     $("#btnSubmit1").click(function (e) {
 
@@ -707,7 +724,7 @@ $(document).ready(function () {
 
         var val = $(this).val();
 
-    
+
 
         // PSE
       if (val == "tso.WhoistheL6PSE") {
@@ -774,7 +791,7 @@ function toggleSubmitButton() {
     var val = $("#dropdownSelect3").val();
 
     if (
-      
+
         val == "tso.WhoistheL6PSE" ||
         val == "tso.WhoistheL7QACPI"
     ) {
@@ -808,7 +825,7 @@ $("#btnSubmit").click(function (e) {
 
     // Only validate for these search types
     if (
-      
+
         s1 === "tso.WhoistheL6PSE" ||
         s1 === "tso.WhoistheL7QACPI"
     ) {
@@ -844,7 +861,7 @@ $("#btnSubmit").click(function (e) {
         }
     }
 
-  
+
 
     // =========================
     // PSE VALIDATION
@@ -893,7 +910,7 @@ $("#btnSubmit").click(function (e) {
 
     // Add dates only for these search types
     if (
-      
+
         s1 === "tso.WhoistheL6PSE" ||
         s1 === "tso.WhoistheL7QACPI"
     ) {
