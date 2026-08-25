@@ -7,127 +7,261 @@ using System.Configuration;
 using System.Data;
 using System.Web.Mvc;
 
+
+
 namespace MyVizCollections.Controllers
 {
     public class LoginController : Controller
     {
+        // =========================
+        // LOGIN PAGE
+        // =========================
+        [HttpGet]
         public ActionResult Index()
         {
-           
-            var bannerMessage = GetBannerMessage();
-            Session["BannerMessage"] = bannerMessage;
-            Session["IsCustomBanner"] = bannerMessage != "Professional Preview Services";
-            return View();
+            try
+            {
+                var bannerMessage = GetBannerMessage();
+
+                Session["BannerMessage"] = bannerMessage;
+                Session["IsCustomBanner"] =
+                    bannerMessage != "Professional Preview Services";
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                ExceptionLogging.SendErrorToText(ex);
+                return View("Error");
+            }
         }
 
+
+        // =========================
+        // GET BANNER MESSAGE
+        // =========================
         public static string GetBannerMessage()
         {
             string bannerMessage = "";
-            string connectionString = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
 
-            using (var conn = new MySqlConnection(connectionString))
+            string connectionString =
+                ConfigurationManager
+                .ConnectionStrings["Nerolacconstr"]
+                .ConnectionString;
+
+            using (MySqlConnection conn =
+                   new MySqlConnection(connectionString))
             {
                 conn.Open();
-                using (var cmd = new MySqlCommand("SP_BannerMessage", conn))
+
+                using (MySqlCommand cmd =
+                       new MySqlCommand("SP_BannerMessage", conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandType =
+                        CommandType.StoredProcedure;
+
                     cmd.CommandTimeout = 1600;
 
-                    var result = cmd.ExecuteScalar();
-                    if (result != null && !string.IsNullOrEmpty(result.ToString()))
+                    object result = cmd.ExecuteScalar();
+
+                    if (result != null &&
+                        !string.IsNullOrEmpty(result.ToString()))
+                    {
                         bannerMessage = result.ToString();
+                    }
                     else
-                        bannerMessage = "Professional Preview Services"; // fallback
+                    {
+                        bannerMessage =
+                            "Professional Preview Services";
+                    }
                 }
             }
 
             return bannerMessage;
         }
-        
-
-      
 
 
+        // =========================
+        // LOGIN
+        // =========================
         [HttpPost]
         public ActionResult Index(User user)
         {
             try
             {
-                if (user.Username == "Insyadmin" && user.Password == "!n&dia@12$")
+                string username =
+                    user.Username == null
+                        ? ""
+                        : user.Username.Trim();
+
+                string password =
+                    user.Password == null
+                        ? ""
+                        : user.Password.Trim();
+
+
+                // ============================================
+                // 1. INSYADMIN LOGIN
+                // ============================================
+                if (username == "Insyadmin" &&
+                    password == "!n&dia@12$")
                 {
-                    Session["Username"] = user.Username;
-                    //Session["Password"] = user.Password;
+                    Session["Username"] = username;
+                    Session["UserID"] = username;
                     Session["LoginTime"] = DateTime.Now;
-                    return RedirectToAction("Index", "AllLevelQueueBoard");
+
+                    return RedirectToAction(
+                        "Index",
+                        "AllLevelQueueBoard");
                 }
 
 
-                else if (user.Username == "ActOn05" && user.Password == "@Act#$05&")
+                // ============================================
+                // 2. ACTON05 LOGIN
+                // ============================================
+                else if (username == "ActOn05" &&
+                         password == "@Act#$05&")
                 {
-
-                    Session["Username"] = user.Username;
-                    //Session["Password"] = user.Password;
+                    Session["Username"] = username;
+                    Session["UserID"] = username;
                     Session["LoginTime"] = DateTime.Now;
-                    return RedirectToAction("Index", "Acton05");
+
+                    return RedirectToAction(
+                        "Index",
+                        "Acton05");
                 }
 
-                else if (user.Username == "viewreport" && user.Password == "viewreport")
 
-
+                // ============================================
+                // 3. VIEW REPORT LOGIN
+                // ============================================
+                else if (username == "viewreport" &&
+                         password == "viewreport")
                 {
-                    Session["Username"] = user.Username;
+                    Session["Username"] = username;
+                    Session["UserID"] = username;
                     Session["LoginTime"] = DateTime.Now;
-                    //Session["Password"] = user.Password;
-                    return RedirectToAction("Index", "ViewReport");
-                }
-                else if (user.Username == "tatreport" && user.Password == "tatreport")
 
-                {
-                    Session["Username"] = user.Username;
-                    Session["LoginTime"] = DateTime.Now;
-                    //Session["Password"] = user.Password;
-                    return RedirectToAction("Index", "Tatreport");
+                    return RedirectToAction(
+                        "Index",
+                        "ViewReport");
                 }
+
+
+                // ============================================
+                // CWCOP LOGIN
+                // PSEID + PSEPIN ONLY
+                // ============================================
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt");
+                    string constr =
+                        ConfigurationManager
+                        .ConnectionStrings["Nerolacconstr"]
+                        .ConnectionString;
+
+                    using (MySqlConnection con =
+                           new MySqlConnection(constr))
+                    using (MySqlCommand com =
+                           new MySqlCommand(
+                               "SP_CWCOP_Validateuser",
+                               con))
+                    {
+                        com.CommandType =
+                            CommandType.StoredProcedure;
+
+                        com.CommandTimeout = 1600;
+
+
+                        // PSEID
+                        com.Parameters.Add(
+                            "@iUsername",
+                            MySqlDbType.VarChar,
+                            8
+                        ).Value = username;
+
+
+                        // PSEPIN
+                        com.Parameters.Add(
+                            "@iPassword",
+                            MySqlDbType.VarChar,
+                            12
+                        ).Value = password;
+
+
+                        DataSet ds = new DataSet();
+
+                        using (MySqlDataAdapter ad =
+                               new MySqlDataAdapter(com))
+                        {
+                            ad.Fill(ds);
+                        }
+
+
+                        if (ds != null &&
+                            ds.Tables.Count > 0 &&
+                            ds.Tables[0].Rows.Count > 0)
+                        {
+                            DataRow row =
+                                ds.Tables[0].Rows[0];
+
+                            if (row["sCode"].ToString() == "1")
+                            {
+                                // Only PSEID is required for session
+                                Session["Username"] =
+                                    row["PSEID"].ToString();
+
+                                Session["UserID"] =
+                                    row["PSEID"].ToString();
+
+                                Session["LoginTime"] =
+                                    DateTime.Now;
+
+                                return RedirectToAction(
+                                    "Index",
+                                    "Tatreport");
+                            }
+                        }
+                    }
+
+
+                    ModelState.AddModelError(
+                        "",
+                        "Invalid username or password.");
+
                     return View();
                 }
-
             }
             catch (Exception ex)
             {
-                ExceptionLogging.SendErrorToText(ex);  // ✅ LOG HERE
+                ExceptionLogging.SendErrorToText(ex);
 
-                return View("Error"); // or RedirectToAction("Error")
+                return View("Error");
             }
         }
-        
 
+        // =========================
+        // LOGOUT
+        // =========================
         public ActionResult Logout()
         {
             try
             {
+                // Clear login session
+                Session.Clear();
 
-                string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
+                // Abandon current session
+                Session.Abandon();
 
-                return RedirectToAction("Index", "Login");
+                return RedirectToAction(
+                    "Index",
+                    "Login");
             }
             catch (Exception ex)
             {
-                ExceptionLogging.SendErrorToText(ex);  // ✅ LOG HERE
+                ExceptionLogging.SendErrorToText(ex);
 
-                return View("Error"); // or RedirectToAction("Error")
+                return View("Error");
             }
         }
-
-
-
     }
-
-
 }
-
-        
-   
-

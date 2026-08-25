@@ -245,13 +245,38 @@
                             <input class="form-control text-box single-line" id="Username" name="Username" type="text" value="">
                             <span class="field-validation-valid text-danger" data-valmsg-for="Username" data-valmsg-replace="true"></span>
                         </div>
-                        <div class="form-group">
+                        @*<div class="form-group">
                             <label class="control-label" for="Password">Password</label>
                             <input class="form-control text-box single-line" id="Password" name="Password" type="text" value="">
                             <span class="field-validation-valid text-danger" data-valmsg-for="Password" data-valmsg-replace="true"></span>
-                        </div>
+                        </div>*@
 
+                          <div class="form-group">
+      <label class="control-label" for="Password">Password</label>
 
+      <div style="position: relative;">
+          <input class="form-control"
+                 id="Password"
+                 name="Password"
+                 type="password"
+                 style="padding-right: 40px;" />
+
+          <span id="togglePassword"
+                style="position: absolute;
+       right: 12px;
+       top: 50%;
+       color:black;
+       transform: translateY(-50%);
+       cursor: pointer;
+       font-size: 18px;">
+              👁
+          </span>
+      </div>
+
+      <span class="field-validation-valid text-danger"
+            data-valmsg-for="Password"
+            data-valmsg-replace="true"></span>
+  </div>
 
 
                         <div class="form-group" style="text-align: center;">
@@ -290,6 +315,17 @@
 </html>
 
 <script>
+    document.getElementById("togglePassword").addEventListener("click", function () {
+        var password = document.getElementById("Password");
+
+        if (password.type === "password") {
+            password.type = "text";
+            this.textContent = "👁";
+        } else {
+            password.type = "password";
+            this.textContent = "👁";
+        }
+    });
     function setScrollSpeed() {
         const text = document.getElementById('scrollText');
         const container = text.parentElement;
