@@ -137,6 +137,7 @@ namespace MyVizCollections.Controllers
                             }
                         }
                     }
+                    con.Close();
                 }
 
                 // 🔹 SORTING
@@ -160,7 +161,83 @@ namespace MyVizCollections.Controllers
                 return View("Error");
             }
         }
-      
+
+
+        public ActionResult myModal(int projectid)
+
+        {
+            string constr = ConfigurationManager.ConnectionStrings["Nerolacconstr"].ConnectionString;
+            MySqlConnection con = new MySqlConnection(constr);
+            try
+            {
+                DataSet ds = new DataSet();
+
+                MySqlCommand com = new MySqlCommand("SP_ProjectQueueBoard_Details", con);
+                com.CommandTimeout = 1600;
+                com.CommandType = CommandType.StoredProcedure;
+                com.Parameters.AddWithValue("@Mode", 1);
+                com.Parameters.AddWithValue("@ProjectID", projectid);
+                con.Close();
+
+                con.Open();
+                com.ExecuteNonQuery();
+                MySqlDataAdapter ad = new MySqlDataAdapter(com);
+                ad.Fill(ds);
+                var colorchoices = ds.Tables[0].AsEnumerable();
+
+                ProjectDetails model = new ProjectDetails()
+                {
+                    ProjectID = Convert.ToInt32(ds.Tables[0].Rows[0]["ProjectID"]),
+                    ProjectName = Convert.ToString(ds.Tables[0].Rows[0]["ProjectName"]),
+                    UserID = Convert.ToString(ds.Tables[0].Rows[0]["UserID"]),
+
+                    InsyComments = Convert.ToString(ds.Tables[0].Rows[0]["InSyComments"]),
+                    Resolution = Convert.ToString(ds.Tables[0].Rows[0]["Resolution"]),
+                    Size = Convert.ToString(ds.Tables[0].Rows[0]["FileSize"]),
+                    caseID = Convert.ToString(ds.Tables[0].Rows[0]["CaseID"]),
+                    Options = Convert.ToString(ds.Tables[0].Rows[0]["IorEorMS"]),
+                    remarks = Convert.ToString(ds.Tables[0].Rows[0]["Remarks"]),
+                    statuscode = Convert.ToString(ds.Tables[0].Rows[0]["wstatus"]),
+                    Priority = Convert.ToString(ds.Tables[0].Rows[0]["Priority"]) == "Y" ? "Yes" : "No",
+                    PSE = Convert.ToString(ds.Tables[0].Rows[0]["whoistheL6PSE"]),
+                    QACPI = Convert.ToString(ds.Tables[0].Rows[0]["WhoistheL7QACPI"]),
+                    CPBody1 = Convert.ToString(ds.Tables[0].Rows[0]["CPBody1"]),
+                    CPBody2 = Convert.ToString(ds.Tables[0].Rows[0]["CPBody2"]),
+                    CPBody3 = Convert.ToString(ds.Tables[0].Rows[0]["CPBody3"]),
+                    CPBorder1 = Convert.ToString(ds.Tables[0].Rows[0]["CPBorder1"]),
+                    CPBorder2 = Convert.ToString(ds.Tables[0].Rows[0]["CPBorder2"]),
+                    CPBorder3 = Convert.ToString(ds.Tables[0].Rows[0]["CPBorder3"]),
+                    CPHighlight1 = Convert.ToString(ds.Tables[0].Rows[0]["CPHighlight1"]),
+                    CPHighlight2 = Convert.ToString(ds.Tables[0].Rows[0]["CPHighlight2"]),
+                    CPHighlight3 = Convert.ToString(ds.Tables[0].Rows[0]["CPHighlight3"]),
+                    CPSplRequest = Convert.ToString(ds.Tables[0].Rows[0]["CPSplRequest"])
+
+                };
+
+                if (ds.Tables[1].Rows.Count > 0)
+                {
+                    if (Convert.ToString(ds.Tables[1].Rows[0]["psecode"]) != string.Empty || Convert.ToString(ds.Tables[1].Rows[0]["psecode"]) != null)
+                        ViewBag.QA = Convert.ToString(ds.Tables[1].Rows[0]["psecode"]);
+                }
+
+                else
+                {
+                    ViewBag.QA = "NA";
+                }
+                con.Close();
+                return View(model);
+
+            }
+            catch (Exception ex)
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                //ProjectDetails.ExceptionLogging.SendErrorToText(ex);
+                return null;
+            }
+        }
 
 
         public static string GetImgLCount(string SType)

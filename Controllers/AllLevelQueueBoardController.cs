@@ -107,7 +107,7 @@ namespace MyVizCollections.Controllers
                                     PSEName = rdr["PSE Name"].ToString(),
                                     CPEName = rdr["CPE Name"].ToString(),
                                     depotname = rdr["depotname"].ToString(),
-                                     // ❌ TEMP FIX (no extra DB call)
+                                    // ❌ TEMP FIX (no extra DB call)
                                     WStsCount = 0
                                 };
 
@@ -143,9 +143,10 @@ namespace MyVizCollections.Controllers
                             }
                         }
                     }
+                    // Explicitly close connection
+                    con.Close();
                 }
-
-                ViewBag.Fdate = Fdate;
+                    ViewBag.Fdate = Fdate;
                 ViewBag.Ldate = Ldate;
                 ViewBag.s1 = s1;
                 ViewBag.s2 = s2;
@@ -185,7 +186,9 @@ namespace MyVizCollections.Controllers
                                 pse.Add(rdr["PSECode"].ToString());
                             }
                         }
+
                     }
+                    con.Close();
                 }
 
                 return Json(pse, JsonRequestBehavior.AllowGet);
@@ -223,7 +226,9 @@ namespace MyVizCollections.Controllers
                             }
                         }
                     }
+                    con.Close();
                 }
+            
 
                 return Json(pse, JsonRequestBehavior.AllowGet);
             }
@@ -259,7 +264,9 @@ namespace MyVizCollections.Controllers
                             }
                         }
                     }
-                }
+                    con.Close();
+                
+            }
                 return Json(depots, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -424,7 +431,7 @@ namespace MyVizCollections.Controllers
 
                 projects.Add(project);
 
-
+                cn.Close();
 
                 return Json(projects, JsonRequestBehavior.AllowGet);
             }
@@ -954,7 +961,7 @@ public JsonResult GetSCAQAData(string projectID)
                 MySqlCommand com = new MySqlCommand("SP_myvizinsylog_Collections", con);
                 com.CommandTimeout = 1600;
                 com.CommandType = CommandType.StoredProcedure;
-
+                con.Open();
                 // Only pass the one parameter that matches the stored procedure
                 com.Parameters.AddWithValue("Project_ID", projectid);
 

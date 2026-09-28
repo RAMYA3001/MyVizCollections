@@ -309,7 +309,7 @@
                     DateTime? deliveryOn = asset.RegdOn?.AddHours(24);<!-- Moved here -->
                 <tr>
                     <td style="text-align-last:left">
-                        <a data-value="@asset.ProjectID" href="~/AllLevelQueueBoard/myModal?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Project details, to update status" data-toggle="tooltip" target="_blank">@asset.ProjectID</a>
+                        <a data-value="@asset.ProjectID" href="~/Tatreport/myModal?ProjectID=@asset.ProjectID" data-id="@asset.ProjectID" title="Click to view Project details, to update status" data-toggle="tooltip" target="_blank">@asset.ProjectID</a>
                     </td>
 
 
@@ -384,10 +384,16 @@
                         }
                     </td>
                     @*<td>@string.Format("{0:dd-MMM-yyyy hh:mm tt}", asset.FinalStatusDt)</td>*@
-                    <td>@asset.PSEName</td>
-                    <td>@asset.CPEName</td>
                     <td>
-                        @if ((asset.FinalStatus == "20" ||asset.FinalStatus == "45" || asset.FinalStatus == "46" || asset.FinalStatus == "47") &&
+                        @(asset.FinalStatus == "45" ? "" : asset.PSEName)
+                    </td>
+                    <td>@asset.CPEName</td>
+
+
+
+
+                    <td>
+                        @if ((asset.FinalStatus == "20" || asset.FinalStatus == "45" || asset.FinalStatus == "46" || asset.FinalStatus == "47") &&
                              !string.IsNullOrEmpty(asset.ImageFileName1))
                         {
                             <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "img1", sourcefile = asset.ImageFileName1 })" target="_blank" title="Click to open Imagefile1" data-toggle="tooltip">@asset.ProjectID</a>
@@ -395,7 +401,7 @@
                     </td>
 
                     <td>
-                        @if ((asset.FinalStatus == "20" ||asset.FinalStatus == "45" || asset.FinalStatus == "46" || asset.FinalStatus == "47") &&
+                        @if ((asset.FinalStatus == "20" || asset.FinalStatus == "45" || asset.FinalStatus == "46" || asset.FinalStatus == "47") &&
                              !string.IsNullOrEmpty(asset.ImageFileName2))
                         {
                             <a href="@Url.Action("DisplayImage", "AllLevelQueueBoard", new { ProjectID = asset.ProjectID, linkType = "img2", sourcefile = asset.ImageFileName2 })" target="_blank" title="Click to open Imagefile2" data-toggle="tooltip">@asset.ProjectID</a>

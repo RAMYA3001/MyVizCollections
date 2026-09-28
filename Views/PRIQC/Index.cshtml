@@ -1,0 +1,1233 @@
+﻿@model IEnumerable<MyVizCollections.Models.AllLevelQueueBoard>
+
+@{
+    ViewBag.Title = "PRI QC Check";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string currentFilter = ViewBag.CurrentFilter;
+    string currentSort = ViewBag.CurrentSort;
+
+
+    string s1 = ViewBag.s1;
+    string s2 = ViewBag.s2;
+
+    var currentYear = DateTime.Now.Year;
+    var currentDate = DateTime.Now.ToString("yyyy-MM-dd");
+}
+
+<style>
+
+    .container {
+        padding-right: 5px;
+        margin-right: auto;
+        margin-left: 25px;
+        width: auto;
+    }
+
+    img {
+        border-radius: 8px;
+    }
+
+    #myprogressBar {
+        width: 1%;
+        height: 20px;
+        background-color: #4CAF50;
+        text-align: center;
+        line-height: 32px;
+        color: black;
+    }
+
+    #datepicker {
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    /*
+        Keep existing blue Bootstrap font/link style
+    */
+
+    #assets-data-table {
+        color: black;
+    }
+
+        #assets-data-table th {
+            color: black;
+            font-weight: bold;
+        }
+
+        #assets-data-table td {
+            color: black;
+        }
+
+        #assets-data-table a {
+            color: #337ab7;
+            text-decoration: none;
+        }
+
+            #assets-data-table a:hover {
+                color: #23527c;
+                text-decoration: underline;
+            }
+
+    /*
+        Overlay
+    */
+
+    #overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        z-index: 999;
+    }
+
+    /*
+        PRI QC Popup
+    */
+
+    #qaPopup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: 32%;
+        transform: translate(-50%, -50%);
+        max-height: 85vh;
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        z-index: 1000;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        overflow-y: auto;
+    }
+
+        #qaPopup .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            #qaPopup .popup-header h3 {
+                color: darkblue;
+                text-align: center;
+                flex-grow: 1;
+            }
+
+    #closePopup {
+        background: none;
+        border: none;
+        padding: 10px 20px;
+        color: #000;
+        cursor: pointer;
+        font-size: 25px;
+    }
+
+    #saveQAResult,
+    #closePopup1 {
+        background-color: #337ab7;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+        #saveQAResult:disabled {
+            background-color: grey;
+            cursor: not-allowed;
+        }
+
+    #saveQAResult,
+    #closePopup1 {
+        margin: 10px;
+    }
+
+    #buttons-container {
+        text-align: center;
+    }
+    #content img {
+        position: absolute;
+        top: 0px;
+        left: -44px;
+        right: -104px;
+        width: 105px;
+        height: 50px;
+    }
+    element.style {
+        color: white;
+        margin-left: 97px;
+    }
+    #additionalComments {
+        width: 600px;
+        height: 150px;
+        padding: 10px;
+        margin-top: 10px;
+        resize: vertical;
+        box-sizing: border-box;
+    }
+
+    .popup-container {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 480px;
+        background: #fdfdfd;
+        border-radius: 8px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        padding: 20px;
+        z-index: 1000;
+    }
+
+    .popup-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #ccc;
+        margin-bottom: 10px;
+    }
+
+        .popup-header h3 {
+            margin: 0;
+            font-size: 20px;
+            color: #2c3e50;
+        }
+
+    .instructions {
+        font-size: 13px;
+        margin-bottom: 15px;
+        color: #444;
+    }
+
+    .form-row {
+        margin-bottom: 12px;
+        font-size: 14px;
+        color: #333;
+    }
+
+        .form-row select {
+            width: 100px;
+            padding: 6px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-top: 5px;
+        }
+
+    .help-text {
+        font-size: 12px;
+        color: #777;
+        margin-top: 10px;
+    }
+
+    .popup-actions {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+        .popup-actions button {
+            background-color: #337ab7;
+            border: none;
+            color: white;
+            padding: 8px 18px;
+            margin: 0 5px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+            .popup-actions button:hover {
+                background-color: #2e6da4;
+            }
+
+    /*
+        QC Check button
+    */
+
+    .pri-qc-button {
+        height: 30px;
+        margin: 2px;
+        background-color: #337ab7;
+        border-color: #2e6da4;
+        color: white !important;
+    }
+
+        .pri-qc-button:hover {
+            background-color: #286090;
+            border-color: #204d74;
+        }
+</style>
+
+
+<!-- ========================================================= -->
+<!-- SEARCH SECTION -->
+<!-- ========================================================= -->
+
+<div style="padding: 10px; display: flex; align-items: center; flex-wrap: wrap; width: 100%; gap: 1px; margin-bottom: 20px; margin-left:-2px">
+
+
+
+
+    <!-- Search field -->
+
+    <select class="form-control"
+            id="dropdownSelect3"
+            style="width: 113px; margin-right: 10px;"
+            title="Search Key">
+
+        <option value="tso.ProjectID"
+                @(ViewBag.s1 == "tso.ProjectID" ? "selected" : "")>
+            ProjectID
+        </option>
+
+
+
+    </select>
+
+
+    <input type="text"
+           id="searchtxt"
+           class="form-control"
+           placeholder="Search..."
+           autocomplete="off"
+           value="@ViewBag.s2"
+           style="width: 116px; margin-right: 2px; margin-left: -8px;">
+
+
+    <button type="submit"
+            class="btn btn-primary"
+            id="btnSubmit"
+            style="height: 30px;">
+        Search
+    </button>
+
+
+    <button type="submit"
+            class="btn btn-primary"
+            id="btnClear"
+            style="height: 30px; margin: 2px;">
+        Clear
+    </button>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- OVERLAY -->
+<!-- ========================================================= -->
+
+<div id="overlay" style="display:none;"></div>
+
+
+<!-- ========================================================= -->
+<!-- PRI QC POPUP -->
+<!-- ========================================================= -->
+
+<div id="qaPopup"
+     class="popup-container"
+     style="display:none;">
+
+    <div class="popup-header">
+
+        <h3>
+            PRI QC Check
+        </h3>
+
+        <span class="close-btn"
+              id="closePopup">
+            &times;
+        </span>
+
+    </div>
+
+
+    @*<p class="instructions">
+
+            Check the PRI from PRILink and verify the PRI before proceeding.
+
+        </p>*@
+
+    <div class="form-row" style="display:flex; align-items:center;">
+
+        <label for="projectID" style="margin:0 5px 0 0;">
+            Project ID:
+        </label>
+
+        <input type="text"
+               id="projectID"
+               value=""
+               required
+               readonly
+               class="form-control"
+               style="width:150px;" />
+
+    </div>
+
+
+    <div class="form-row">
+
+        <strong>
+            QC Status:
+        </strong>
+
+        <select id="qaResult">
+
+            <option value="">
+                - Select -
+            </option>
+
+            <option value="Pass">
+                Pass
+            </option>
+
+            <option value="Fail">
+                Fail
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div class="form-row">
+
+        <label style="display:block; font-weight:bold;">
+
+            QC Remarks:
+            <span style="font-size:12px; color:red;">
+                (Enter at min 5 max 240 characters)
+            </span>
+
+        </label>
+
+        <textarea id="additionalComments"
+                  name="additionalComments"
+                  rows="3"
+                  maxlength="240"
+                  placeholder="Enter QC Remarks here"
+                  oninput="limitRemarks(this)"></textarea>
+        <br />
+
+        <span id="commentError"
+              style="color:red; display:none;">
+            Please enter at least 5 characters.
+        </span>
+
+    </div>
+
+
+    <p class="help-text">
+
+        Verify the PRI image before selecting Pass or Fail.<br />
+
+        Pass: The PRI project moves to the CPE Dashboard.<br />
+        Fail: The PRI project moves to Rework and is assigned to the same PSE.
+
+    </p>
+
+
+    <div class="popup-actions">
+
+        <button id="saveQAResult"
+                disabled>
+            Save
+        </button>
+
+        <button id="closePopup1">
+            Close
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- DASHBOARD TABLE -->
+<!-- ========================================================= -->
+
+<div class="panel panel-primary list-panel"
+     id="list-panel"
+     style="width:85%; margin-top:12px; margin-left:9px;">
+
+    <div class="panel-heading list-panel-heading">
+
+        <h1 class="panel-title list-panel-title">
+            PRI QC Check
+        </h1>
+
+    </div>
+
+
+    <!-- Progress -->
+
+    <div id="progress"
+         class="modal">
+
+        <div class="center"
+             style="margin-left:535px; margin-top:300px;">
+
+            <img src="~/images/loader4.gif"
+                 style="width:80px !important" />
+
+        </div>
+
+    </div>
+
+
+    <div class="container body-content"
+         style="width:1600px;">
+    </div>
+
+
+    <div class="panel-body"
+         style="width:100%; overflow:auto;">
+
+        <table id="assets-data-table"
+               class="table table-striped table-bordered"
+               style="width:100%; position:relative;">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        ProjectID
+                    </th>
+
+
+
+
+
+                    <th style="padding:9px 25px;">
+                        RegdOn
+                    </th>
+
+
+                    <th data-toggle="tooltip"
+                        title="WStatus log details">
+                        Status
+                    </th>
+
+
+                    <th style="padding:9px 25px;">
+                        StDate
+                    </th>
+
+
+
+                    <th data-toggle="tooltip"
+                        title="SourceImageLink">
+                        SILink
+                    </th>
+
+                    <th>
+                        PRILink
+                    </th>
+
+                    <th>
+                        PRITest
+                    </th>
+
+
+
+                    <th>
+                        PRI QC-Check
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                @if (Model != null)
+                {
+                    foreach (var asset in Model)
+                    {
+                        <tr>
+
+                            <!-- ProjectID -->
+
+                            <td style="text-align-last:left">
+
+                                <a data-value="@asset.ProjectID"
+                                   href="~/PRIQC/myModal?ProjectID=@asset.ProjectID"
+                                   data-id="@asset.ProjectID"
+                                   title="Click to view Project details"
+                                   data-toggle="tooltip"
+                                   target="_blank">
+
+                                    @asset.ProjectID
+
+                                </a>
+
+                            </td>
+
+
+
+
+
+
+
+                            <!-- RegdOn -->
+
+                            <td>
+                                @String.Format(
+                                    "{0:dd-MMM-yyyy hh:mm tt}",
+                                    asset.RegdOn)
+                            </td>
+
+
+
+
+
+                            <!-- Status -->
+
+                            <td style="text-align-last:left">
+                                @if (asset.FinalStatus == "45")
+                                {
+                                    @:45-Ready for CPI
+                                }
+                                else
+                                {
+                                    @asset.FinalStatus
+                                }
+                            </td>
+
+
+
+
+
+                            <!-- Status Date -->
+
+                            <td>
+
+                                @string.Format(
+                                    "{0:dd-MMM-yyyy hh:mm tt}",
+                                    asset.FinalStatusDt)
+
+                            </td>
+
+
+
+
+
+                            <!-- Selected Image -->
+
+                            <td>
+
+                                @if (!string.IsNullOrEmpty(asset.SelectedImageLink))
+                                {
+                                    <a href="@Url.Action(
+                                        "DisplayImage",
+                                        "AllLevelQueueBoard",
+                                        new {
+                                            ProjectID = asset.ProjectID,
+                                            linkType = "Source",
+                                            sourcefile = asset.SelectedImageLink
+                                        })"
+                                       target="_blank"
+                                       title="Click to open SelectedImageLink"
+                                       data-toggle="tooltip">
+
+                                        @asset.ProjectID
+
+                                    </a>
+                                }
+
+                            </td>
+
+
+                            <!-- PRI -->
+
+                            <td>
+
+                                @if (!string.IsNullOrEmpty(asset.PRILink))
+                                {
+                                    <a href="@Url.Action(
+                                        "DisplayImage",
+                                        "AllLevelQueueBoard",
+                                        new {
+                                            ProjectID = asset.ProjectID,
+                                            linkType = "PRI"
+                                        })"
+                                       target="_blank"
+                                       title="Click to open PRILink"
+                                       data-toggle="tooltip">
+
+                                        @asset.ProjectID
+
+                                    </a>
+                                }
+
+                            </td>
+
+
+                            <!-- PRI Test -->
+
+                            <td>
+
+                                @if (!string.IsNullOrEmpty(asset.PRITest))
+                                {
+                                    <a href="@Url.Action(
+                                        "DisplayImage",
+                                        "AllLevelQueueBoard",
+                                        new {
+                                            ProjectID = asset.ProjectID,
+                                            linkType = "PRI_Test"
+                                        })"
+                                       target="_blank"
+                                       title="Click to open PRITest Link"
+                                       data-toggle="tooltip">
+
+                                        @asset.ProjectID
+
+                                    </a>
+                                }
+
+                            </td>
+
+
+
+
+                            <!-- ================================================= -->
+                            <!-- PRI QC CHECK -->
+                            <!-- ================================================= -->
+
+                            <td>
+
+                                <button type="button"
+                                        class="btn btn-primary btn-sm pri-qc-button"
+                                        data-id="@asset.ProjectID">
+
+                                    PRI QC-Check
+
+                                </button>
+
+                            </td>
+
+                        </tr>
+                    }
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- JAVASCRIPT -->
+<!-- ========================================================= -->
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+
+<script>
+
+    $(document).ready(function () {
+
+
+
+        // ============================================
+        // RESTORE SEARCH DROPDOWN
+        // ============================================
+
+        var selectedVal = '@ViewBag.s1';
+
+        if (selectedVal && selectedVal !== '') {
+
+            $("#dropdownSelect3").val(selectedVal);
+
+        }
+        else {
+
+            $("#dropdownSelect3").val("tso.ProjectID");
+
+        }
+
+
+        // ============================================
+        // RESTORE SEARCH TEXT
+        // ============================================
+
+        $("#searchtxt").val('@ViewBag.s2');
+
+
+        // ============================================
+        // HIDE/SHOW DATE SUBMIT
+        // ============================================
+
+        toggleDateButton();
+
+    });
+
+
+    // ============================================
+    // DATE BUTTON
+    // ============================================
+
+    $("#btnSubmit1").on("click", function (e) {
+
+        e.preventDefault();
+
+        var curdate1 = $("#datepicker").val();
+
+        if (!curdate1) {
+
+            alert("Please select date");
+
+            return;
+
+        }
+
+        var s1 = $("#dropdownSelect3").val();
+        var s2 = $("#searchtxt").val();
+
+        var url = '@Url.Action("Index", "PRIQC")';
+
+        url += '?Fdate=' + encodeURIComponent(curdate1);
+
+        if (s1) {
+
+            url += '&s1=' + encodeURIComponent(s1);
+
+        }
+
+        if (s2) {
+
+            url += '&s2=' + encodeURIComponent(s2);
+
+        }
+
+        window.location.href = url;
+
+    });
+
+
+    // ============================================
+    // SEARCH DROPDOWN CHANGE
+    // ============================================
+
+    $("#dropdownSelect3").on("change", function () {
+
+        $("#searchtxt").val("");
+
+        toggleDateButton();
+
+    });
+
+
+    function toggleDateButton() {
+
+        var value = $("#dropdownSelect3").val();
+
+        if (value &&
+            value.toLowerCase() === "tso.wstatus") {
+
+            $("#btnSubmit1").show();
+
+        }
+        else {
+
+            $("#btnSubmit1").show();
+
+        }
+
+    }
+
+
+    // ============================================
+    // SEARCH BUTTON
+    // ============================================
+
+    $("#btnSubmit").on("click", function (e) {
+
+        e.preventDefault();
+
+        var s1 = $("#dropdownSelect3").val();
+
+        var s2 = $("#searchtxt").val().trim();
+
+        var curdate1 = $("#datepicker").val();
+
+
+        if (!s2) {
+
+            alert("Please enter search value.");
+
+            return;
+
+        }
+
+
+        var url = '@Url.Action("Index", "PRIQC")';
+
+
+        url += '?s1=' + encodeURIComponent(s1);
+
+        url += '&s2=' + encodeURIComponent(s2);
+
+
+        if (curdate1) {
+
+            url += '&Fdate=' + encodeURIComponent(curdate1);
+
+        }
+
+
+        window.location.href = url;
+
+    });
+
+
+    // ============================================
+    // CLEAR
+    // ============================================
+
+    $("#btnClear").on("click", function (e) {
+
+        e.preventDefault();
+
+        window.location.href =
+            '@Url.Action("Index", "PRIQC")';
+
+    });
+
+
+    // ============================================
+    // PREVIEW
+    // ============================================
+
+    function PreviewAlbum1(projectId) {
+
+        var url =
+            "@Url.Action("PreviewAlbum1", "AllLevelQueueBoard")"
+            + "?Id=" + projectId;
+
+        window.open(url, '_blank');
+
+    }
+
+
+    // ============================================
+    // OPEN PRI QC POPUP
+    // ============================================
+
+    $('#assets-data-table').on(
+        'click',
+        '.pri-qc-button',
+        function () {
+
+            var projectID =
+                $(this).attr('data-id');
+
+
+            // Set Project ID
+
+            $('#projectID').val(projectID);
+
+
+            // Reset fields
+
+            $('#qaResult').val('');
+
+            $('#additionalComments').val('');
+
+            $('#commentError').hide();
+
+            $('#saveQAResult').prop('disabled', true);
+
+
+            // Show popup
+
+            $('#overlay').show();
+
+            $('#qaPopup').show();
+
+
+            checkMandatoryFields();
+
+        });
+
+
+    // ============================================
+    // CLOSE POPUP - X
+    // ============================================
+
+    $('#closePopup').on('click', function () {
+
+        closeQCPopup();
+
+    });
+
+
+    // ============================================
+    // CLOSE POPUP - CLOSE BUTTON
+    // ============================================
+
+    $('#closePopup1').on('click', function () {
+
+        closeQCPopup();
+
+    });
+
+
+    // ============================================
+    // CLOSE POPUP FUNCTION
+    // ============================================
+
+    function closeQCPopup() {
+
+        $('#qaPopup').hide();
+
+        $('#overlay').hide();
+
+        $('#projectID').val('');
+
+        $('#qaResult').val('');
+
+        $('#additionalComments').val('');
+
+        $('#commentError').hide();
+
+        $('#saveQAResult').prop('disabled', true);
+
+    }
+
+
+    // ============================================
+    // OVERLAY CLICK
+    // ============================================
+
+    $('#overlay').on('click', function () {
+
+        closeQCPopup();
+
+    });
+
+
+    // ============================================
+    // VALIDATION
+    // ============================================
+
+    function checkMandatoryFields() {
+
+        var projectID =
+            $('#projectID').val().trim();
+
+        var qaResult =
+            $('#qaResult').val();
+
+        var additionalComments =
+            $('#additionalComments').val().trim();
+
+
+        var isCommentValid =
+            additionalComments.length >= 5;
+
+
+        if (additionalComments.length > 0 &&
+            !isCommentValid) {
+
+            $('#commentError')
+                .text('Please enter at least 5 characters.')
+                .show();
+
+        }
+        else {
+
+            $('#commentError').hide();
+
+        }
+
+
+        var enable =
+            projectID !== '' &&
+            qaResult !== '' &&
+            isCommentValid;
+
+
+        $('#saveQAResult')
+            .prop('disabled', !enable);
+
+    }
+
+
+    // ============================================
+    // VALIDATION EVENTS
+    // ============================================
+
+    $('#projectID').on(
+        'input',
+        checkMandatoryFields
+    );
+
+    $('#qaResult').on(
+        'change',
+        checkMandatoryFields
+    );
+
+    $('#additionalComments').on(
+        'input',
+        checkMandatoryFields
+    );
+
+
+    // ============================================
+    // SAVE PRI QC
+    // ============================================
+
+    $('#saveQAResult').on('click', function () {
+
+        var projectID =
+            $('#projectID').val().trim();
+
+        var qcStatus =
+            $('#qaResult').val();
+
+        var qcRemark =
+            $('#additionalComments').val().trim();
+
+
+        if (!projectID) {
+
+            alert("Project ID is required.");
+
+            return;
+
+        }
+
+
+        if (!qcStatus) {
+
+            alert("Please select QC Status.");
+
+            return;
+
+        }
+
+
+        if (qcRemark.length < 5) {
+
+            alert("Please enter at least 5 characters in QC Remark.");
+
+            return;
+
+        }
+
+
+        if (!confirm(
+            'Are you sure the details are correct?'
+        )) {
+
+            return;
+
+        }
+
+
+        $("#progress").show();
+
+        $('#saveQAResult')
+            .prop('disabled', true)
+            .text('Saving...');
+
+
+        // ========================================
+        // CALL PRIQC CONTROLLER
+        // ========================================
+
+        $.ajax({
+
+            url: '@Url.Action("SaveQC", "PRIQC")',
+
+            type: 'POST',
+
+            data: {
+
+                ProjectID: projectID,
+
+                QCStatus: qcStatus,
+
+                QCRemark: qcRemark
+
+            },
+
+
+            success: function (data) {
+
+                $("#progress").hide();
+
+
+                if (data.success) {
+
+                    alert(
+                        'PRI QC completed successfully!'
+                    );
+
+
+                    closeQCPopup();
+
+
+                    // Reload list
+
+                    location.reload();
+
+                }
+                else {
+
+                    alert(
+                        'Error: ' + data.message
+                    );
+
+
+                    $('#saveQAResult')
+                        .prop('disabled', false)
+                        .text('Save');
+
+                }
+
+            },
+
+
+            error: function (xhr, status, error) {
+
+                $("#progress").hide();
+
+
+                console.error(
+                    "Error:",
+                    error
+                );
+
+
+                alert(
+                    'An error occurred while saving PRI QC.'
+                );
+
+
+                $('#saveQAResult')
+                    .prop('disabled', false)
+                    .text('Save');
+
+            }
+
+        });
+
+    });
+
+
+    function limitRemarks(textarea) {
+        if (textarea.value.length > 240) {
+            textarea.value = textarea.value.substring(0, 240);
+        }
+    }
+
+
+</script>

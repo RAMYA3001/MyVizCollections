@@ -136,6 +136,7 @@ namespace MyVizCollections.Controllers
                             }
                         }
                     }
+                    con.Close();
                 }
 
                 ViewBag.Fdate = Fdate;
@@ -417,7 +418,7 @@ namespace MyVizCollections.Controllers
                 projects.Add(project);
 
 
-
+                cn.Close();
                 return Json(projects, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)

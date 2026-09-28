@@ -49,8 +49,9 @@ namespace MyVizCollections.Controllers
                 .ConnectionStrings["Nerolacconstr"]
                 .ConnectionString;
 
-            using (MySqlConnection conn =
-                   new MySqlConnection(connectionString))
+            MySqlConnection conn = new MySqlConnection(connectionString);
+
+            try
             {
                 conn.Open();
 
@@ -75,6 +76,19 @@ namespace MyVizCollections.Controllers
                             "Professional Preview Services";
                     }
                 }
+                conn.Close();
+
+            }
+            catch (Exception ex)
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+
+                MyVizCollections.Models.ExceptionLogging.SendErrorToText(ex);
+
+                bannerMessage = "Professional Preview Services";
             }
 
             return bannerMessage;
@@ -147,6 +161,20 @@ namespace MyVizCollections.Controllers
                         "ViewReport");
                 }
 
+                // ============================================
+                // 4. pseqc check --
+                // ============================================
+                else if ((username == "LAWRENL5" || username == "ROGERL5") &&
+           password == "admin@2#4")
+                {
+                    Session["Username"] = username;
+                    Session["UserID"] = username;
+                    Session["LoginTime"] = DateTime.Now;
+
+                    return RedirectToAction(
+                        "Index",
+                        "PRIQC");
+                }
 
                 // ============================================
                 // CWCOP LOGIN
